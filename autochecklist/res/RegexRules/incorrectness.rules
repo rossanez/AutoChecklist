@@ -1,0 +1,52 @@
+$NUMBER = "/[0-9]+([\.\,][0-9]+)?/"
+$UNIT = "/cm|centimeters|m|meters|km|kms|kilometers|h|hours|minutes|min|s|seconds|secs|ms|milliseconds|millisecs/"
+{
+   ruleType: "tokens",
+   pattern: ( /should/ ),
+   result: "SHOULD"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /might/ ),
+   result: "MIGHT"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /can/ ),
+   result: "CAN"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /should/ ),
+   result: "SHOULD"
+}
+{
+   ruleType: "tokens",
+   pattern: ( $NUMBER $UNIT ),
+   result: "NUMBER_AND_UNIT"
+}
+{
+   ruleType: "tokens",  
+   pattern: ( /in/ /preference/ ),
+   result: "IN_PREFERENCE"
+}
+{
+   ruleType: "tokens",  
+   pattern: ( /a/ /few/ []{0,0} $NUMBER ),
+   result: "A_FEW"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /in/ /some/ []{0,0} $NUMBER ),
+   result: "IN_SOME"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /in/ /less/ /than/ []{0,0} $NUMBER ),
+   result: "IN_LESS_THAN"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /in/ /more/ /than/ []{0,0} $NUMBER ),
+   result: "IN_MORE_THAN"
+}

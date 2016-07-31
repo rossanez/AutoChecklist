@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<checklist>
+    <category type="traceability">
+        <question id="1">In the traceability matrix of the software requirements document, are all the software requirements traced to at least a system or an interface requirement?</question>
+        <question id="2">In the traceability matrix of the software requirements document, are all the software requirements traced to the correct system or interface requirement?</question>
+        <question id="3">In the text of the software requirements in which there is a reference to a requirement or section of other document, is this reference traced to the correct requirement or section?</question>
+        <question id="4">In the text of the software requirements in which there is a reference to some function, is this reference traced to the correct function?</question>
+        <question id="5">In the text of the software requirements in which there is a reference to another requirement or a section of the same document, is this reference traced to the correct requirement or section?</question>
+    </category>
+    <category type="incompleteness">
+        <question id="6">In the text of the software requirements in which there should be the specification of a numeric value, is this numeric value defined?</question>
+        <question id="7" action="extract, TBC">Are all the requirements without "TBC"?</question>
+        <question id="8" action="extract, TBD">Are all the requirements without "TBD"?</question>
+        <question id="9">In the requirements in which there is a description of the actions of the software with the occurrence of some events, does this (these) requirement(s) consider all the possible events in the situation considered in the text?</question>
+    </category>
+    <category type="incorrectness">
+        <question id="10" action="extract, should">Are all the requirements without the word "should" indicating a non-mandatory feature of the system?</question>
+        <question id="11" action="extract, might">Are all the requirements without the word "might" indicating a non-mandatory feature of the system?</question>
+        <question id="12" action="extract, can">Are all the requirements without the word "can" indicating a non-mandatory feature of the system?</question>
+        <question id="13" action="numeric, unit">Are all the variables or numeric values with the correct unit? (when applicable)</question>
+        <question id="14" action="numeric, magnitude">Are all the variables or numeric values that have a unit with the correct order of magnitude?</question>
+        <question id="15" action="extract, in preference">Are all the requirements without the expression "in preference" indicating a non-mandatory feature of the system?</question>
+        <question id="16" action="extract, a few">Are all the requirements without the expression "a few" near a numeric value causing an imprecise idea?</question>
+        <question id="17" action="extract, in some">Are all the requirements without the expression "in some" near a numeric value causing an imprecise idea?</question>
+        <question id="18" action="extract, in less than">Are all the requirements without the expression "in less than" near a numeric value causing an imprecise idea?</question>
+        <question id="19" action="extract, in more than">Are all the requirements without the expression "in more than" near a numeric value causing an imprecise idea?</question>
+    </category>
+    <category type="inconsistency">
+        <question id="20">Are all the actions/functions of the software of a specific operation mode consistent with the description of these actions/functions in other places of the same document (such as other requirement, table or figure)?</question>
+        <question id="21">If there is more than one place (requirement, figure, table or list) in the same document defining the frequency or period of some action/function of the software, are they consistent with each other?</question>
+        <question id="22">If there is more than one place (requirement, figure, table or list) in the same document describing the functioning of the watch dog, is the behaviour of it consistent in these different places? (Its execution timing base, for example)</question>
+    </category>
+</checklist>

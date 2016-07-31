@@ -1,0 +1,10 @@
+{
+   ruleType: "tokens",
+   pattern: ( /TBD/ ),
+   result: "TBD"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /TBC/ ),
+   result: "TBC"
+}

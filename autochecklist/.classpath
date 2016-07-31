@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="libs/Tika/tika-app-1.13.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/CoreNLP/ejml-0.23.jar"/>
+	<classpathentry kind="lib" path="libs/CoreNLP/javax.json.jar"/>
+	<classpathentry kind="lib" path="libs/CoreNLP/joda-time.jar"/>
+	<classpathentry kind="lib" path="libs/CoreNLP/jollyday.jar"/>
+	<classpathentry kind="lib" path="libs/CoreNLP/protobuf.jar"/>
+	<classpathentry kind="lib" path="libs/CoreNLP/stanford-corenlp-3.6.0.jar" sourcepath="/home/rossanez/work/code/autochecklist/libs/CoreNLP/stanford-corenlp-3.6.0-sources.jar"/>
+	<classpathentry kind="lib" path="libs/CoreNLP/xom.jar"/>
+	<classpathentry kind="lib" path="libs/CoreNLP/stanford-corenlp-3.6.0-models.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
