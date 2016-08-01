@@ -19,7 +19,8 @@ public class RequirementsInfoExtractor {
 	public void extract(String text, IRequirementsInfoOutBuildable outputBuilder) {
     	Annotation document = CoreNLP.getInstance().annotate(text);
 
-    	boolean previousSentenceIsARequirement = false;
+    	// This flag will tell if we are currently processing a requirement.
+    	boolean processingARequirement = false;
     	String previousSentence = null;
     	for (CoreMap sentence : document.get(SentencesAnnotation.class)) {
 			List<CoreLabel> sentenceTokens = sentence.get(TokensAnnotation.class);
@@ -55,14 +56,14 @@ public class RequirementsInfoExtractor {
 		                	foundARequirement = true;
 
 		                	String rawRequirement = sentence.toString();
-		                	if (previousSentenceIsARequirement) {
+		                	if (processingARequirement) {
 		                		outputBuilder.appendRequirementText(rawRequirement.replaceAll("\n", " "));
 		                	} else {
 		                		outputBuilder.createNewRequirement(previousSentence.replaceAll("\n", " "));
                                 outputBuilder.addRequirementText(rawRequirement.replaceAll("\n", " "));
 		                	}
 
-		                	previousSentenceIsARequirement = true;
+		                	processingARequirement = true;
                             break;
 		                }
 
@@ -75,7 +76,7 @@ public class RequirementsInfoExtractor {
 				}
 			}
 
-			if (!foundARequirement) previousSentenceIsARequirement = false;
+			if (!foundARequirement) processingARequirement = false;
 			
 			// TODO Workaround! This should ideally be implemented
 			// at the plain text converter level.
