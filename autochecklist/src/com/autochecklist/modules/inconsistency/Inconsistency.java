@@ -14,7 +14,7 @@ public class Inconsistency extends Module {
 
 	@Override
 	public void processRequirement(Requirement requirement) {
-		Utils.println("Inconsistency: pocessing requirement " + requirement.getId());
+		Utils.println("Inconsistency: processing requirement " + requirement.getId());
 		super.processRequirement(requirement);
 	}
 
