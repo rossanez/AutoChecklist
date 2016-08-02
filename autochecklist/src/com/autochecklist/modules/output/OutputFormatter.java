@@ -8,9 +8,10 @@ import com.autochecklist.model.questions.Question;
 import com.autochecklist.model.questions.QuestionCategory;
 import com.autochecklist.model.requirements.Requirement;
 import com.autochecklist.model.requirements.RequirementList;
+import com.autochecklist.modules.Module;
 import com.autochecklist.utils.Utils;
 
-public class OutputFormatter {
+public class OutputFormatter extends Module {
 
 	private RequirementList mRequirements;
 	private List<QuestionCategory> mQuestions;
@@ -25,10 +26,11 @@ public class OutputFormatter {
 	}
 
 	private String setOutputDirectory(String dir) {
-		return dir + "output" + File.separatorChar;
+		return dir + "AnalysisOutput" + File.separatorChar;
 	}
-	
-	public void processOutput() {
+
+	@Override
+	public void start() {
 		createOutputDirectory();
 		generateQuestionsView();
 		generateRequirementsView();

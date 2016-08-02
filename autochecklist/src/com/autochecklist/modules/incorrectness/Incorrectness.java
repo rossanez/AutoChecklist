@@ -7,12 +7,12 @@ import com.autochecklist.model.questions.Question;
 import com.autochecklist.model.questions.QuestionAction;
 import com.autochecklist.model.questions.QuestionCategory;
 import com.autochecklist.model.requirements.Requirement;
-import com.autochecklist.modules.Module;
+import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 import com.autochecklist.utils.nlp.ExpressionExtractor;
 
-public class Incorrectness extends Module {
+public class Incorrectness extends AnalysisModule {
 
 	private Pair<String, List<Pair<String, String>>> mMatchedExpressionsForReq;
 	

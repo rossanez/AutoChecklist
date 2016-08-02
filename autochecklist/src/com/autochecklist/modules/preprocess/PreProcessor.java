@@ -3,20 +3,27 @@ package com.autochecklist.modules.preprocess;
 import java.io.File;
 import java.security.InvalidParameterException;
 
+import com.autochecklist.modules.Module;
 import com.autochecklist.utils.Utils;
 import com.autochecklist.utils.nlp.RequirementsInfoExtractor;
 import com.autochecklist.utils.text.PlainTextConverter;
 
-public class PreProcessor {
+public class PreProcessor extends Module {
 
 	private String mDocumentFileName;
+	private File mResult;
 
 	public PreProcessor(String docFileName) {
 		mDocumentFileName = docFileName;
 	}
 
-	public File preProcess() {
-		return buildPreProcessedFile(getPlainText());
+	@Override
+	public void start() {
+		 mResult = buildPreProcessedFile(getPlainText());
+	}
+
+	public File getPreprocessedFile() {
+		return mResult;
 	}
 
     private String getPlainText() {

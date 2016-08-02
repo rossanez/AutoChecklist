@@ -3,10 +3,10 @@ package com.autochecklist.modules.traceability;
 import com.autochecklist.model.questions.Question;
 import com.autochecklist.model.questions.QuestionCategory;
 import com.autochecklist.model.requirements.Requirement;
-import com.autochecklist.modules.Module;
+import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Utils;
 
-public class Traceability extends Module {
+public class Traceability extends AnalysisModule {
 
 	public Traceability(QuestionCategory questions) {
 		super(questions);
