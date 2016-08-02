@@ -4,7 +4,6 @@ import java.io.File;
 import java.security.InvalidParameterException;
 
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.IRequirementsInfoOutBuildable;
 import com.autochecklist.utils.nlp.RequirementsInfoExtractor;
 import com.autochecklist.utils.text.PlainTextConverter;
 
