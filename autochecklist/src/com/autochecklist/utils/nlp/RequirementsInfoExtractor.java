@@ -16,8 +16,16 @@ import edu.stanford.nlp.util.CoreMap;
 
 public class RequirementsInfoExtractor {
 
-	public void extract(String text, IRequirementsInfoOutBuildable outputBuilder) {
-    	Annotation document = CoreNLP.getInstance().annotate(text);
+	private String mPlainText;
+	private IRequirementsInfoOutBuildable mOutputBuilder;
+	
+	public RequirementsInfoExtractor(String text, IRequirementsInfoOutBuildable outputBuilder) {
+		this.mPlainText = text;
+		this.mOutputBuilder = outputBuilder;
+	}
+	
+	public IRequirementsInfoOutBuildable extract() {
+    	Annotation document = CoreNLP.getInstance().annotate(mPlainText);
 
     	// This flag will tell if we are currently processing a requirement.
     	boolean processingARequirement = false;
@@ -57,10 +65,10 @@ public class RequirementsInfoExtractor {
 
 		                	String rawRequirement = sentence.toString();
 		                	if (processingARequirement) {
-		                		outputBuilder.appendRequirementText(rawRequirement.replaceAll("\n", " "));
+		                		mOutputBuilder.appendRequirementText(rawRequirement.replaceAll("\n", " "));
 		                	} else {
-		                		outputBuilder.createNewRequirement(previousSentence.replaceAll("\n", " "));
-                                outputBuilder.addRequirementText(rawRequirement.replaceAll("\n", " "));
+		                		mOutputBuilder.createNewRequirement(previousSentence.replaceAll("\n", " "));
+                                mOutputBuilder.addRequirementText(rawRequirement.replaceAll("\n", " "));
 		                	}
 
 		                	processingARequirement = true;
@@ -85,5 +93,7 @@ public class RequirementsInfoExtractor {
 			    previousSentence = previousSentenceCandidate;
 			}
 		}
+    
+    	return mOutputBuilder;
     }
 }

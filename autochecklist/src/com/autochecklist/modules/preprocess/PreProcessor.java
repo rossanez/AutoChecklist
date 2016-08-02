@@ -8,7 +8,7 @@ import com.autochecklist.utils.nlp.IRequirementsInfoOutBuildable;
 import com.autochecklist.utils.nlp.RequirementsInfoExtractor;
 import com.autochecklist.utils.text.PlainTextConverter;
 
-public class PreProcessor extends RequirementsInfoExtractor {
+public class PreProcessor {
 
 	private String mDocumentFileName;
 
@@ -37,9 +37,7 @@ public class PreProcessor extends RequirementsInfoExtractor {
     		throw new InvalidParameterException("Invalid plain text passed in!");
     	}
 
-    	IRequirementsInfoOutBuildable outputBuilder = new XMLOutPreProcBuilder();
-    	extract(text, outputBuilder);
-
-        return outputBuilder.generateOutputFile(getOutputFileName());
+        RequirementsInfoExtractor extractor = new RequirementsInfoExtractor(text, new XMLOutPreProcBuilder());
+        return extractor.extract().generateOutputFile(getOutputFileName());
     }
 }
