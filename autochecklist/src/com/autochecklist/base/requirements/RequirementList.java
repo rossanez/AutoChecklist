@@ -1,4 +1,4 @@
-package com.autochecklist.model.requirements;
+package com.autochecklist.base.requirements;
 
 import java.io.File;
 import java.io.IOException;

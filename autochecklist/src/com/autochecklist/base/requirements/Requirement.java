@@ -1,10 +1,10 @@
-package com.autochecklist.model.requirements;
+package com.autochecklist.base.requirements;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.autochecklist.model.Finding;
-import com.autochecklist.model.questions.Question;
+import com.autochecklist.base.Finding;
+import com.autochecklist.base.questions.Question;
 
 public class Requirement {
 

@@ -3,11 +3,11 @@ package com.autochecklist.modules.output;
 import java.io.File;
 import java.util.List;
 
-import com.autochecklist.model.Finding;
-import com.autochecklist.model.questions.Question;
-import com.autochecklist.model.questions.QuestionCategory;
-import com.autochecklist.model.requirements.Requirement;
-import com.autochecklist.model.requirements.RequirementList;
+import com.autochecklist.base.Finding;
+import com.autochecklist.base.questions.Question;
+import com.autochecklist.base.questions.QuestionCategory;
+import com.autochecklist.base.requirements.Requirement;
+import com.autochecklist.base.requirements.RequirementList;
 import com.autochecklist.modules.Module;
 import com.autochecklist.utils.Utils;
 

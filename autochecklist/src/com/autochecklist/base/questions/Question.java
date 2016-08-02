@@ -1,9 +1,9 @@
-package com.autochecklist.model.questions;
+package com.autochecklist.base.questions;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.autochecklist.model.Finding;
+import com.autochecklist.base.Finding;
 
 public class Question {
 

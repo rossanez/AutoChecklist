@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.autochecklist.model.ErrorBasedChecklist;
-import com.autochecklist.model.questions.QuestionCategory;
-import com.autochecklist.model.requirements.RequirementList;
+import com.autochecklist.base.ErrorBasedChecklist;
+import com.autochecklist.base.questions.QuestionCategory;
+import com.autochecklist.base.requirements.RequirementList;
 import com.autochecklist.modules.output.OutputFormatter;
 import com.autochecklist.modules.preprocess.PreProcessor;
 import com.autochecklist.utils.Pair;

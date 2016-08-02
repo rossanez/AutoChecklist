@@ -1,4 +1,4 @@
-package com.autochecklist.model;
+package com.autochecklist.base;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,9 +13,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.autochecklist.model.questions.Question;
-import com.autochecklist.model.questions.QuestionAction;
-import com.autochecklist.model.questions.QuestionCategory;
+import com.autochecklist.base.questions.Question;
+import com.autochecklist.base.questions.QuestionAction;
+import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.utils.Utils;
 
 public class Checklist {

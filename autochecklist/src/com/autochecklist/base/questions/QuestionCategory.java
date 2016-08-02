@@ -1,4 +1,4 @@
-package com.autochecklist.model.questions;
+package com.autochecklist.base.questions;
 
 import java.util.Collection;
 import java.util.HashMap;

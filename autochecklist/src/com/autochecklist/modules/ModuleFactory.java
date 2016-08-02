@@ -3,9 +3,9 @@ package com.autochecklist.modules;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.autochecklist.model.ErrorBasedChecklist;
-import com.autochecklist.model.questions.QuestionCategory;
-import com.autochecklist.model.requirements.RequirementList;
+import com.autochecklist.base.ErrorBasedChecklist;
+import com.autochecklist.base.questions.QuestionCategory;
+import com.autochecklist.base.requirements.RequirementList;
 import com.autochecklist.modules.incompleteness.Incompleteness;
 import com.autochecklist.modules.inconsistency.Inconsistency;
 import com.autochecklist.modules.incorrectness.Incorrectness;

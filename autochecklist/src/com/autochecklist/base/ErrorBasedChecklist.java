@@ -1,6 +1,6 @@
-package com.autochecklist.model;
+package com.autochecklist.base;
 
-import com.autochecklist.model.questions.QuestionCategory;
+import com.autochecklist.base.questions.QuestionCategory;
 
 public class ErrorBasedChecklist extends Checklist {
 

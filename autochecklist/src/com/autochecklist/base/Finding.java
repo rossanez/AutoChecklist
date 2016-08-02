@@ -1,4 +1,4 @@
-package com.autochecklist.model;
+package com.autochecklist.base;
 
 public class Finding {
 

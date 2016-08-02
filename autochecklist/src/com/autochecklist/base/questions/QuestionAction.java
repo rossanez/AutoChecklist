@@ -1,4 +1,4 @@
-package com.autochecklist.model.questions;
+package com.autochecklist.base.questions;
 
 public class QuestionAction {
 

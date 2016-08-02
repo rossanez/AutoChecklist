@@ -2,11 +2,11 @@ package com.autochecklist.modules.incorrectness;
 
 import java.util.List;
 
-import com.autochecklist.model.Finding;
-import com.autochecklist.model.questions.Question;
-import com.autochecklist.model.questions.QuestionAction;
-import com.autochecklist.model.questions.QuestionCategory;
-import com.autochecklist.model.requirements.Requirement;
+import com.autochecklist.base.Finding;
+import com.autochecklist.base.questions.Question;
+import com.autochecklist.base.questions.QuestionAction;
+import com.autochecklist.base.questions.QuestionCategory;
+import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
