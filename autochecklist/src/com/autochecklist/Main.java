@@ -1,6 +1,7 @@
 package com.autochecklist;
 
 import com.autochecklist.modules.Orchestrator;
+import com.autochecklist.ui.StartupUI;
 import com.autochecklist.utils.Utils;
 
 public class Main {
@@ -8,7 +9,7 @@ public class Main {
 	public static void main(String[] args) {
 		if (args.length == 0) {
 			Utils.outputType = Utils.OUTPUT_USER_INTERFACE;
-			// TODO: Start up UI at this point.
+			StartupUI.initUI(args);
 			return;
 		} else if (args.length >= 2) {
 			if (args[0].equals("--srs")) {
