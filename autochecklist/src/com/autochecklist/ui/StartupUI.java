@@ -82,11 +82,9 @@ public class StartupUI extends Application implements EventHandler<ActionEvent> 
 		menuBar.getMenus().add(menu);
 		menuBar.prefWidthProperty().bind(mStage.widthProperty());
 
-		final TextArea textArea = new TextArea("(no file selected)");
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setMaxWidth(290);
-        textArea.setMaxHeight(10);
+		final TextArea chosenFile = new TextArea("(no file selected)");
+        chosenFile.setEditable(false);
+        chosenFile.setWrapText(true);
 		
 		final FileChooser fileChooser = new FileChooser();
 		Label label = new Label();
@@ -123,10 +121,11 @@ public class StartupUI extends Application implements EventHandler<ActionEvent> 
 				File file = fileChooser.showOpenDialog(mStage);
 				if (file != null) {
 					mFileName = file.getPath();
-					textArea.setText(mFileName);
+					chosenFile.setText(mFileName);
 				}
 			}
 		});
+		chosenFile.prefHeightProperty().bind(openButton.heightProperty());
 
 		mNextButton = new Button("Next >>");
 		mNextButton.setOnAction(this);
@@ -138,7 +137,7 @@ public class StartupUI extends Application implements EventHandler<ActionEvent> 
 		HBox openFileContent = new HBox(10);
 		openFileContent.setPadding(new Insets(20, 0, 0, 0));
 		openFileContent.setAlignment(Pos.CENTER);
-		openFileContent.getChildren().addAll(textArea, openButton);
+		openFileContent.getChildren().addAll(chosenFile, openButton);
 
 		HBox nextContent = new HBox(10);
 		nextContent.setPadding(new Insets(20, 0, 0, 0));
