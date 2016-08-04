@@ -2,10 +2,15 @@ package com.autochecklist.ui;
 
 import java.io.File;
 
+import com.autochecklist.ui.widgets.ChoiceDialog;
+import com.autochecklist.utils.Utils;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,8 +19,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -33,6 +37,12 @@ public class StartupUI extends Application implements EventHandler<ActionEvent> 
 	private MenuItem mMenuSwitchSRS;
 
 	private Stage mStage;
+
+	private Button mNextButton;
+
+	private String mFileName;
+
+	private ChoiceDialog mEmptyFileDialog; 
 
 	/**
 	 * This method will start up the GUI.
@@ -80,10 +90,26 @@ public class StartupUI extends Application implements EventHandler<ActionEvent> 
 			fileChooser.setTitle("Open a pre-processed file");
 		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
 		    label.setText("Please choose a pre-processed file:");
+		    mEmptyFileDialog = new ChoiceDialog("No pre-processed file chosen!",
+		    		"Would you like to switch to a SRS file?",
+					new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							mStage.setScene(createScene(mMenuSwitchPreproc));
+						}
+					}, null);
 		} else {
 		    fileChooser.setTitle("Open a SRS document file");
 		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PDF Files", "*.pdf"));
 		    label.setText("Please choose a SRS document file:");
+		    mEmptyFileDialog = new ChoiceDialog("No SRS file chosen!",
+		    		"Would you like to switch to a pre-processed file?",
+					new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							mStage.setScene(createScene(mMenuSwitchSRS));
+						}
+					}, null);
 		}
 
 		Button openButton = new Button("...");
@@ -92,23 +118,37 @@ public class StartupUI extends Application implements EventHandler<ActionEvent> 
 			public void handle(final ActionEvent e) {
 				File file = fileChooser.showOpenDialog(mStage);
 				if (file != null) {
-					textArea.setText(file.getPath());
+					mFileName = file.getPath();
+					textArea.setText(mFileName);
 				}
 			}
 		});
 
-		final GridPane rootGridPane = new GridPane();
-		GridPane.setConstraints(menuBar, 0, 0);
-		GridPane.setConstraints(textArea, 1, 1);
-		GridPane.setConstraints(openButton, 2, 1);
-		rootGridPane.setHgap(6);
-		rootGridPane.setVgap(6);
-		rootGridPane.getChildren().addAll(textArea, openButton);
+		mNextButton = new Button("Next >>");
+		mNextButton.setOnAction(this);
 
-		final Pane rootGroup = new VBox(12);
-		rootGroup.getChildren().addAll(menuBar, label, rootGridPane);
+		HBox captionContent = new HBox(10);
+		captionContent.setAlignment(Pos.TOP_CENTER);
+		captionContent.getChildren().add(label);
 
-		Scene scene = new Scene(rootGroup, 300, 250);
+		HBox openFileContent = new HBox(10);
+		openFileContent.setPadding(new Insets(20, 0, 0, 0));
+		openFileContent.setAlignment(Pos.CENTER);
+		openFileContent.getChildren().addAll(textArea, openButton);
+
+		HBox nextContent = new HBox(10);
+		nextContent.setPadding(new Insets(20, 0, 0, 0));
+		nextContent.setAlignment(Pos.BOTTOM_RIGHT);
+		nextContent.getChildren().add(mNextButton);
+
+        VBox content = new VBox(10);
+        content.setPadding(new Insets(0, 20, 20, 20));
+        content.getChildren().addAll(captionContent, openFileContent, nextContent);
+
+		VBox rootGroup = new VBox(10);
+		rootGroup.getChildren().addAll(menuBar, content);
+
+		Scene scene = new Scene(rootGroup, 400, 250);
 		return scene;
 	}
 
@@ -120,6 +160,10 @@ public class StartupUI extends Application implements EventHandler<ActionEvent> 
 			mStage.setScene(createScene(mMenuSwitchSRS));
 		} else if (event.getSource() == mMenuSwitchSRS) {
 			mStage.setScene(createScene(mMenuSwitchPreproc));
+		} else if (event.getSource() == mNextButton) {
+			if (Utils.isTextEmpty(mFileName)) {
+				mEmptyFileDialog.show();
+			}
 		}
 	}
 }
