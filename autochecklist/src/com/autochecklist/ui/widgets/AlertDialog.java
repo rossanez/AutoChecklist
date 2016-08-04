@@ -15,9 +15,9 @@ public class AlertDialog extends BaseWidget {
 	private String mMessage;
 	
 	public AlertDialog(String title, String message) {
+		super();
         mTitle = title;
         mMessage = message;
-        initWidget(); // Workaround!
 	}
 
 	@Override

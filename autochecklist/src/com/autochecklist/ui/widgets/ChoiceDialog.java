@@ -20,11 +20,11 @@ public class ChoiceDialog extends BaseWidget {
 	public ChoiceDialog(String title, String message,
 			EventHandler<ActionEvent> positiveHandler,
 			EventHandler<ActionEvent> negativeHandler) {
+		super();
 		mTitle = title;
 		mMessage = message;
 		mPositiveHandler = positiveHandler;
 		mNegativeHandler = negativeHandler;
-		initWidget(); // Workaround!
 	}
 	
 	@Override
