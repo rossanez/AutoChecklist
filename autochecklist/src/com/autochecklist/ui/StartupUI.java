@@ -57,6 +57,8 @@ public class StartupUI extends Application implements EventHandler<ActionEvent> 
 	public void start(final Stage primaryStage) throws Exception {
 		mStage = primaryStage;
 		mStage.setTitle("Auto Checklist");
+		mStage.setMinWidth(300);
+		mStage.setMinHeight(220);
 
 		mMenuExit = new MenuItem("Exit");
 		mMenuExit.setOnAction(this);
@@ -70,6 +72,8 @@ public class StartupUI extends Application implements EventHandler<ActionEvent> 
 	}
 
 	private Scene createScene(MenuItem fileTypeItem) {
+		mFileName = null;
+		
 		MenuBar menuBar = new MenuBar();
 		Menu menu = new Menu("Actions");
 		menu.getItems().add(fileTypeItem);
@@ -148,7 +152,7 @@ public class StartupUI extends Application implements EventHandler<ActionEvent> 
 		VBox rootGroup = new VBox(10);
 		rootGroup.getChildren().addAll(menuBar, content);
 
-		Scene scene = new Scene(rootGroup, 400, 250);
+		Scene scene = new Scene(rootGroup, 400, 220);
 		return scene;
 	}
 
