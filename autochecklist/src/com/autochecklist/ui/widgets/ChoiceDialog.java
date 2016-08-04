@@ -9,34 +9,43 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
 
-public class ChoiceDialog {
-
-	private Stage mWindow;
+public class ChoiceDialog extends BaseWidget {
+	
+	private String mTitle;
+	private String mMessage;
+	private EventHandler<ActionEvent> mPositiveHandler;
+	private EventHandler<ActionEvent> mNegativeHandler;
 	
 	public ChoiceDialog(String title, String message,
-			final EventHandler<ActionEvent> positiveHandler,
-			final EventHandler<ActionEvent> negativeHandler) {
-		mWindow = new Stage();
-
-		mWindow.initModality(Modality.APPLICATION_MODAL);
-		mWindow.setTitle(title);
-		mWindow.setMinWidth(350);
-		mWindow.setMinHeight(100);
+			EventHandler<ActionEvent> positiveHandler,
+			EventHandler<ActionEvent> negativeHandler) {
+		mTitle = title;
+		mMessage = message;
+		mPositiveHandler = positiveHandler;
+		mNegativeHandler = negativeHandler;
+		initWidget(); // Workaround!
+	}
+	
+	@Override
+	protected void initWidget() {
+		mStage.initModality(Modality.APPLICATION_MODAL);
+		mStage.setTitle(mTitle);
+		mStage.setMinWidth(350);
+		mStage.setMinHeight(100);
 
 		Label label = new Label();
-		label.setText(message);
+		label.setText(mMessage);
 
 		Button yesButton = new Button("Yes");
 		yesButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				if (positiveHandler != null) {
-				    positiveHandler.handle(event);
+				if (mPositiveHandler != null) {
+				    mPositiveHandler.handle(event);
 				}
-				mWindow.close();
+				mStage.close();
 			}
 		});
 
@@ -45,10 +54,10 @@ public class ChoiceDialog {
 
 			@Override
 			public void handle(ActionEvent event) {
-				if (negativeHandler != null) {
-				    negativeHandler.handle(event);
+				if (mNegativeHandler != null) {
+				    mNegativeHandler.handle(event);
 				}
-				mWindow.close();
+				mStage.close();
 			}
 		});
 
@@ -61,10 +70,6 @@ public class ChoiceDialog {
 		layout.setAlignment(Pos.CENTER);
 
 		Scene scene = new Scene(layout);
-		mWindow.setScene(scene);
-	}
-
-	public void show() {
-		mWindow.show();
+		mStage.setScene(scene);
 	}
 }

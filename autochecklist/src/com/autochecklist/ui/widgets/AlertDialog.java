@@ -8,27 +8,34 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
 
-public class AlertDialog {
+public class AlertDialog extends BaseWidget {
 
-	public static void show(String title, String message) {
-		final Stage window = new Stage();
-		
-		window.initModality(Modality.APPLICATION_MODAL);
-		window.setTitle(title);
-		window.setMinWidth(350);
-		window.setMinHeight(100);
+	private String mTitle;
+	private String mMessage;
+	
+	public AlertDialog(String title, String message) {
+        mTitle = title;
+        mMessage = message;
+        initWidget(); // Workaround!
+	}
+
+	@Override
+	protected void initWidget() {
+		mStage.initModality(Modality.APPLICATION_MODAL);
+		mStage.setTitle(mTitle);
+		mStage.setMinWidth(350);
+		mStage.setMinHeight(100);
 
 		Label label = new Label();
-		label.setText(message);
+		label.setText(mMessage);
 
 		Button okButton = new Button("Ok");
 		okButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				window.close();
+				mStage.close();
 			}
 		});
 
@@ -37,7 +44,6 @@ public class AlertDialog {
 		layout.setAlignment(Pos.CENTER);
 
 		Scene scene = new Scene(layout);
-		window.setScene(scene);
-		window.show();
+		mStage.setScene(scene);
 	}
 }
