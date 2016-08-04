@@ -1,6 +1,7 @@
 package com.autochecklist.ui.modules;
 
 import com.autochecklist.ui.BaseUI;
+import com.autochecklist.utils.Utils;
 
 public class AnalysisUI extends BaseUI {
 
@@ -13,6 +14,10 @@ public class AnalysisUI extends BaseUI {
 
 	@Override
 	protected void initUI() {
+	    if (Utils.isTextEmpty(mPreprocFileName)) {
+	    	throw new RuntimeException("No preprocessed file name passed in to the UI!");
+	    }
+
 		mStage.setTitle("Auto Checklist - Analysis");
 	}
 }
