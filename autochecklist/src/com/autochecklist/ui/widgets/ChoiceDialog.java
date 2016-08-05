@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 
 public class ChoiceDialog extends BaseWidget {
@@ -36,6 +37,7 @@ public class ChoiceDialog extends BaseWidget {
 
 		Label label = new Label();
 		label.setText(mMessage);
+		label.setTextAlignment(TextAlignment.CENTER);
 
 		Button yesButton = new Button("Yes");
 		yesButton.setOnAction(new EventHandler<ActionEvent>() {

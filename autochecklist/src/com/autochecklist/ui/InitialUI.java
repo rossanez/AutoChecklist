@@ -41,6 +41,10 @@ public class InitialUI extends BaseUI {
 
 	private ChoiceDialog mEmptyFileDialog;
 
+	public InitialUI() {
+		super();
+	}
+
 	public InitialUI(Stage primaryStage) {
 		super(primaryStage);
 	}

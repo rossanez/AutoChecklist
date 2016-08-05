@@ -14,6 +14,7 @@ public abstract class BaseUI implements EventHandler<ActionEvent> {
 	
 	private boolean mInitialized = false;
 
+	protected MenuItem mMenuRestart;
 	protected MenuItem mMenuExit;
 
 	public BaseUI() {
@@ -44,6 +45,16 @@ public abstract class BaseUI implements EventHandler<ActionEvent> {
 						@Override
 						public void handle(ActionEvent event) {
 							Platform.exit();
+						}
+					}, null).show();
+		} else if (event.getSource() == mMenuRestart) {
+			new ChoiceDialog("Restarting...",
+		    		"The current analysis will be dropped!\nAre you sure about it?",
+					new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							mStage.close();
+							new InitialUI().show();
 						}
 					}, null).show();
 		}

@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 
 public class AlertDialog extends BaseWidget {
@@ -29,6 +30,7 @@ public class AlertDialog extends BaseWidget {
 
 		Label label = new Label();
 		label.setText(mMessage);
+		label.setTextAlignment(TextAlignment.CENTER);
 
 		Button okButton = new Button("Ok");
 		okButton.setOnAction(new EventHandler<ActionEvent>() {
