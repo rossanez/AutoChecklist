@@ -13,6 +13,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -55,9 +56,17 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		subTitleGroup.setAlignment(Pos.TOP_CENTER);
 		subTitleGroup.getChildren().add(subTitle);
 
+		mBuffer = new TextArea("Started preprocessing...");
+        mBuffer.setEditable(false);
+        mBuffer.setWrapText(true);
+        
+        HBox bufferGroup = new HBox(10);
+        bufferGroup.setAlignment(Pos.CENTER);
+        bufferGroup.getChildren().add(mBuffer);
+
 		VBox content = new VBox(10);
         content.setPadding(new Insets(0, 20, 20, 20));
-        content.getChildren().addAll(subTitleGroup);
+        content.getChildren().addAll(subTitleGroup, bufferGroup);
 		
 		VBox rootGroup = new VBox(10);
 		rootGroup.getChildren().addAll(menuBar, content);

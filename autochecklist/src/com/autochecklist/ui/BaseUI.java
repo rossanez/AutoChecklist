@@ -6,9 +6,10 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
-public abstract class BaseUI implements EventHandler<ActionEvent> {
+public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> {
 
 	protected Stage mStage;
 	
@@ -16,6 +17,8 @@ public abstract class BaseUI implements EventHandler<ActionEvent> {
 
 	protected MenuItem mMenuRestart;
 	protected MenuItem mMenuExit;
+
+	protected TextArea mBuffer;
 
 	public BaseUI() {
 		mStage = new Stage();
@@ -30,6 +33,7 @@ public abstract class BaseUI implements EventHandler<ActionEvent> {
 	public final void show() {
 		if (!mInitialized) {
 			initUI();
+			Printer.getInstance().register(this);
 			mInitialized = true;
 		}
 
@@ -57,6 +61,27 @@ public abstract class BaseUI implements EventHandler<ActionEvent> {
 							new InitialUI().show();
 						}
 					}, null).show();
+		}
+	}
+
+	@Override
+	public void print(String message) {
+		if (mBuffer != null) {
+			mBuffer.appendText(message);
+		}
+	}
+
+	@Override
+	public void println(String message) {
+		if (mBuffer != null) {
+			mBuffer.appendText('\n'+ message);
+		}
+	}
+
+	@Override
+	public void printError(String message) {
+		if (mBuffer != null) {
+			mBuffer.appendText('\n'+ message);
 		}
 	}
 }

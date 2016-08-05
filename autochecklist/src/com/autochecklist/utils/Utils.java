@@ -2,9 +2,11 @@ package com.autochecklist.utils;
 
 import java.io.File;
 
+import com.autochecklist.ui.Printer;
+
 public class Utils {
 
-	// Where messages are printed out?
+	// Where are messages to be printed out?
 	public static final int OUTPUT_DEFAULT = 0;
 	public static final int OUTPUT_USER_INTERFACE = 1;
 	
@@ -12,7 +14,7 @@ public class Utils {
 
 	public static void print(String message) {
 		if (outputType == OUTPUT_USER_INTERFACE) {
-			
+			Printer.getInstance().print(message);
 		} else {
 			System.out.print(message);
 		}
@@ -20,7 +22,7 @@ public class Utils {
 
 	public static void println(String message) {
 		if (outputType == OUTPUT_USER_INTERFACE) {
-			
+			Printer.getInstance().println(message);
 		} else {
 			System.out.println(message);
 		}
@@ -28,7 +30,7 @@ public class Utils {
 
 	public static void printError(String message) {
 		if (outputType == OUTPUT_USER_INTERFACE) {
-			
+			Printer.getInstance().printError(message);
 		} else {
 			System.err.println(message);
 		}
