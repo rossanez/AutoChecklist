@@ -7,7 +7,6 @@ import com.autochecklist.ui.modules.PreprocUI;
 import com.autochecklist.ui.widgets.ChoiceDialog;
 import com.autochecklist.utils.Utils;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -26,14 +25,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
-public class InitialUI extends BaseUI implements EventHandler<ActionEvent> {
+public class InitialUI extends BaseUI {
 
 	private final static int STATE_SRS = 0;
 	private final static int STATE_PREPROC = 1;
 	
 	private int mState = STATE_SRS;
-	
-	private MenuItem mMenuExit;
+
 	private MenuItem mMenuSwitchPreproc;
 	private MenuItem mMenuSwitchSRS;
 
@@ -61,7 +59,6 @@ public class InitialUI extends BaseUI implements EventHandler<ActionEvent> {
 		mMenuSwitchSRS.setOnAction(this);
 		
 		mStage.setScene(createScene(STATE_SRS));
-		mStage.show();
 	}
 
 	private Scene createScene(int state) {
@@ -155,12 +152,14 @@ public class InitialUI extends BaseUI implements EventHandler<ActionEvent> {
 
 	@Override
 	public void handle(ActionEvent event) {
-		if (event.getSource() == mMenuExit) {
-		    Platform.exit();
-		} else if (event.getSource() == mMenuSwitchPreproc) {
+		if (event.getSource() == mMenuSwitchPreproc) {
 			mStage.setScene(createScene(STATE_PREPROC));
+			
+			return;
 		} else if (event.getSource() == mMenuSwitchSRS) {
 			mStage.setScene(createScene(STATE_SRS));
+			
+			return;
 		} else if (event.getSource() == mNextButton) {
 			if (Utils.isTextEmpty(mFileName)) {
 				mEmptyFileDialog.show();
@@ -172,6 +171,10 @@ public class InitialUI extends BaseUI implements EventHandler<ActionEvent> {
 				}
 				mStage.close();
 			}
+			
+			return;
 		}
+	
+		super.handle(event);
 	}
 }
