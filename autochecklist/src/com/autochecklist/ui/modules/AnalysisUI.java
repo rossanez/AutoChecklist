@@ -8,17 +8,21 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 
 	private String mPreprocFileName;
+
+	private Button mNextButton;
 	
 	public AnalysisUI(String preprocFileName) {
 		super();
@@ -55,14 +59,30 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 		subTitleGroup.setAlignment(Pos.TOP_CENTER);
 		subTitleGroup.getChildren().add(subTitle);
 
+		HBox bufferGroup = new HBox(10);
+        bufferGroup.setAlignment(Pos.CENTER);
+		mBuffer = new TextArea("Started the analysis...");
+        mBuffer.setEditable(false);
+        mBuffer.setWrapText(true);
+        mBuffer.prefWidthProperty().bind(mStage.widthProperty());
+        mBuffer.prefHeightProperty().bind(mStage.heightProperty());
+        bufferGroup.getChildren().add(mBuffer);
+
+        HBox nextContent = new HBox(10);
+		nextContent.setPadding(new Insets(5, 0, 0, 0));
+		nextContent.setAlignment(Pos.BOTTOM_RIGHT);
+        mNextButton = new Button("Results >>");
+		mNextButton.setOnAction(this);
+		nextContent.getChildren().add(mNextButton);
+
 		VBox content = new VBox(10);
-        content.setPadding(new Insets(0, 20, 20, 20));
-        content.getChildren().addAll(subTitleGroup);
+        content.setPadding(new Insets(0, 10, 10, 10));
+        content.getChildren().addAll(subTitleGroup, bufferGroup, nextContent);
 		
 		VBox rootGroup = new VBox(10);
 		rootGroup.getChildren().addAll(menuBar, content);
 
-		Scene scene = new Scene(rootGroup, 400, 220);
+		Scene scene = new Scene(rootGroup, 300, 220);
 		mStage.setScene(scene);
 	}
 

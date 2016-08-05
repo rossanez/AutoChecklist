@@ -53,7 +53,9 @@ public class InitialUI extends BaseUI {
 	protected void initUI() {
 		mStage.setTitle("Auto Checklist");
 		mStage.setMinWidth(300);
-		mStage.setMinHeight(220);
+		mStage.setMinHeight(200);
+		mStage.setMaxWidth(500);
+		mStage.setMaxHeight(300);
 
 		mMenuExit = new MenuItem("Exit");
 		mMenuExit.setOnAction(this);
@@ -84,11 +86,13 @@ public class InitialUI extends BaseUI {
 		final TextArea chosenFile = new TextArea("(no file selected)");
         chosenFile.setEditable(false);
         chosenFile.setWrapText(true);
+        chosenFile.prefWidthProperty().bind(mStage.widthProperty());
+        chosenFile.setMaxHeight(30);
 		
 		final FileChooser fileChooser = new FileChooser();
 		Label label = new Label();
 		if (state == STATE_PREPROC) {
-			fileChooser.setTitle("Open a pre-processed file");
+			fileChooser.setTitle("Open a pre-processed file...");
 		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
 		    label.setText("Please choose a pre-processed file:");
 		    mEmptyFileDialog = new ChoiceDialog("No pre-processed file chosen!",
@@ -100,7 +104,7 @@ public class InitialUI extends BaseUI {
 						}
 					}, null);
 		} else {
-		    fileChooser.setTitle("Open a SRS document file");
+		    fileChooser.setTitle("Open a SRS document file...");
 		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PDF Files", "*.pdf"));
 		    label.setText("Please choose a SRS document file:");
 		    mEmptyFileDialog = new ChoiceDialog("No SRS file chosen!",
@@ -124,33 +128,32 @@ public class InitialUI extends BaseUI {
 				}
 			}
 		});
-		chosenFile.prefHeightProperty().bind(openButton.heightProperty());
-
-		mNextButton = new Button("Next >>");
-		mNextButton.setOnAction(this);
 
 		HBox captionContent = new HBox(10);
 		captionContent.setAlignment(Pos.TOP_CENTER);
 		captionContent.getChildren().add(label);
 
 		HBox openFileContent = new HBox(10);
-		openFileContent.setPadding(new Insets(20, 0, 0, 0));
+		openFileContent.setPadding(new Insets(10, 0, 0, 0));
 		openFileContent.setAlignment(Pos.CENTER);
+		openFileContent.prefHeightProperty().bind(mStage.heightProperty());
 		openFileContent.getChildren().addAll(chosenFile, openButton);
 
 		HBox nextContent = new HBox(10);
-		nextContent.setPadding(new Insets(20, 0, 0, 0));
+		nextContent.setPadding(new Insets(5, 0, 0, 0));
 		nextContent.setAlignment(Pos.BOTTOM_RIGHT);
+		mNextButton = new Button("Next >>");
+		mNextButton.setOnAction(this);
 		nextContent.getChildren().add(mNextButton);
 
         VBox content = new VBox(10);
-        content.setPadding(new Insets(0, 20, 20, 20));
+        content.setPadding(new Insets(0, 10, 10, 10));
         content.getChildren().addAll(captionContent, openFileContent, nextContent);
 
 		VBox rootGroup = new VBox(10);
 		rootGroup.getChildren().addAll(menuBar, content);
 
-		Scene scene = new Scene(rootGroup, 400, 220);
+		Scene scene = new Scene(rootGroup, 400, 150);
 		return scene;
 	}
 
