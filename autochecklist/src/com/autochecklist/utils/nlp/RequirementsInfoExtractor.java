@@ -2,6 +2,8 @@ package com.autochecklist.utils.nlp;
 
 import java.util.List;
 
+import com.autochecklist.utils.Utils;
+
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
@@ -65,10 +67,14 @@ public class RequirementsInfoExtractor {
 
 		                	String rawRequirement = sentence.toString();
 		                	if (processingARequirement) {
-		                		mOutputBuilder.appendRequirementText(rawRequirement.replaceAll("\n", " "));
+		                		String appendedReq = rawRequirement.replaceAll("\n", " ");
+		                		Utils.println("Appending req.: " + appendedReq);
+		                		mOutputBuilder.appendRequirementText(appendedReq);
 		                	} else {
 		                		mOutputBuilder.createNewRequirement(previousSentence.replaceAll("\n", " "));
-                                mOutputBuilder.addRequirementText(rawRequirement.replaceAll("\n", " "));
+		                		String newReq = rawRequirement.replaceAll("\n", " ");
+		                		Utils.println("New req.: " + newReq);
+                                mOutputBuilder.addRequirementText(newReq);
 		                	}
 
 		                	processingARequirement = true;
