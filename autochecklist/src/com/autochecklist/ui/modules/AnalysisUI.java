@@ -142,6 +142,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 					new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {
+							mBuffer.appendText("\nAnalysis canceled!");
 							stopWork();
 						}
 					}, null).show();
@@ -164,7 +165,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	}
 
 	private void restartWork() {
-		mBuffer.setText("Started the analysis...");
+		mBuffer.appendText("\nAnalysis restarted...");
 		mCancelRestartButton.setText("Cancel");
 		mNextButton.setDisable(true);
 		work();

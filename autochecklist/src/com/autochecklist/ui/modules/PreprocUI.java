@@ -171,6 +171,7 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 					new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {
+							mBuffer.appendText("\nPreprocessing canceled!");
 							stopWork();
 						}
 					}, null).show();
@@ -193,7 +194,7 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 	}
 
 	private void restartWork() {
-		mBuffer.setText("Preprocessing started...");
+		mBuffer.appendText("\nPreprocessing restarted...");
 		mCancelRestartButton.setText("Cancel");
 		mNextButton.setDisable(true);
 		work();

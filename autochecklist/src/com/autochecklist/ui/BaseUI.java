@@ -23,6 +23,7 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 	protected TextArea mBuffer;
 
 	protected Task<Void> mTask;
+	protected Thread mThread;
 
 	public BaseUI() {
 		mStage = new Stage();
@@ -50,9 +51,7 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 
 				@Override
 				public void handle(WindowEvent event) {
-					if (mTask != null) {
-						mTask.cancel();
-					}
+					stopWork();
 				}
 			});
 		}
@@ -87,7 +86,9 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 
 			
 		};
-		new Thread(mTask).start();
+		mThread = new Thread(mTask);
+		mThread.setDaemon(true);
+		mThread.start();
 	}
 
 	protected void doWork() { };
@@ -98,7 +99,13 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 
 	protected final void stopWork() {
 		if (mTask != null) {
-			mTask.cancel();
+			if (!mTask.cancel()) {
+				// Try once again as a workaround
+				mTask.cancel(true);
+			}
+		}
+		if (mThread != null) {
+			mThread.interrupt();
 		}
 	}
 
@@ -110,9 +117,7 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 					new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {
-							if (mTask != null) {
-								mTask.cancel();
-							}
+							stopWork();
 							Platform.exit();
 						}
 					}, null).show();
@@ -122,9 +127,7 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 					new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {
-							if (mTask != null) {
-								mTask.cancel();
-							}
+							stopWork();
 							mStage.close();
 							new InitialUI().show();
 						}
