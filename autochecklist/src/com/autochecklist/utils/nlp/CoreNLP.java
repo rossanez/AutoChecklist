@@ -2,6 +2,8 @@ package com.autochecklist.utils.nlp;
 
 import java.util.Properties;
 
+import com.autochecklist.utils.Utils;
+
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
@@ -30,7 +32,9 @@ public class CoreNLP {
 
 	public static CoreNLP getInstance() {
 		if (mPipelineInstance == null) {
+			Utils.println("Initializing NLP tools...");
 			mPipelineInstance = new CoreNLP();
+			Utils.print("done!");
 		}
 
 		return mPipelineInstance;
