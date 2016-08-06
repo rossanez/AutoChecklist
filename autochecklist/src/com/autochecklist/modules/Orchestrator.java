@@ -59,22 +59,31 @@ public class Orchestrator {
 	/**
 	 * Performs the pre-processing of the SRS only.
 	 */
-	public void preProcessOnly() {
+	public File preProcessOnly() {
 		File preOut = preProcess();
 		Utils.println("Generated the following pre-processed file: " + preOut.getPath());
+		return preOut;
 	}
 
 	/**
-	 * Performs the analysis of a previously pre-processed SRS.
+	 * Performs the analysis of a previously pre-processed SRS and starts the OutputFormatter.
 	 */
 	public void analyze() {
+		analyzeOnly().start();
+	}
+
+	/**
+	 * Performs the analysis of a previously pre-processed SRS and returns the OutputFormatter.
+	 * @return The OutputFormatter.
+	 */
+	public OutputFormatter analyzeOnly() {
 		if (mPreProcFileName == null) {
         	throw new RuntimeException("Need a pre-processed file for analysis!");
         }
 
 		Pair<RequirementList, List<QuestionCategory>> out =
 				new Pair<RequirementList, List<QuestionCategory>>(mRequirements, doAnalyze());
-		getOutputFormatter(out).start();
+		return getOutputFormatter(out);
 	}
 
 	private File preProcess() {

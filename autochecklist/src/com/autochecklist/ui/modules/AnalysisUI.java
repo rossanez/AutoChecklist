@@ -1,6 +1,10 @@
 package com.autochecklist.ui.modules;
 
+import com.autochecklist.modules.Orchestrator;
+import com.autochecklist.modules.output.OutputFormatter;
 import com.autochecklist.ui.BaseUI;
+import com.autochecklist.ui.widgets.AlertDialog;
+import com.autochecklist.ui.widgets.ChoiceDialog;
 import com.autochecklist.utils.Utils;
 
 import javafx.event.ActionEvent;
@@ -23,6 +27,10 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	private String mPreprocFileName;
 
 	private Button mNextButton;
+	private Button mCancelRestartButton;
+
+	// This should be the analysis output.
+	private OutputFormatter mOutputFormatter;
 	
 	public AnalysisUI(String preprocFileName) {
 		super();
@@ -73,7 +81,12 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 		nextContent.setAlignment(Pos.BOTTOM_RIGHT);
         mNextButton = new Button("Results >>");
 		mNextButton.setOnAction(this);
-		nextContent.getChildren().add(mNextButton);
+		mNextButton.setDisable(true);
+		mNextButton.setAlignment(Pos.BOTTOM_RIGHT);
+		mCancelRestartButton = new Button("Cancel");
+		mCancelRestartButton.setOnAction(this);
+		mCancelRestartButton.setAlignment(Pos.BOTTOM_LEFT);
+		nextContent.getChildren().addAll(mCancelRestartButton, mNextButton);
 
 		VBox content = new VBox(10);
         content.setPadding(new Insets(0, 10, 10, 10));
@@ -82,12 +95,78 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 		VBox rootGroup = new VBox(10);
 		rootGroup.getChildren().addAll(menuBar, content);
 
-		Scene scene = new Scene(rootGroup, 300, 220);
+		Scene scene = new Scene(rootGroup, 600, 500);
 		mStage.setScene(scene);
 	}
 
 	@Override
+	protected void doWork() {
+		mOutputFormatter = new Orchestrator(mPreprocFileName, true).analyzeOnly();
+	}
+
+	@Override
+	protected void workSucceeded() {
+		mNextButton.setDisable(false);
+		mCancelRestartButton.setText("Restart");
+		new AlertDialog("Success!",
+                "The analysis has finished!\nYou may proceed to the results.").show();
+	}
+
+	@Override
+	protected void workFailed(boolean cancelled) {
+		mCancelRestartButton.setText("Restart");
+		if (cancelled) {
+		    new AlertDialog("Stopped!", "The analysis has been cancelled!").show();
+		} else {
+			new AlertDialog("Error!", "The analysis has failed!").show();
+		}
+	}
+
+	@Override
 	public void handle(ActionEvent event) {
-		super.handle(event);
+		if (event.getSource() == mNextButton) {
+			// TODO go to results UI.
+			mOutputFormatter.start();
+			mStage.close();
+		} else if (event.getSource() == mCancelRestartButton) {
+			handleCancelRestart();
+		} else {
+    		super.handle(event);
+		}
+	}
+
+	private void handleCancelRestart() {
+		if ("Cancel".equals(mCancelRestartButton.getText())) {
+			new ChoiceDialog("Cancelling...",
+		    		"Are you sure you want to cancel the analysis?",
+					new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							stopWork();
+						}
+					}, null).show();
+		} else {
+			// Restart
+			if (!mNextButton.isDisabled()) {
+				new ChoiceDialog("Restarting...",
+			    		"Are you sure you want to restart the analysis?",
+						new EventHandler<ActionEvent>() {
+							@Override
+							public void handle(ActionEvent event) {
+								restartWork();
+							}
+						}, null).show();
+			} else {
+				restartWork();
+			}
+			
+		}
+	}
+
+	private void restartWork() {
+		mBuffer.setText("Started the analysis...");
+		mCancelRestartButton.setText("Cancel");
+		mNextButton.setDisable(true);
+		work();
 	}
 }

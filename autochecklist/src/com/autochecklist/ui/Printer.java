@@ -1,5 +1,7 @@
 package com.autochecklist.ui;
 
+import javafx.application.Platform;
+
 public class Printer {
 
 	private IUIPrintable mCurrent;
@@ -20,21 +22,47 @@ public class Printer {
 		mCurrent = current;
 	}
 
-	public void print(String message) {
+	public void print(final String message) {
 		if (mCurrent != null) {
-			mCurrent.print(message);
+			Platform.runLater(new Runnable() {
+
+				@Override
+				public void run() {
+					if (mCurrent != null) {
+					    mCurrent.print(message);
+					}
+				}
+			});
 		}
 	}
 
-	public void println(String message) {
+	public void println(final String message) {
         if (mCurrent != null) {
-			mCurrent.println(message);
+        	if (mCurrent != null) {
+    			Platform.runLater(new Runnable() {
+
+    				@Override
+    				public void run() {
+    					if (mCurrent != null) {
+    					    mCurrent.println(message);
+    					}
+    				}
+    			});
+    		}
 		}
 	}
 
-	public void printError(String message) {
+	public void printError(final String message) {
         if (mCurrent != null) {
-			mCurrent.printError(message);
+        	Platform.runLater(new Runnable() {
+
+				@Override
+				public void run() {
+					if (mCurrent != null) {
+						mCurrent.printError(message);
+					}
+				}
+			});
 		}
 	}
 }
