@@ -30,7 +30,7 @@ public class PlainTextConverter {
 	    try (InputStream stream = new FileInputStream(new File(fileName))) {
 	    	Utils.println("Converting document to plain text... ");
 			parser.parse(stream, handler, metadata);
-			Utils.print("Done!");
+			Utils.print("done!");
 			return handler.toString();
 		} catch (IOException | SAXException | TikaException e) {
 			throw new RuntimeException("Error when converting document to plain text! - " + e.getMessage());

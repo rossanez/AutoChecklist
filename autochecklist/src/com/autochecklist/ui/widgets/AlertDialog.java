@@ -25,7 +25,7 @@ public class AlertDialog extends BaseWidget {
 	protected void initWidget() {
 		mStage.initModality(Modality.APPLICATION_MODAL);
 		mStage.setTitle(mTitle);
-		mStage.setMinWidth(350);
+		mStage.setMinWidth(450);
 		mStage.setMinHeight(100);
 
 		Label label = new Label();
