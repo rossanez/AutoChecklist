@@ -17,6 +17,7 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 	protected Stage mStage;
 	
 	private boolean mInitialized = false;
+    private boolean mDoWorkUponShowing = false;
 
 	protected MenuItem mMenuRestart;
 	protected MenuItem mMenuExit;
@@ -35,19 +36,31 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 	}
 
 	protected abstract void initUI();
-	
+
+	/**
+	 * Should be called on the constructor for starting the work on showing the UI.
+	 * @param value Tells if the work should or not be started.
+	 */
+	protected final void setDoWorkUponShowing(boolean value) {
+		mDoWorkUponShowing = value;
+	}
+
 	public final void show() {
 		if (!mInitialized) {
 			initUI();
 			Printer.getInstance().register(this);
 			mInitialized = true;
-			Platform.runLater(new Runnable() {
 
-				@Override
-				public void run() {
-					work();
-				}
-			});
+			if (mDoWorkUponShowing) {
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+						work();
+					}
+				});
+			}
+
 			mStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 
 				@Override

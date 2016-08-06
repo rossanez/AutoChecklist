@@ -15,20 +15,15 @@ public class HtmlBuilder {
 		mFileName = fileName;
 	}
 
-	public String build(String title, String body) {
-		if (Utils.isTextEmpty(mFileName)) {
-			throw new RuntimeException("No file name passed in!");
-		}
-		
+	public static String generateContent(String title, String body) {
 		try {
-			build_internal(title, body);
-			return mFileName;
+			return generateContent_internal(title, body);
 		} catch (IOException e) {
-			throw new RuntimeException("Unable to generate output file! - " + e.getMessage());
+			throw new RuntimeException("Unable to generate content! - " + e.getMessage());
 		}
 	}
-	
-	private void build_internal(String title, String body) throws IOException {
+
+	private static String generateContent_internal(String title, String body) throws IOException {
 		File htmlTemplateFile = new File("res/Output/simple.html");
 		String htmlString = FileUtils.readFileToString(htmlTemplateFile);
 		htmlString = htmlString.replace("$title", title);
@@ -49,7 +44,25 @@ public class HtmlBuilder {
 		body = "<h2>" + title + "</h2>" + body;
 
 		htmlString = htmlString.replace("$body", body);
+
+		return htmlString;
+	}
+
+	public String build(String content) {
+		if (Utils.isTextEmpty(mFileName)) {
+			throw new RuntimeException("No file name passed in!");
+		}
+		
+		try {
+			build_internal(content);
+			return mFileName;
+		} catch (IOException e) {
+			throw new RuntimeException("Unable to generate output file! - " + e.getMessage());
+		}
+	}
+	
+	private void build_internal(String content) throws IOException {
 		File newHtmlFile = new File(mFileName);
-		FileUtils.writeStringToFile(newHtmlFile, htmlString);
+		FileUtils.writeStringToFile(newHtmlFile, content);
 	}
 }

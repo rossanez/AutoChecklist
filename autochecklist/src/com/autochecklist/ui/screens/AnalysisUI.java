@@ -35,6 +35,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	
 	public AnalysisUI(String preprocFileName) {
 		super();
+		setDoWorkUponShowing(true);
 		mPreprocFileName = preprocFileName;
 	}
 

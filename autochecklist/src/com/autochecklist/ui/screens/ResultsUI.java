@@ -1,12 +1,19 @@
 package com.autochecklist.ui.screens;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.autochecklist.modules.output.OutputFormatter;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
+import com.autochecklist.utils.Pair;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -18,6 +25,16 @@ import javafx.scene.layout.VBox;
 public class ResultsUI extends BaseUI {
 
 	private OutputFormatter mOutputFormatter;
+
+	private WebViewerUI mResultsViewer;
+
+	private List<Pair<String, String>> mViewerContents;
+
+	private List<CheckBox> mCheckboxes;
+	private CheckBox mCheckView;
+	private CheckBox mReqView;
+
+	private Button mGenerateButton;
 
 	public ResultsUI(OutputFormatter formatter) {
 		super();
@@ -54,43 +71,107 @@ public class ResultsUI extends BaseUI {
 		subTitleGroup.setAlignment(Pos.TOP_CENTER);
 		subTitleGroup.getChildren().add(subTitle);
 
+		HBox checkContent = new HBox(10);
+		checkContent.setAlignment(Pos.CENTER);
+		checkContent.prefWidthProperty().bind(mStage.widthProperty());
+		checkContent.prefHeightProperty().bind(mStage.heightProperty());
+		VBox checkBoxes = new VBox(20);
+		checkBoxes.setAlignment(Pos.CENTER_LEFT);
+		mCheckboxes = new ArrayList<CheckBox>();
+		mCheckboxes.add(mCheckView = new CheckBox("Checklist view"));
+		mCheckboxes.add(mReqView = new CheckBox("Requirements view"));
+		setOnActionForCheckboxes();
+		checkBoxes.getChildren().addAll(mCheckboxes);
+		checkContent.getChildren().add(checkBoxes);
+
+		HBox nextContent = new HBox(10);
+		nextContent.setPadding(new Insets(5, 0, 0, 0));
+		nextContent.setAlignment(Pos.BOTTOM_CENTER);
+        mGenerateButton = new Button("Generate");
+		mGenerateButton.setOnAction(this);
+		mGenerateButton.setDisable(true);
+		nextContent.getChildren().add(mGenerateButton);
+		
 		VBox content = new VBox(10);
         content.setPadding(new Insets(0, 10, 10, 10));
-        content.getChildren().addAll(subTitleGroup);
+        content.getChildren().addAll(subTitleGroup, checkContent, nextContent);
 		
 		VBox rootGroup = new VBox(10);
 		rootGroup.getChildren().addAll(menuBar, content);
 
-		Scene scene = new Scene(rootGroup, 600, 500);
+		Scene scene = new Scene(rootGroup, 400, 300);
 		mStage.setScene(scene);
 	}
 
 	@Override
 	protected void beforeWork() {
+		if (mResultsViewer != null) {
+			mResultsViewer.close();
+		}
+
 		mMenuRestart.setDisable(true);
+		mGenerateButton.setDisable(true);
 	}
 
 	@Override
 	protected void doWork() {
-		mOutputFormatter.start();
+		mViewerContents = new ArrayList<Pair<String, String>>();
+		if (mCheckView.isSelected()) {
+			mViewerContents.add(new Pair<String, String>("Checklist View",mOutputFormatter.generateQuestionsViewContent()));
+		}
+		if (mReqView.isSelected()) {
+			mViewerContents.add(new Pair<String, String>("Requirements View", mOutputFormatter.generateRequirementsViewContent()));
+		}
 	}
 
 	@Override
 	protected void workSucceeded() {
 		mMenuRestart.setDisable(false);
+		mGenerateButton.setDisable(false);
 
-		new AlertDialog("Success!",
-                "The output has been generated!").show();
+		mResultsViewer = new WebViewerUI(mViewerContents.toArray(new Pair[mViewerContents.size()]));
+        mResultsViewer.show();
 	}
 
 	@Override
 	protected void workFailed(boolean cancelled) {
 		mMenuRestart.setDisable(false);
+		mGenerateButton.setDisable(false);
 
 		if (cancelled) {
 		    new AlertDialog("Stopped!", "The output generation has been cancelled!").show();
 		} else {
 			new AlertDialog("Error!", "The output generation has failed!").show();
 		}
+	}
+
+	@Override
+	public void handle(ActionEvent event) {
+		if (event.getSource() instanceof CheckBox) {
+			if (isAtLeastOneCheckSelected()) {
+				mGenerateButton.setDisable(false);
+			} else {
+				mGenerateButton.setDisable(true);
+			}
+		} else if (event.getSource() == mGenerateButton) {
+			work();
+		} else {
+			super.handle(event);
+		}
+	}
+
+	private void setOnActionForCheckboxes() {
+		for (CheckBox c : mCheckboxes) {
+			c.setOnAction(this);
+			c.setSelected(false);
+		}
+	}
+
+	private boolean isAtLeastOneCheckSelected() {
+		for (CheckBox c : mCheckboxes) {
+			if (c.isSelected()) return true;
+		}
+
+		return false;
 	}
 }

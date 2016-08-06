@@ -40,7 +40,7 @@ public class OutputFormatter extends Module {
 		return Utils.createDirectory(mOutputDir);
 	}
 
-	private String generateQuestionsView() {
+	public String generateQuestionsViewContent() {
 		StringBuilder outBuilder = new StringBuilder();
 		String currentCat = null;
 		for (QuestionCategory questionCat : mQuestions) {
@@ -65,15 +65,23 @@ public class OutputFormatter extends Module {
 			}
 		}
 
-		return new HtmlBuilder(mOutputDir + "checklist_view.html").build("Checklist View", outBuilder.toString());
+		return HtmlBuilder.generateContent("Checklist View", outBuilder.toString());
 	}
 
+	private String generateQuestionsView() {
+		return new HtmlBuilder(mOutputDir + "checklist_view.html").build(generateQuestionsViewContent());
+	}
+
+	public String generateRequirementsViewContent() {
+		return generateDefaultRequirementsViewContent();
+	}
+	
 	private String generateRequirementsView() {
 		return generateDefaultRequirementsView();
 	}
 
-	private String generateDefaultRequirementsView() {
-        StringBuilder outBuilder = new StringBuilder();
+	private String generateDefaultRequirementsViewContent() {
+		StringBuilder outBuilder = new StringBuilder();
         for(Requirement requirement : mRequirements.getRequirements()) {
         	outBuilder.append(requirement.getId()).append(" ---- ")
         	          .append(requirement.getText()).append('\n');
@@ -97,7 +105,11 @@ public class OutputFormatter extends Module {
         	outBuilder.append('\n');
         }
 
-		return new HtmlBuilder(mOutputDir + "requirements_view_default.html").build("Requirements View",  outBuilder.toString());
+        return HtmlBuilder.generateContent("Requirements View",  outBuilder.toString());
+	}
+	
+	private String generateDefaultRequirementsView() {
+		return new HtmlBuilder(mOutputDir + "requirements_view_default.html").build(generateDefaultRequirementsViewContent());
 	}
 
 	private String formatQuestionFinding(Finding finding) {

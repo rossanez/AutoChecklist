@@ -41,6 +41,7 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 
 	public PreprocUI(String srsFileName) {
 		super();
+		setDoWorkUponShowing(true);
 		mSRSFileName = srsFileName;
 	}
 
