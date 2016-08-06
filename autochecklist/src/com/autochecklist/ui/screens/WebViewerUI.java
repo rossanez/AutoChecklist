@@ -104,6 +104,8 @@ public class WebViewerUI extends BaseUI {
 		fileChooser.setTitle("Save output file...");
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("HTML Files", "*.html"));
 		File file = fileChooser.showSaveDialog(mStage);
+		if (file == null) return;
+
 		if(!file.getPath().endsWith(".html")) {
 			  file = new File(file.getPath() + ".html");
 		}
