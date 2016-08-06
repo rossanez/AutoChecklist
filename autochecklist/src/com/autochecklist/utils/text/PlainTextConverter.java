@@ -13,6 +13,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import com.autochecklist.utils.Utils;
+
 /**
  * This class encapsulates the text handling methods.
  * 
@@ -26,7 +28,9 @@ public class PlainTextConverter {
 		AutoDetectParser parser = new AutoDetectParser();
 		Metadata metadata = new Metadata();
 	    try (InputStream stream = new FileInputStream(new File(fileName))) {
+	    	Utils.println("Converting document to plain text... ");
 			parser.parse(stream, handler, metadata);
+			Utils.print("Done!");
 			return handler.toString();
 		} catch (IOException | SAXException | TikaException e) {
 			throw new RuntimeException("Error when converting document to plain text! - " + e.getMessage());

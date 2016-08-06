@@ -1,14 +1,11 @@
-package com.autochecklist.ui.modules;
-
-import java.io.File;
-import java.io.IOException;
+package com.autochecklist.ui.screens;
 
 import com.autochecklist.modules.Orchestrator;
+import com.autochecklist.modules.output.OutputFormatter;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.ui.widgets.ChoiceDialog;
 import com.autochecklist.utils.Utils;
-import com.google.common.io.Files;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -24,68 +21,61 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 
-public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
+public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 
-	private String mSRSFileName;
-
-	// This should hold the generated file.
-	private File mPreprocessedFile;
-
-	private MenuItem mMenuSavePreproc;
-	private MenuItem mMenuRestartPreproc;
+	private String mPreprocFileName;
 
 	private Button mNextButton;
 
-	public PreprocUI(String srsFileName) {
+	private MenuItem mMenuRestartAnalysis;
+
+	// This should be the analysis output.
+	private OutputFormatter mOutputFormatter;
+	
+	public AnalysisUI(String preprocFileName) {
 		super();
-		mSRSFileName = srsFileName;
+		mPreprocFileName = preprocFileName;
 	}
 
 	@Override
 	protected void initUI() {
-		if (Utils.isTextEmpty(mSRSFileName)) {
-			throw new RuntimeException("No SRS file name passed in to the UI!");
-		}
+	    if (Utils.isTextEmpty(mPreprocFileName)) {
+	    	throw new RuntimeException("No preprocessed file name passed in to the UI!");
+	    }
 
-		mStage.setTitle("Auto Checklist - Preprocessing");
+		mStage.setTitle("Auto Checklist - Analysis");
 		mStage.setMinWidth(300);
 		mStage.setMinHeight(220);
 
-		mMenuSavePreproc = new MenuItem("Save preprocessed file as...");
-		mMenuSavePreproc.setOnAction(this);
-		mMenuSavePreproc.setDisable(true);
-		mMenuRestartPreproc = new MenuItem("Restart preprocessing");
-		mMenuRestartPreproc.setOnAction(this);
-		mMenuRestartPreproc.setDisable(true);
 		mMenuRestart = new MenuItem("Restart from scratch");
 		mMenuRestart.setOnAction(this);
 		mMenuRestart.setDisable(true);
+		mMenuRestartAnalysis = new MenuItem("Restart analysis");
+		mMenuRestartAnalysis.setOnAction(this);
+		mMenuRestartAnalysis.setDisable(true);
 		mMenuExit = new MenuItem("Exit");
 		mMenuExit.setOnAction(this);
 		
 		MenuBar menuBar = new MenuBar();
 		Menu menu = new Menu("Actions");
-		menu.getItems().add(mMenuSavePreproc);
-		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(mMenuRestart);
-		menu.getItems().add(mMenuRestartPreproc);
+		menu.getItems().add(mMenuRestartAnalysis);
 		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(mMenuExit);
 		menuBar.getMenus().add(menu);
 		menuBar.prefWidthProperty().bind(mStage.widthProperty());
 
+		Label subTitle = new Label();
+		subTitle.setText("Preprocessed file: " + mPreprocFileName);
+
 		HBox subTitleGroup = new HBox(10);
 		subTitleGroup.setAlignment(Pos.TOP_CENTER);
-		Label subTitle = new Label();
-		subTitle.setText("SRS document file: " + mSRSFileName);
 		subTitleGroup.getChildren().add(subTitle);
 
 		HBox bufferGroup = new HBox(10);
         bufferGroup.setAlignment(Pos.CENTER);
-		mBuffer = new TextArea("Preprocessing started...");
+		mBuffer = new TextArea("Started the analysis...");
         mBuffer.setEditable(false);
         mBuffer.setWrapText(true);
         mBuffer.prefWidthProperty().bind(mStage.widthProperty());
@@ -95,11 +85,11 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
         HBox nextContent = new HBox(10);
 		nextContent.setPadding(new Insets(5, 0, 0, 0));
 		nextContent.setAlignment(Pos.BOTTOM_RIGHT);
-        mNextButton = new Button("Next >>");
-        mNextButton.setDisable(true);
+        mNextButton = new Button("Results >>");
 		mNextButton.setOnAction(this);
+		mNextButton.setDisable(true);
 		nextContent.getChildren().add(mNextButton);
-        
+
 		VBox content = new VBox(10);
         content.setPadding(new Insets(0, 10, 10, 10));
         content.getChildren().addAll(subTitleGroup, bufferGroup, nextContent);
@@ -114,74 +104,51 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 	@Override
 	protected void beforeWork() {
 		mMenuRestart.setDisable(true);
-		mMenuRestartPreproc.setDisable(true);
-		mMenuSavePreproc.setDisable(true);
+		mMenuRestartAnalysis.setDisable(true);
 	}
 
 	@Override
 	protected void doWork() {
-		mPreprocessedFile = new Orchestrator(mSRSFileName).preProcessOnly();
+		mOutputFormatter = new Orchestrator(mPreprocFileName, true).analyzeOnly();
 	}
 
 	@Override
 	protected void workSucceeded() {
-		mMenuRestart.setDisable(false);
-		mMenuRestartPreproc.setDisable(false);
-		mMenuSavePreproc.setDisable(false);
 		mNextButton.setDisable(false);
+		mMenuRestart.setDisable(false);
+		mMenuRestartAnalysis.setDisable(false);
 
 		new AlertDialog("Success!",
-                "The preprocessing has finished!" +
-		        "\n\nYou may proceed to the analysis, but please take some time to review the just generated preprocessed file."
-		        + "\nYou can also save it to a desired location and use it in a future analysis.").show();
+                "The analysis has finished!\nYou may proceed to the results.").show();
 	}
 
 	@Override
 	protected void workFailed(boolean cancelled) {
 		mMenuRestart.setDisable(false);
-		mMenuRestartPreproc.setDisable(false);
+		mMenuRestartAnalysis.setDisable(false);
 
 		if (cancelled) {
-		    new AlertDialog("Stopped!", "The preprocessing has been cancelled!").show();
+		    new AlertDialog("Stopped!", "The analysis has been cancelled!").show();
 		} else {
-			new AlertDialog("Error!", "The preprocessing has failed!").show();
+			new AlertDialog("Error!", "The analysis has failed!").show();
 		}
 	}
 
 	@Override
 	public void handle(ActionEvent event) {
 		if (event.getSource() == mNextButton) {
-			new AnalysisUI(mPreprocessedFile.getPath()).show();
+			new ResultsUI(mOutputFormatter).show();
 			mStage.close();
-		} else if (event.getSource() == mMenuSavePreproc) {
-			savePreprocFileAs();
-		} else if (event.getSource() == mMenuRestartPreproc) {
+		} else if (event.getSource() == mMenuRestartAnalysis) {
 			restart();
 		} else {
-		    super.handle(event);
-		}
-	}
-
-	private void savePreprocFileAs() {
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Save a pre-processed file...");
-		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
-		File file = fileChooser.showSaveDialog(mStage);
-		if(!file.getPath().endsWith(".xml")) {
-			  file = new File(file.getPath() + ".xml");
-		}
-		try {
-			Files.move(mPreprocessedFile, file);
-			mPreprocessedFile = file;
-			Utils.println("Saved the preprocessed file as: " + mPreprocessedFile.getPath());
-		} catch (IOException e) {
-			Utils.printError("FAILURE: File has not been saved!");
+    		super.handle(event);
 		}
 	}
 
 	private void restart() {
 		new ChoiceDialog("Restarting...",
-	    		"Are you sure you want to restart the preprocessing?",
+	    		"Are you sure you want to restart the analysis?",
 				new EventHandler<ActionEvent>() {
 
 					@Override
@@ -192,9 +159,9 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 	}
 
 	private void doRestart() {
-		mBuffer.appendText("\nPreprocessing restarted...");
-		mNextButton.setDisable(true);
+		mBuffer.appendText("\nAnalysis restarted...");
 
+		mNextButton.setDisable(true);
 		work();
 	}
 }

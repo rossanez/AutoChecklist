@@ -1,9 +1,8 @@
-package com.autochecklist.ui;
+package com.autochecklist.ui.screens;
 
 import java.io.File;
 
-import com.autochecklist.ui.modules.AnalysisUI;
-import com.autochecklist.ui.modules.PreprocUI;
+import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.ChoiceDialog;
 import com.autochecklist.utils.Utils;
 

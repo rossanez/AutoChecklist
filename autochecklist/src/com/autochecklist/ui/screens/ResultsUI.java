@@ -1,4 +1,4 @@
-package com.autochecklist.ui.modules;
+package com.autochecklist.ui.screens;
 
 import com.autochecklist.modules.output.OutputFormatter;
 import com.autochecklist.ui.BaseUI;

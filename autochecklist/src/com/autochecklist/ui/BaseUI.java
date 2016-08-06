@@ -1,5 +1,6 @@
 package com.autochecklist.ui;
 
+import com.autochecklist.ui.screens.InitialUI;
 import com.autochecklist.ui.widgets.ChoiceDialog;
 
 import javafx.application.Platform;

@@ -1,5 +1,7 @@
 package com.autochecklist.ui;
 
+import com.autochecklist.ui.screens.InitialUI;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 

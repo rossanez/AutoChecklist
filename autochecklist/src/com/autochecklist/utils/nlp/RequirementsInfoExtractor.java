@@ -29,6 +29,8 @@ public class RequirementsInfoExtractor {
 	public IRequirementsInfoOutBuildable extract() {
     	Annotation document = CoreNLP.getInstance().annotate(mPlainText);
 
+    	Utils.println("Extracting requirements...");
+
     	// This flag will tell if we are currently processing a requirement.
     	boolean processingARequirement = false;
     	String previousSentence = null;
