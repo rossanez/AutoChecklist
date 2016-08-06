@@ -35,9 +35,9 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 	private File mPreprocessedFile;
 
 	private MenuItem mMenuSavePreproc;
+	private MenuItem mMenuRestartPreproc;
 
 	private Button mNextButton;
-	private Button mCancelRestartButton;
 
 	public PreprocUI(String srsFileName) {
 		super();
@@ -57,8 +57,12 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		mMenuSavePreproc = new MenuItem("Save preprocessed file as...");
 		mMenuSavePreproc.setOnAction(this);
 		mMenuSavePreproc.setDisable(true);
-		mMenuRestart = new MenuItem("Restart");
+		mMenuRestartPreproc = new MenuItem("Restart preprocessing");
+		mMenuRestartPreproc.setOnAction(this);
+		mMenuRestartPreproc.setDisable(true);
+		mMenuRestart = new MenuItem("Restart from scratch");
 		mMenuRestart.setOnAction(this);
+		mMenuRestart.setDisable(true);
 		mMenuExit = new MenuItem("Exit");
 		mMenuExit.setOnAction(this);
 		
@@ -67,6 +71,8 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		menu.getItems().add(mMenuSavePreproc);
 		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(mMenuRestart);
+		menu.getItems().add(mMenuRestartPreproc);
+		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(mMenuExit);
 		menuBar.getMenus().add(menu);
 		menuBar.prefWidthProperty().bind(mStage.widthProperty());
@@ -88,15 +94,11 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 
         HBox nextContent = new HBox(10);
 		nextContent.setPadding(new Insets(5, 0, 0, 0));
-		nextContent.setAlignment(Pos.CENTER);
+		nextContent.setAlignment(Pos.BOTTOM_RIGHT);
         mNextButton = new Button("Next >>");
         mNextButton.setDisable(true);
 		mNextButton.setOnAction(this);
-		mNextButton.setAlignment(Pos.BOTTOM_RIGHT);
-		mCancelRestartButton = new Button("Cancel");
-		mCancelRestartButton.setOnAction(this);
-		mCancelRestartButton.setAlignment(Pos.BOTTOM_LEFT);
-		nextContent.getChildren().addAll(mCancelRestartButton, mNextButton);
+		nextContent.getChildren().add(mNextButton);
         
 		VBox content = new VBox(10);
         content.setPadding(new Insets(0, 10, 10, 10));
@@ -110,22 +112,35 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 	}
 
 	@Override
+	protected void beforeWork() {
+		mMenuRestart.setDisable(true);
+		mMenuRestartPreproc.setDisable(true);
+		mMenuSavePreproc.setDisable(true);
+	}
+
+	@Override
 	protected void doWork() {
 		mPreprocessedFile = new Orchestrator(mSRSFileName).preProcessOnly();
 	}
 
 	@Override
 	protected void workSucceeded() {
+		mMenuRestart.setDisable(false);
+		mMenuRestartPreproc.setDisable(false);
 		mMenuSavePreproc.setDisable(false);
 		mNextButton.setDisable(false);
-		mCancelRestartButton.setText("Restart");
+
 		new AlertDialog("Success!",
-                "The preprocessing has finished!\nYou may proceed to the analysis.").show();
+                "The preprocessing has finished!" +
+		        "\n\nYou may proceed to the analysis, but please take some time to review the just generated preprocessed file."
+		        + "\nYou can also save it to a desired location and use it in a future analysis.").show();
 	}
 
 	@Override
 	protected void workFailed(boolean cancelled) {
-		mCancelRestartButton.setText("Restart");
+		mMenuRestart.setDisable(false);
+		mMenuRestartPreproc.setDisable(false);
+
 		if (cancelled) {
 		    new AlertDialog("Stopped!", "The preprocessing has been cancelled!").show();
 		} else {
@@ -140,8 +155,8 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 			mStage.close();
 		} else if (event.getSource() == mMenuSavePreproc) {
 			savePreprocFileAs();
-		} else if (event.getSource() == mCancelRestartButton) {
-			handleCancelRestart();
+		} else if (event.getSource() == mMenuRestartPreproc) {
+			restart();
 		} else {
 		    super.handle(event);
 		}
@@ -164,39 +179,22 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		}
 	}
 
-	private void handleCancelRestart() {
-		if ("Cancel".equals(mCancelRestartButton.getText())) {
-			new ChoiceDialog("Cancelling...",
-		    		"Are you sure you want to cancel the preprocessing?",
-					new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							mBuffer.appendText("\nPreprocessing canceled!");
-							stopWork();
-						}
-					}, null).show();
-		} else {
-			// Restart
-			if (!mNextButton.isDisabled()) {
-				new ChoiceDialog("Restarting...",
-			    		"Are you sure you want to restart the preprocessing?",
-						new EventHandler<ActionEvent>() {
-							@Override
-							public void handle(ActionEvent event) {
-								restartWork();
-							}
-						}, null).show();
-			} else {
-				restartWork();
-			}
-			
-		}
+	private void restart() {
+		new ChoiceDialog("Restarting...",
+	    		"Are you sure you want to restart the preprocessing?",
+				new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						doRestart();
+					}
+				}, null).show();
 	}
 
-	private void restartWork() {
+	private void doRestart() {
 		mBuffer.appendText("\nPreprocessing restarted...");
-		mCancelRestartButton.setText("Cancel");
 		mNextButton.setDisable(true);
+
 		work();
 	}
 }

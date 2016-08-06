@@ -27,7 +27,8 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	private String mPreprocFileName;
 
 	private Button mNextButton;
-	private Button mCancelRestartButton;
+
+	private MenuItem mMenuRestartAnalysis;
 
 	// This should be the analysis output.
 	private OutputFormatter mOutputFormatter;
@@ -47,15 +48,20 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 		mStage.setMinWidth(300);
 		mStage.setMinHeight(220);
 
-		mMenuRestart = new MenuItem("Restart");
+		mMenuRestart = new MenuItem("Restart from scratch");
 		mMenuRestart.setOnAction(this);
+		mMenuRestart.setDisable(true);
+		mMenuRestartAnalysis = new MenuItem("Restart analysis");
+		mMenuRestartAnalysis.setOnAction(this);
+		mMenuRestartAnalysis.setDisable(true);
 		mMenuExit = new MenuItem("Exit");
 		mMenuExit.setOnAction(this);
 		
 		MenuBar menuBar = new MenuBar();
 		Menu menu = new Menu("Actions");
-		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(mMenuRestart);
+		menu.getItems().add(mMenuRestartAnalysis);
+		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(mMenuExit);
 		menuBar.getMenus().add(menu);
 		menuBar.prefWidthProperty().bind(mStage.widthProperty());
@@ -82,11 +88,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
         mNextButton = new Button("Results >>");
 		mNextButton.setOnAction(this);
 		mNextButton.setDisable(true);
-		mNextButton.setAlignment(Pos.BOTTOM_RIGHT);
-		mCancelRestartButton = new Button("Cancel");
-		mCancelRestartButton.setOnAction(this);
-		mCancelRestartButton.setAlignment(Pos.BOTTOM_LEFT);
-		nextContent.getChildren().addAll(mCancelRestartButton, mNextButton);
+		nextContent.getChildren().add(mNextButton);
 
 		VBox content = new VBox(10);
         content.setPadding(new Insets(0, 10, 10, 10));
@@ -100,6 +102,12 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	}
 
 	@Override
+	protected void beforeWork() {
+		mMenuRestart.setDisable(true);
+		mMenuRestartAnalysis.setDisable(true);
+	}
+
+	@Override
 	protected void doWork() {
 		mOutputFormatter = new Orchestrator(mPreprocFileName, true).analyzeOnly();
 	}
@@ -107,14 +115,18 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	@Override
 	protected void workSucceeded() {
 		mNextButton.setDisable(false);
-		mCancelRestartButton.setText("Restart");
+		mMenuRestart.setDisable(false);
+		mMenuRestartAnalysis.setDisable(false);
+
 		new AlertDialog("Success!",
                 "The analysis has finished!\nYou may proceed to the results.").show();
 	}
 
 	@Override
 	protected void workFailed(boolean cancelled) {
-		mCancelRestartButton.setText("Restart");
+		mMenuRestart.setDisable(false);
+		mMenuRestartAnalysis.setDisable(false);
+
 		if (cancelled) {
 		    new AlertDialog("Stopped!", "The analysis has been cancelled!").show();
 		} else {
@@ -125,48 +137,30 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	@Override
 	public void handle(ActionEvent event) {
 		if (event.getSource() == mNextButton) {
-			// TODO go to results UI.
-			mOutputFormatter.start();
+			new ResultsUI(mOutputFormatter).show();
 			mStage.close();
-		} else if (event.getSource() == mCancelRestartButton) {
-			handleCancelRestart();
+		} else if (event.getSource() == mMenuRestartAnalysis) {
+			restart();
 		} else {
     		super.handle(event);
 		}
 	}
 
-	private void handleCancelRestart() {
-		if ("Cancel".equals(mCancelRestartButton.getText())) {
-			new ChoiceDialog("Cancelling...",
-		    		"Are you sure you want to cancel the analysis?",
-					new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							mBuffer.appendText("\nAnalysis canceled!");
-							stopWork();
-						}
-					}, null).show();
-		} else {
-			// Restart
-			if (!mNextButton.isDisabled()) {
-				new ChoiceDialog("Restarting...",
-			    		"Are you sure you want to restart the analysis?",
-						new EventHandler<ActionEvent>() {
-							@Override
-							public void handle(ActionEvent event) {
-								restartWork();
-							}
-						}, null).show();
-			} else {
-				restartWork();
-			}
-			
-		}
+	private void restart() {
+		new ChoiceDialog("Restarting...",
+	    		"Are you sure you want to restart the analysis?",
+				new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						doRestart();
+					}
+				}, null).show();
 	}
 
-	private void restartWork() {
+	private void doRestart() {
 		mBuffer.appendText("\nAnalysis restarted...");
-		mCancelRestartButton.setText("Cancel");
+
 		mNextButton.setDisable(true);
 		work();
 	}

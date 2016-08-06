@@ -50,7 +50,7 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 			mStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 
 				@Override
-				public void handle(WindowEvent event) {
+				public void handle(final WindowEvent event) {
 					stopWork();
 				}
 			});
@@ -60,6 +60,8 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 	}
 
 	protected final void work() {
+		beforeWork();
+
 		mTask = new Task<Void>() {
 
 			@Override
@@ -90,6 +92,8 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 		mThread.setDaemon(true);
 		mThread.start();
 	}
+
+	protected void beforeWork() { };
 
 	protected void doWork() { };
 
