@@ -160,12 +160,8 @@ public class InitialUI extends BaseUI {
 	public void handle(ActionEvent event) {
 		if (event.getSource() == mMenuSwitchPreproc) {
 			mStage.setScene(createScene(STATE_PREPROC));
-			
-			return;
 		} else if (event.getSource() == mMenuSwitchSRS) {
 			mStage.setScene(createScene(STATE_SRS));
-			
-			return;
 		} else if (event.getSource() == mNextButton) {
 			if (Utils.isTextEmpty(mFileName)) {
 				mEmptyFileDialog.show();
@@ -177,10 +173,8 @@ public class InitialUI extends BaseUI {
 				}
 				mStage.close();
 			}
-			
-			return;
+		} else {
+		    super.handle(event);
 		}
-	
-		super.handle(event);
 	}
 }
