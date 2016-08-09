@@ -2,17 +2,17 @@ package com.autochecklist.ui;
 
 import javafx.application.Platform;
 
-public class Printer {
+public class PrintingService {
 
 	private IUIPrintable mCurrent;
 	
-	private static Printer mInstance;
+	private static PrintingService mInstance;
 
-	private Printer() {	}
+	private PrintingService() {	}
 
-	public static Printer getInstance() {
+	public static PrintingService getInstance() {
 		if (mInstance == null) {
-			mInstance = new Printer();
+			mInstance = new PrintingService();
 		}
 
 		return mInstance;

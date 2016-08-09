@@ -2,7 +2,7 @@ package com.autochecklist.utils;
 
 import java.io.File;
 
-import com.autochecklist.ui.Printer;
+import com.autochecklist.ui.PrintingService;
 
 public class Utils {
 
@@ -14,7 +14,7 @@ public class Utils {
 
 	public static void print(String message) {
 		if (outputType == OUTPUT_USER_INTERFACE) {
-			Printer.getInstance().print(message);
+			PrintingService.getInstance().print(message);
 		} else {
 			System.out.print(message);
 		}
@@ -22,7 +22,7 @@ public class Utils {
 
 	public static void println(String message) {
 		if (outputType == OUTPUT_USER_INTERFACE) {
-			Printer.getInstance().println(message);
+			PrintingService.getInstance().println(message);
 		} else {
 			System.out.println(message);
 		}
@@ -30,7 +30,7 @@ public class Utils {
 
 	public static void printError(String message) {
 		if (outputType == OUTPUT_USER_INTERFACE) {
-			Printer.getInstance().printError(message);
+			PrintingService.getInstance().printError(message);
 		} else {
 			System.err.println(message);
 		}

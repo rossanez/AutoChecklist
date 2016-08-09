@@ -48,7 +48,7 @@ public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> 
 	public final void show() {
 		if (!mInitialized) {
 			initUI();
-			Printer.getInstance().register(this);
+			PrintingService.getInstance().register(this);
 			mInitialized = true;
 
 			if (mDoWorkUponShowing) {
