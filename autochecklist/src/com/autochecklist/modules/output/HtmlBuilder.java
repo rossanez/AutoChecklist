@@ -37,6 +37,8 @@ public class HtmlBuilder {
 		body = body.replace("- Answer: No", "<p> &rarr; <i>Answer:</i> <b><font color='red'>NO</font></b>");
 		body = body.replace("- Answer: Warning", "<p> &rarr; <i>Answer:</i> <b><font color='orange'>WARNING</font></b>");
 
+		body = body.replace("- Value: ", "<p> &rarr; <b>Value: </b>");
+
 		body = body.replace(" -- ", " &bull; ");
 	
 		body = body.replace(" ---- ", "&mdash;");

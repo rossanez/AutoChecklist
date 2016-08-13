@@ -3,6 +3,7 @@ package com.autochecklist.modules.incorrectness;
 import java.util.List;
 
 import com.autochecklist.base.Finding;
+import com.autochecklist.base.NumberAndUnitOccurrences;
 import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.questions.QuestionAction;
 import com.autochecklist.base.questions.QuestionCategory;
@@ -14,11 +15,14 @@ import com.autochecklist.utils.nlp.ExpressionExtractor;
 
 public class Incorrectness extends AnalysisModule {
 
+	private NumberAndUnitOccurrences mNumUnitOcc;
+	
 	private Pair<String, List<Pair<String, String>>> mMatchedExpressionsForReq;
 	
 	public Incorrectness(QuestionCategory question) {
 		super(question);
-        mExpressionExtractor = new ExpressionExtractor("res/RegexRules/incorrectness.rules");		
+        mExpressionExtractor = new ExpressionExtractor("res/RegexRules/incorrectness.rules");
+        mNumUnitOcc = new NumberAndUnitOccurrences();
 	}
 
 	@Override
@@ -63,8 +67,15 @@ public class Incorrectness extends AnalysisModule {
 					requirement.addFinding(finding);
 					question.addFinding(finding);
 					question.setAnswerType(finding.getAnswerType());
+
+					// Add it to the numeric occurrences.
+					mNumUnitOcc.put(matched.second, requirement.getId());
 				}
 			}
 		}
+	}
+
+	public NumberAndUnitOccurrences getNumericOccurrences() {
+		return mNumUnitOcc;
 	}
 }

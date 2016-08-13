@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.autochecklist.base.ErrorBasedChecklist;
+import com.autochecklist.base.NumberAndUnitOccurrences;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.RequirementList;
+import com.autochecklist.modules.incorrectness.Incorrectness;
 import com.autochecklist.modules.output.OutputFormatter;
 import com.autochecklist.modules.preprocess.PreProcessor;
 import com.autochecklist.utils.Pair;
@@ -21,6 +23,7 @@ public class Orchestrator {
 	private String mSRSFileName;
 	private String mPreProcFileName;
 	private RequirementList mRequirements;
+	private NumberAndUnitOccurrences mNumericOcc;
 
 	/**
 	 * This constructor should be used for passing a SRS file only.
@@ -100,6 +103,9 @@ public class Orchestrator {
 		List<QuestionCategory> processedQuestions = new ArrayList<QuestionCategory>();
 		for (AnalysisModule module : getAllAnalysisModules()) {
 			processedQuestions.add(module.analyze(mRequirements));
+			if (module instanceof Incorrectness) {
+				mNumericOcc = ((Incorrectness) module).getNumericOccurrences();
+			}
 		}
 	
 		return processedQuestions;
@@ -110,6 +116,6 @@ public class Orchestrator {
 	}
 
 	private OutputFormatter getOutputFormatter(Pair<RequirementList, List<QuestionCategory>> output) {
-		return new OutputFormatter(output.first, output.second, Utils.getParentDirectory(mPreProcFileName));
+		return new OutputFormatter(output.first, output.second, mNumericOcc, Utils.getParentDirectory(mPreProcFileName));
 	}
 }

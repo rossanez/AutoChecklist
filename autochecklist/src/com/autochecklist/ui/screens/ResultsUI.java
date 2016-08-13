@@ -33,6 +33,7 @@ public class ResultsUI extends BaseUI {
 	private List<CheckBox> mCheckboxes;
 	private CheckBox mCheckView;
 	private CheckBox mReqView;
+	private CheckBox mNumOccView;
 
 	private Button mGenerateButton;
 
@@ -80,6 +81,7 @@ public class ResultsUI extends BaseUI {
 		mCheckboxes = new ArrayList<CheckBox>();
 		mCheckboxes.add(mCheckView = new CheckBox("Checklist view"));
 		mCheckboxes.add(mReqView = new CheckBox("Requirements view"));
+		mCheckboxes.add(mNumOccView = new CheckBox("Numbers and units"));
 		setOnActionForCheckboxes();
 		checkBoxes.getChildren().addAll(mCheckboxes);
 		checkContent.getChildren().add(checkBoxes);
@@ -121,6 +123,9 @@ public class ResultsUI extends BaseUI {
 		}
 		if (mReqView.isSelected()) {
 			mViewerContents.add(new Pair<String, String>("Requirements View", mOutputFormatter.generateRequirementsViewContent()));
+		}
+		if (mNumOccView.isSelected()) {
+			mViewerContents.add(new Pair<String, String>("Numeric Occurrences", mOutputFormatter.generateNumericOccurrencesContent()));
 		}
 	}
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.autochecklist.base.ErrorBasedChecklist;
+import com.autochecklist.base.NumberAndUnitOccurrences;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.RequirementList;
 import com.autochecklist.modules.incompleteness.Incompleteness;
@@ -36,8 +37,8 @@ public class ModuleFactory {
 	}
 
 	public static OutputFormatter createOutputFormatter(RequirementList analyzedRequirements,
-			List<QuestionCategory> answeredQuestions, String workingDir) {
-		return new OutputFormatter(analyzedRequirements, answeredQuestions, workingDir);
+			List<QuestionCategory> answeredQuestions, NumberAndUnitOccurrences numericOcc, String workingDir) {
+		return new OutputFormatter(analyzedRequirements, answeredQuestions, numericOcc, workingDir);
 	}
 
 	public static List<AnalysisModule> createAllAnalysisModules(ErrorBasedChecklist check) {

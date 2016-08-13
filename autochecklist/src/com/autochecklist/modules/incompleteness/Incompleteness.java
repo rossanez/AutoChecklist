@@ -55,14 +55,6 @@ public class Incompleteness extends AnalysisModule {
 					requirement.addFinding(finding);
 					question.addFinding(finding);
 					question.setAnswerType(finding.getAnswerType());
-				} else if ((question.getAction().getType() == QuestionAction.CHECK_NUMBER_AND_UNIT)
-						&& matched.first.equals(question.getAction().getWhat())) {
-					// Found a numeric item.
-					Finding finding = new Finding(question.getId(), requirement.getId(),
-							"Contains numeric value  \"" + matched.second + "\".", Question.ANSWER_WARNING);
-					requirement.addFinding(finding);
-					question.addFinding(finding);
-					question.setAnswerType(finding.getAnswerType());
 				}
 			}
 		}

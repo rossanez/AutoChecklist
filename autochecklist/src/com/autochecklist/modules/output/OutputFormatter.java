@@ -2,8 +2,10 @@ package com.autochecklist.modules.output;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import com.autochecklist.base.Finding;
+import com.autochecklist.base.NumberAndUnitOccurrences;
 import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
@@ -15,13 +17,14 @@ public class OutputFormatter extends Module {
 
 	private RequirementList mRequirements;
 	private List<QuestionCategory> mQuestions;
+	private NumberAndUnitOccurrences mNumericOcc;
 
 	private String mOutputDir;
 	
-	public OutputFormatter(RequirementList analyzedRequirements, List<QuestionCategory> answeredQuestions, String workingDir) {
+	public OutputFormatter(RequirementList analyzedRequirements, List<QuestionCategory> answeredQuestions, NumberAndUnitOccurrences numericOcc, String workingDir) {
 		mRequirements = analyzedRequirements;
 		mQuestions = answeredQuestions;
-
+        mNumericOcc = numericOcc;
 		mOutputDir = setOutputDirectory(workingDir);
 	}
 
@@ -34,6 +37,7 @@ public class OutputFormatter extends Module {
 		createOutputDirectory();
 		generateQuestionsView();
 		generateRequirementsView();
+		generateNumericOccurrencesView();
 	}
 
 	private File createOutputDirectory() {
@@ -118,5 +122,34 @@ public class OutputFormatter extends Module {
 
 	private String formatRequirementFinding(Finding finding) {
 		return "Question " + finding.getQuestionId() + ": " + finding.getDetail();
+	}
+
+	public String generateNumericOccurrencesContent() {
+		if (mNumericOcc == null) {
+			throw new RuntimeException("Not able to generate numeric occurrences content!");
+		}
+
+		if (mNumericOcc.isEmpty()) {
+			return HtmlBuilder.generateContent("Numeric Occurrences View",  "No numbers and units were found in the document!");
+		}
+
+		StringBuilder outBuilder = new StringBuilder();
+		for (String numVal : mNumericOcc.getAllOccurrences()) {
+			outBuilder.append("- Value: ").append(numVal).append('\n');
+			outBuilder.append(" -- Occurrences: ");
+			boolean first = true;
+			for (String occurrence : mNumericOcc.get(numVal)) {
+				if (!first) outBuilder.append(", ");
+				outBuilder.append(occurrence);
+				if (first) first = false;
+			}
+			outBuilder.append('\n');
+		}
+
+		return HtmlBuilder.generateContent("Numeric Occurrences View",  outBuilder.toString());
+	}
+
+	private String generateNumericOccurrencesView() {
+		return new HtmlBuilder(mOutputDir + "numeric_occurrences_view.html").build(generateNumericOccurrencesContent());
 	}
 }
