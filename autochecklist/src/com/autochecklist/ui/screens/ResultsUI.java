@@ -160,6 +160,11 @@ public class ResultsUI extends BaseUI {
 			}
 		} else if (event.getSource() == mGenerateButton) {
 			work();
+		} else if (event.getSource() == mMenuRestart) {
+			if (mResultsViewer != null) {
+				mResultsViewer.close();
+			}
+			super.handle(event);
 		} else {
 			super.handle(event);
 		}
