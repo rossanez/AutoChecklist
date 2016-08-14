@@ -45,6 +45,8 @@ public class WebViewerUI extends BaseUI {
 
 	private SearchDialog mSearchDialog;
 
+	private boolean mIsHighlighting = false;
+
 	public WebViewerUI(Pair<String, String>[] contents) {
 		super();
 		mContents = contents;
@@ -168,7 +170,10 @@ public class WebViewerUI extends BaseUI {
 
 	private void highlight(WebEngine engine, String text) {
 		if ((engine != null) && (engine.getDocument() != null) && !Utils.isTextEmpty(text)) {
-            engine.executeScript("$('body').removeHighlight().highlight('" + text + "')");
+			if (!mIsHighlighting) {
+                engine.executeScript("$('body').removeHighlight().highlight('" + text + "')");
+                mIsHighlighting = true;
+			}
             engine.executeScript("window.find('" + text + "')");
 		}
     }
@@ -176,6 +181,7 @@ public class WebViewerUI extends BaseUI {
     private void clearHighlight(WebEngine engine) {
     	if ((engine != null) && (engine.getDocument() != null)) {
             engine.executeScript("$('body').removeHighlight()");
+            mIsHighlighting = false;
     	}
     }
 
