@@ -121,8 +121,7 @@ public class WebViewerUI extends BaseUI {
 				
 				@Override
 				public void onClose() {
-					int index = tabPane.getSelectionModel().getSelectedIndex();
-					clearHighlight(mWebViews[index].getEngine());
+					clearAllHighlights();
 				}
 			});
 			mSearchDialog.show();
@@ -177,6 +176,12 @@ public class WebViewerUI extends BaseUI {
     private void clearHighlight(WebEngine engine) {
     	if ((engine != null) && (engine.getDocument() != null)) {
             engine.executeScript("$('body').removeHighlight()");
+    	}
+    }
+
+    private void clearAllHighlights() {
+    	for (WebView webview : mWebViews) {
+    		clearHighlight(webview.getEngine());
     	}
     }
 }
