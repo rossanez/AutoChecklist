@@ -22,4 +22,10 @@ public abstract class BaseWidget {
 
 		mStage.show();
 	}
+
+	public final void close() {
+		if (mStage != null) {
+			mStage.close();
+		}
+	}
 }
