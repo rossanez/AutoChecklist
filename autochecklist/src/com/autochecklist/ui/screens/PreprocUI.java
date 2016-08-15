@@ -132,8 +132,8 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		mNextButton.setDisable(false);
 
 		new AlertDialog("Success: The preprocessing has finished!",
-		        "Please take some time to review the just generated preprocessed file."
-		        + "\nYou may save it to a desired location and use it in a future analysis."
+		        "Please review the generated preprocessed file."
+		        + "\nYou may also save it for a future analysis."
 		        + "\n(Actions -> Save preprocessed file as)").show();
 	}
 
