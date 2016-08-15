@@ -18,7 +18,7 @@ public class Incompleteness extends AnalysisModule {
 	
 	public Incompleteness(QuestionCategory questions) {
 		super(questions);
-		mExpressionExtractor = new ExpressionExtractor("res/RegexRules/incompleteness.rules");
+		mExpressionExtractor = new ExpressionExtractor("RegexRules/incompleteness.rules");
 	}
 
 	@Override

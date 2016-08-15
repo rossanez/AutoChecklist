@@ -1,7 +1,7 @@
 package com.autochecklist.base;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,19 +20,19 @@ import com.autochecklist.utils.Utils;
 
 public class Checklist {
 
-	public void parseChecklistFile(String fileName, QuestionCategory...categories) {
+	public void parseChecklistResource(String resourceName, QuestionCategory...categories) {
 		try {
-			parseChecklistFile_internal(fileName, categories);
+			parseChecklistResource_internal(resourceName, categories);
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			throw new RuntimeException("Unable to parse checklist file! - " + e.getMessage());
 		}
 	}
 	
-	private void parseChecklistFile_internal(String fileName, QuestionCategory... categories) throws ParserConfigurationException, SAXException, IOException {
-		File fXmlFile = new File(fileName);
+	private void parseChecklistResource_internal(String resourceName, QuestionCategory... categories) throws ParserConfigurationException, SAXException, IOException {
+		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(fXmlFile);
+		Document doc = dBuilder.parse(inputStream);
 
 		doc.getDocumentElement().normalize();
 

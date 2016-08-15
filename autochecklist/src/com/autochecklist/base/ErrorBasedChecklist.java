@@ -4,7 +4,7 @@ import com.autochecklist.base.questions.QuestionCategory;
 
 public class ErrorBasedChecklist extends Checklist {
 
-	private static String CHECKLIST_FILENAME = "res/Checklists/Error-based.xml";
+	private static String CHECKLIST_RESOURCE_NAME = "Checklists/Error-based.xml";
 
     private QuestionCategory mTraceability;
     private QuestionCategory mIncompleteness;
@@ -20,7 +20,7 @@ public class ErrorBasedChecklist extends Checklist {
     }
 
     public void init() {
-    	parseChecklistFile(CHECKLIST_FILENAME, mTraceability, mIncompleteness, mIncorrectness, mInconsistency);
+    	parseChecklistResource(CHECKLIST_RESOURCE_NAME, mTraceability, mIncompleteness, mIncorrectness, mInconsistency);
     }
     
     public QuestionCategory getTraceabilityQuestions() {

@@ -21,7 +21,7 @@ public class Incorrectness extends AnalysisModule {
 	
 	public Incorrectness(QuestionCategory question) {
 		super(question);
-        mExpressionExtractor = new ExpressionExtractor("res/RegexRules/incorrectness.rules");
+        mExpressionExtractor = new ExpressionExtractor("RegexRules/incorrectness.rules");
         mNumUnitOcc = new NumberAndUnitOccurrences();
 	}
 
