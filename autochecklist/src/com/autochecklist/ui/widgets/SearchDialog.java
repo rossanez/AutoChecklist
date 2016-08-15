@@ -11,6 +11,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 public class SearchDialog extends BaseWidget {
@@ -24,6 +25,7 @@ public class SearchDialog extends BaseWidget {
 
 	@Override
 	protected void initWidget() {
+		mStage.initModality(Modality.APPLICATION_MODAL);
 		mStage.setTitle("Search");
 		mStage.setMinWidth(200);
 		mStage.setMinHeight(100);
