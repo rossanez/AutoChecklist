@@ -51,10 +51,7 @@ public class InitialUI extends BaseUI {
 	@Override
 	protected void initUI() {
 		mStage.setTitle("Auto Checklist");
-		mStage.setMinWidth(300);
-		mStage.setMinHeight(200);
-		mStage.setMaxWidth(500);
-		mStage.setMaxHeight(300);
+		mStage.setResizable(false);
 
 		mMenuExit = new MenuItem("Exit");
 		mMenuExit.setOnAction(this);
@@ -152,7 +149,7 @@ public class InitialUI extends BaseUI {
 		VBox rootGroup = new VBox(10);
 		rootGroup.getChildren().addAll(menuBar, content);
 
-		Scene scene = new Scene(rootGroup, 400, 150);
+		Scene scene = new Scene(rootGroup, 400, 180);
 		return scene;
 	}
 

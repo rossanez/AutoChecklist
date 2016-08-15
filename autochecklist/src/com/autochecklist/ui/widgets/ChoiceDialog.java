@@ -32,8 +32,7 @@ public class ChoiceDialog extends BaseWidget {
 	protected void initWidget() {
 		mStage.initModality(Modality.APPLICATION_MODAL);
 		mStage.setTitle(mTitle);
-		mStage.setMinWidth(350);
-		mStage.setMinHeight(100);
+		mStage.setResizable(false);
 
 		Label label = new Label();
 		label.setText(mMessage);
@@ -71,7 +70,7 @@ public class ChoiceDialog extends BaseWidget {
 		layout.getChildren().addAll(label, buttonsLayout);
 		layout.setAlignment(Pos.CENTER);
 
-		Scene scene = new Scene(layout);
+		Scene scene = new Scene(layout, 350, 100);
 		mStage.setScene(scene);
 	}
 }

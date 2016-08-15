@@ -25,8 +25,7 @@ public class AlertDialog extends BaseWidget {
 	protected void initWidget() {
 		mStage.initModality(Modality.APPLICATION_MODAL);
 		mStage.setTitle(mTitle);
-		mStage.setMinWidth(450);
-		mStage.setMinHeight(100);
+		mStage.setResizable(false);
 
 		Label label = new Label();
 		label.setText(mMessage);
@@ -45,7 +44,7 @@ public class AlertDialog extends BaseWidget {
 		layout.getChildren().addAll(label, okButton);
 		layout.setAlignment(Pos.CENTER);
 
-		Scene scene = new Scene(layout);
+		Scene scene = new Scene(layout, 400, 100);
 		mStage.setScene(scene);
 	}
 }

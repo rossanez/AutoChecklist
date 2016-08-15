@@ -27,8 +27,7 @@ public class SearchDialog extends BaseWidget {
 	protected void initWidget() {
 		mStage.initModality(Modality.APPLICATION_MODAL);
 		mStage.setTitle("Search");
-		mStage.setMinWidth(200);
-		mStage.setMinHeight(100);
+		mStage.setResizable(false);
 
 		Label label = new Label();
 		label.setText("Find:");
