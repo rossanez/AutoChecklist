@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Whitelist;
+import org.jsoup.select.Elements;
 
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
@@ -154,7 +159,7 @@ public class WebViewerUI extends BaseUI {
 
 		try {
 			int index = tabPane.getSelectionModel().getSelectedIndex();
-			FileUtils.writeStringToFile(file, mContents[index].second);
+			FileUtils.writeStringToFile(file, prepareContentForSaving(mContents[index].second));
 			new AlertDialog("Success!", "File " + file.getPath() + " saved!").show();
 		} catch (IOException e) {
 			new AlertDialog("Error!", "Unable to save file!").show();
@@ -192,5 +197,16 @@ public class WebViewerUI extends BaseUI {
     	for (WebView webview : mWebViews) {
     		clearHighlight(webview.getEngine());
     	}
+    }
+
+    private String prepareContentForSaving(String html) {
+    	Document doc = Jsoup.parse(html);
+    	String title = doc.title();
+    	String body = doc.select("body").first().children().toString();
+    
+    	String htmlOutput = Utils.getResourceAsString("Output/save.html");
+    	htmlOutput = htmlOutput.replace("$title", title);
+    	htmlOutput = htmlOutput.replace("$body", body);
+    	return htmlOutput;
     }
 }

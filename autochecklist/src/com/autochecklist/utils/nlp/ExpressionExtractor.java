@@ -1,11 +1,8 @@
 package com.autochecklist.utils.nlp;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
 
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
@@ -25,9 +22,9 @@ public class ExpressionExtractor {
 
 	@SuppressWarnings("unchecked")
 	public ExpressionExtractor(String extractorRulesResource) {
-		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(extractorRulesResource);
+		String strContent = Utils.getResourceAsString(extractorRulesResource);
 		try {
-			mExpressionExtractor = CoreMapExpressionExtractor.createExtractorFromString(TokenSequencePattern.getNewEnv(), IOUtils.toString(inputStream, "UTF-8"));
+			mExpressionExtractor = CoreMapExpressionExtractor.createExtractorFromString(TokenSequencePattern.getNewEnv(), strContent);
 		} catch (IOException | ParseException | TokenSequenceParseException e) {
 			Utils.printError("Error when creating expression extractor!");
 			throw new RuntimeException("Unable to create extractor from the passed rules! - " + e.getMessage());

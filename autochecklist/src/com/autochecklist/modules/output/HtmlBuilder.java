@@ -2,16 +2,14 @@ package com.autochecklist.modules.output;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import com.autochecklist.utils.Utils;
 
 public class HtmlBuilder {
 
-	private static final String HTML_TEMPLATE_RESOURCE = "Output/simple.html";
+	private static final String HTML_TEMPLATE_RESOURCE = "Output/base.html";
 	
 	private String mFileName;
 
@@ -28,8 +26,7 @@ public class HtmlBuilder {
 	}
 
 	private static String generateContent_internal(String title, String body) throws IOException {
-		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(HTML_TEMPLATE_RESOURCE);
-		String htmlString = IOUtils.toString(inputStream, "UTF-8");
+		String htmlString = Utils.getResourceAsString(HTML_TEMPLATE_RESOURCE);
 		htmlString = htmlString.replace("$title", title);
 		
 		body = body.replace("\n", "<br>");

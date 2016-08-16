@@ -1,6 +1,10 @@
 package com.autochecklist.utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
 
 import com.autochecklist.ui.PrintingService;
 
@@ -66,5 +70,15 @@ public class Utils {
 	        }
 	    }
 	    file.delete();
+	}
+
+	public static String getResourceAsString(String resourceFileName) {
+		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFileName);
+		try {
+			return IOUtils.toString(inputStream, "UTF-8");
+		} catch (IOException e) {
+			Utils.printError("Error getting resource file contents!");
+			return null;
+		}
 	}
 }
