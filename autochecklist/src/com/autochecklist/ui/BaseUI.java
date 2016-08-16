@@ -64,8 +64,8 @@ public abstract class BaseUI implements PrintingService.IUIPrintable, EventHandl
 			mStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 
 				@Override
-				public void handle(final WindowEvent event) {
-					stopWork();
+				public void handle(WindowEvent event) {
+					onExternalCloseRequest(event);
 				}
 			});
 		}
@@ -130,26 +130,46 @@ public abstract class BaseUI implements PrintingService.IUIPrintable, EventHandl
 	@Override
 	public void handle(ActionEvent event) {
 		if (event.getSource() == mMenuExit) {
-			new ChoiceDialog("Leaving...",
-		    		"Do you really want to quit?",
-					new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							stopWork();
-							Platform.exit();
-						}
-					}, null).show();
+			showExitDialog();
 		} else if (event.getSource() == mMenuRestart) {
-			new ChoiceDialog("Restarting...",
-		    		"The current analysis will be stopped!\nAre you sure about it?",
-					new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							stopWork();
-							mStage.close();
-							new InitialUI().show();
-						}
-					}, null).show();
+			showRestartDialog();
+		}
+	}
+
+	private void showRestartDialog() {
+		new ChoiceDialog("Restarting...",
+				"The current analysis will be stopped!\nAre you sure about it?",
+				new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						stopWork();
+						mStage.close();
+						new InitialUI().show();
+					}
+				}, null).show();
+	}
+
+	private void showExitDialog() {
+		new ChoiceDialog("Leaving...",
+				"Do you really want to quit?",
+				new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						stopWork();
+						Platform.exit();
+					}
+				}, null).show();
+	}
+
+	protected void onExternalCloseRequest(WindowEvent windowEvent) {
+		windowEvent.consume();
+		showExitDialog();
+	}
+
+	public final void close() {
+		if (mStage != null) {
+			stopWork();
+			mStage.close();
 		}
 	}
 

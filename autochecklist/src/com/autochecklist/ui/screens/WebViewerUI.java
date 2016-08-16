@@ -28,6 +28,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.WindowEvent;
 
 public class WebViewerUI extends BaseUI {
 
@@ -131,10 +132,11 @@ public class WebViewerUI extends BaseUI {
 		}
 	}
 
-	public void close() {
-		if (mStage != null) {
-			mStage.close();
-		}
+	@Override
+	protected void onExternalCloseRequest(WindowEvent windowEvent) {
+		// We don't want a confirmation dialog.
+		// Calling close() for cleaning up unlikely running background works!
+		close();
 	}
 
 	private void save() {
