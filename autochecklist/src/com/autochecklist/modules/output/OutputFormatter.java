@@ -10,6 +10,7 @@ import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.base.requirements.RequirementList;
 import com.autochecklist.modules.Module;
+import com.autochecklist.utils.HtmlBuilder;
 import com.autochecklist.utils.Utils;
 
 public class OutputFormatter extends Module {
@@ -34,16 +35,16 @@ public class OutputFormatter extends Module {
 	@Override
 	public void start() {
 		createOutputDirectory();
-		generateQuestionsView();
-		generateRequirementsView();
-		generateNumericOccurrencesView();
+		generateQuestionsViewFile();
+		generateRequirementsViewFile();
+		generateNumericOccurrencesViewFile();
 	}
 
 	private File createOutputDirectory() {
 		return Utils.createDirectory(mOutputDir);
 	}
 
-	public String generateQuestionsViewContent() {
+	public String generateQuestionsViewContent(boolean forUI) {
 		StringBuilder outBuilder = new StringBuilder();
 		String currentCat = null;
 		for (QuestionCategory questionCat : mQuestions) {
@@ -68,22 +69,22 @@ public class OutputFormatter extends Module {
 			}
 		}
 
-		return HtmlBuilder.generateContent("Checklist View", outBuilder.toString());
+		return HtmlBuilder.generateContent("Checklist View", outBuilder.toString(), forUI);
 	}
 
-	private String generateQuestionsView() {
-		return new HtmlBuilder(mOutputDir + "checklist_view.html").build(generateQuestionsViewContent());
+	private String generateQuestionsViewFile() {
+		return new HtmlBuilder(mOutputDir + "checklist_view.html").build(generateQuestionsViewContent(false));
 	}
 
-	public String generateRequirementsViewContent() {
-		return generateDefaultRequirementsViewContent();
+	public String generateRequirementsViewContent(boolean forUI) {
+		return generateDefaultRequirementsViewContent(forUI);
 	}
 	
-	private String generateRequirementsView() {
+	private String generateRequirementsViewFile() {
 		return generateDefaultRequirementsView();
 	}
 
-	private String generateDefaultRequirementsViewContent() {
+	private String generateDefaultRequirementsViewContent(boolean forUI) {
 		StringBuilder outBuilder = new StringBuilder();
         for(Requirement requirement : mRequirements.getRequirements()) {
         	outBuilder.append(requirement.getId()).append(" ---- ")
@@ -108,11 +109,11 @@ public class OutputFormatter extends Module {
         	outBuilder.append('\n');
         }
 
-        return HtmlBuilder.generateContent("Requirements View",  outBuilder.toString());
+        return HtmlBuilder.generateContent("Requirements View",  outBuilder.toString(), forUI);
 	}
 	
 	private String generateDefaultRequirementsView() {
-		return new HtmlBuilder(mOutputDir + "requirements_view_default.html").build(generateDefaultRequirementsViewContent());
+		return new HtmlBuilder(mOutputDir + "requirements_view_default.html").build(generateDefaultRequirementsViewContent(false));
 	}
 
 	private String formatQuestionFinding(Finding finding) {
@@ -123,13 +124,13 @@ public class OutputFormatter extends Module {
 		return "Question " + finding.getQuestionId() + ": " + finding.getDetail();
 	}
 
-	public String generateNumericOccurrencesContent() {
+	public String generateNumericOccurrencesContent(boolean forUI) {
 		if (mNumericOcc == null) {
 			throw new RuntimeException("Not able to generate numeric occurrences content!");
 		}
 
 		if (mNumericOcc.isEmpty()) {
-			return HtmlBuilder.generateContent("Numeric Occurrences View",  "No numbers and units were found in the document!");
+			return HtmlBuilder.generateContent("Numeric Occurrences View",  "No numbers and units were found in the document!", forUI);
 		}
 
 		StringBuilder outBuilder = new StringBuilder();
@@ -145,10 +146,10 @@ public class OutputFormatter extends Module {
 			outBuilder.append('\n');
 		}
 
-		return HtmlBuilder.generateContent("Numeric Occurrences View",  outBuilder.toString());
+		return HtmlBuilder.generateContent("Numeric Occurrences View",  outBuilder.toString(), forUI);
 	}
 
-	private String generateNumericOccurrencesView() {
-		return new HtmlBuilder(mOutputDir + "numeric_occurrences_view.html").build(generateNumericOccurrencesContent());
+	private String generateNumericOccurrencesViewFile() {
+		return new HtmlBuilder(mOutputDir + "numeric_occurrences_view.html").build(generateNumericOccurrencesContent(false));
 	}
 }

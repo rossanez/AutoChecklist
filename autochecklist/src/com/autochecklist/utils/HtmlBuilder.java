@@ -1,15 +1,16 @@
-package com.autochecklist.modules.output;
+package com.autochecklist.utils;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-
-import com.autochecklist.utils.Utils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 public class HtmlBuilder {
 
-	private static final String HTML_TEMPLATE_RESOURCE = "Output/base.html";
+	private static final String HTML_BASE_RESOURCE = "Output/base.html";
+	private static final String HTML_SCRIPTS_RESOURCE = "Output/scripts.html";
 	
 	private String mFileName;
 
@@ -17,16 +18,20 @@ public class HtmlBuilder {
 		mFileName = fileName;
 	}
 
-	public static String generateContent(String title, String body) {
+	public static String generateContent(String title, String body, boolean scriptSupport) {
 		try {
-			return generateContent_internal(title, body);
+			return generateContent_internal(title, body, scriptSupport);
 		} catch (IOException e) {
 			throw new RuntimeException("Unable to generate content! - " + e.getMessage());
 		}
 	}
 
-	private static String generateContent_internal(String title, String body) throws IOException {
-		String htmlString = Utils.getResourceAsString(HTML_TEMPLATE_RESOURCE);
+	private static String generateContent_internal(String title, String body, boolean scriptSupport) throws IOException {
+		String htmlString = Utils.getResourceAsString(HTML_BASE_RESOURCE);
+
+		htmlString = htmlString.replace("$scripts", scriptSupport ?
+				Utils.getResourceAsString(HTML_SCRIPTS_RESOURCE) : "");
+
 		htmlString = htmlString.replace("$title", title);
 		
 		body = body.replace("\n", "<br>");
@@ -68,4 +73,16 @@ public class HtmlBuilder {
 		File newHtmlFile = new File(mFileName);
 		FileUtils.writeStringToFile(newHtmlFile, content);
 	}
+
+	public static String removeScriptsfromContent(String htmlContent) {
+    	Document doc = Jsoup.parse(htmlContent);
+    	String title = doc.title();
+    	String body = doc.select("body").first().children().toString();
+    
+    	String retContent = Utils.getResourceAsString(HTML_BASE_RESOURCE);
+    	retContent = retContent.replace("$scripts", "");
+    	retContent = retContent.replace("$title", title);
+    	retContent = retContent.replace("$body", body);
+    	return retContent;
+    }
 }

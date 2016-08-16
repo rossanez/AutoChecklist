@@ -4,12 +4,11 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.ui.widgets.SearchDialog;
+import com.autochecklist.utils.HtmlBuilder;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 
@@ -156,7 +155,7 @@ public class WebViewerUI extends BaseUI {
 
 		try {
 			int index = tabPane.getSelectionModel().getSelectedIndex();
-			FileUtils.writeStringToFile(file, prepareContentForSaving(mContents[index].second));
+			FileUtils.writeStringToFile(file, HtmlBuilder.removeScriptsfromContent(mContents[index].second));
 			new AlertDialog("Success!", "File " + file.getPath() + " saved!").show();
 		} catch (IOException e) {
 			new AlertDialog("Error!", "Unable to save file!").show();
@@ -194,16 +193,5 @@ public class WebViewerUI extends BaseUI {
     	for (WebView webview : mWebViews) {
     		clearHighlight(webview.getEngine());
     	}
-    }
-
-    private String prepareContentForSaving(String html) {
-    	Document doc = Jsoup.parse(html);
-    	String title = doc.title();
-    	String body = doc.select("body").first().children().toString();
-    
-    	String htmlOutput = Utils.getResourceAsString("Output/save.html");
-    	htmlOutput = htmlOutput.replace("$title", title);
-    	htmlOutput = htmlOutput.replace("$body", body);
-    	return htmlOutput;
     }
 }

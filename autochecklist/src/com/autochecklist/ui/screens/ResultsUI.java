@@ -119,13 +119,13 @@ public class ResultsUI extends BaseUI {
 	protected void doWork() {
 		mViewerContents = new ArrayList<Pair<String, String>>();
 		if (mCheckView.isSelected()) {
-			mViewerContents.add(new Pair<String, String>("Checklist View",mOutputFormatter.generateQuestionsViewContent()));
+			mViewerContents.add(new Pair<String, String>("Checklist View",mOutputFormatter.generateQuestionsViewContent(true)));
 		}
 		if (mReqView.isSelected()) {
-			mViewerContents.add(new Pair<String, String>("Requirements View", mOutputFormatter.generateRequirementsViewContent()));
+			mViewerContents.add(new Pair<String, String>("Requirements View", mOutputFormatter.generateRequirementsViewContent(true)));
 		}
 		if (mNumOccView.isSelected()) {
-			mViewerContents.add(new Pair<String, String>("Numeric Occurrences", mOutputFormatter.generateNumericOccurrencesContent()));
+			mViewerContents.add(new Pair<String, String>("Numeric Occurrences", mOutputFormatter.generateNumericOccurrencesContent(true)));
 		}
 	}
 
