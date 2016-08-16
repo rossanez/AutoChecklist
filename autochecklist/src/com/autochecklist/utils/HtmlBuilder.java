@@ -77,7 +77,7 @@ public class HtmlBuilder {
 	public static String removeScriptsfromContent(String htmlContent) {
     	Document doc = Jsoup.parse(htmlContent);
     	String title = doc.title();
-    	String body = doc.select("body").first().children().toString();
+    	String body = doc.body().html();
     
     	String retContent = Utils.getResourceAsString(HTML_BASE_RESOURCE);
     	retContent = retContent.replace("$scripts", "");
