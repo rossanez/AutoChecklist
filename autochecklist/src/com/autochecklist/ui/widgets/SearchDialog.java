@@ -39,22 +39,6 @@ public class SearchDialog extends BaseWidget {
 		label.setTextAlignment(TextAlignment.CENTER);
 		
 		final TextField searchField = new TextField("");
-		searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-
-			@Override
-			public void handle(KeyEvent event) {
-				if (event.getCode().equals(KeyCode.ENTER)) {
-					if (mEventHandler != null) {
-						mEventHandler.onSearch(searchField.getText(), mWrapAround.isSelected());
-					}
-				} else if (event.getCode().equals(KeyCode.ESCAPE)) {
-					if (mEventHandler != null) {
-						mEventHandler.onClose();
-					}
-					close();
-				}
-			}
-		});
 		
 		HBox findContainer = new HBox(10);
 		findContainer.prefWidthProperty().bind(mStage.widthProperty());
@@ -95,6 +79,22 @@ public class SearchDialog extends BaseWidget {
 		layout.prefWidthProperty().bind(mStage.widthProperty());
 
 		Scene scene = new Scene(layout, 240, 100);
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				if (event.getCode().equals(KeyCode.ENTER)) {
+					if (mEventHandler != null) {
+						mEventHandler.onSearch(searchField.getText(), mWrapAround.isSelected());
+					}
+				} else if (event.getCode().equals(KeyCode.ESCAPE)) {
+					if (mEventHandler != null) {
+						mEventHandler.onClose();
+					}
+					close();
+				}
+			}
+		});
 
 		mStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 
