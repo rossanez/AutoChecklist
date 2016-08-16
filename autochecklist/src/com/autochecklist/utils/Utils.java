@@ -72,8 +72,12 @@ public class Utils {
 	    file.delete();
 	}
 
+	public static InputStream getResourceAsInputStream(String resourceFileName) {
+		return Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFileName);
+	}
+
 	public static String getResourceAsString(String resourceFileName) {
-		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFileName);
+		InputStream inputStream = getResourceAsInputStream(resourceFileName);
 		try {
 			return IOUtils.toString(inputStream, "UTF-8");
 		} catch (IOException e) {

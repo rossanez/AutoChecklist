@@ -1,7 +1,6 @@
 package com.autochecklist.base;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,10 +28,9 @@ public class Checklist {
 	}
 	
 	private void parseChecklistResource_internal(String resourceName, QuestionCategory... categories) throws ParserConfigurationException, SAXException, IOException {
-		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(inputStream);
+		Document doc = dBuilder.parse(Utils.getResourceAsInputStream(resourceName));
 
 		doc.getDocumentElement().normalize();
 
