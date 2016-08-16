@@ -57,8 +57,9 @@ public class SearchDialog extends BaseWidget {
 		});
 		
 		HBox findContainer = new HBox(10);
+		findContainer.prefWidthProperty().bind(mStage.widthProperty());
+		findContainer.setAlignment(Pos.CENTER_LEFT);
 		findContainer.getChildren().addAll(label, searchField);
-		findContainer.setAlignment(Pos.CENTER);
 
 		Button searchButton = new Button("Search");
 		searchButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -82,7 +83,7 @@ public class SearchDialog extends BaseWidget {
 		wrapSearchContainer.setAlignment(Pos.BOTTOM_LEFT);
 
 		HBox bottomContainer = new HBox(10);
-		bottomContainer.setAlignment(Pos.CENTER);
+		bottomContainer.setAlignment(Pos.BOTTOM_CENTER);
 		bottomContainer.prefWidthProperty().bind(mStage.widthProperty());
         bottomContainer.getChildren().addAll(wrapSearchContainer, buttonContainer);
 
@@ -90,8 +91,10 @@ public class SearchDialog extends BaseWidget {
 		layout.getChildren().addAll(findContainer, bottomContainer);
 		layout.setPadding(new Insets(10, 10, 10, 10));
 		layout.setAlignment(Pos.CENTER);
+		layout.prefHeightProperty().bind(mStage.heightProperty());
+		layout.prefWidthProperty().bind(mStage.widthProperty());
 
-		Scene scene = new Scene(layout, 280, 100);
+		Scene scene = new Scene(layout, 240, 100);
 
 		mStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 

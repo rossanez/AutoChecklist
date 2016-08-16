@@ -12,6 +12,7 @@ import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -96,6 +97,7 @@ public class WebViewerUI extends BaseUI {
         borderPane.setCenter(tabPane);
 
 		VBox content = new VBox();
+		content.setPadding(new Insets(0, 1, 1, 1));
         content.getChildren().addAll(borderPane);
 		
 		VBox rootGroup = new VBox();
