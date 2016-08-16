@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities;
 
 public class HtmlBuilder {
 
@@ -76,6 +77,12 @@ public class HtmlBuilder {
 
 	public static String removeScriptsfromContent(String htmlContent) {
     	Document doc = Jsoup.parse(htmlContent);
+
+    	Document.OutputSettings settings = doc.outputSettings();
+    	settings.prettyPrint(false);
+    	settings.escapeMode(Entities.EscapeMode.extended);
+    	settings.charset("ASCII");
+
     	String title = doc.title();
     	String body = doc.body().html();
     
