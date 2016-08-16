@@ -105,4 +105,11 @@ public class SearchDialog extends BaseWidget {
 		
 		mStage.setScene(scene);
 	}
+
+	public interface ISearchCallable {
+
+		void onSearch(String text, boolean wrapAround);
+		
+		void onClose();
+	}
 }

@@ -65,4 +65,13 @@ public class PrintingService {
 			});
 		}
 	}
+
+	public interface IUIPrintable {
+
+		void print(String message);
+
+		void println(String message);
+
+		void printError(String message);
+	}
 }

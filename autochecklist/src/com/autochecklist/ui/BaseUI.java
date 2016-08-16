@@ -12,7 +12,7 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public abstract class BaseUI implements IUIPrintable, EventHandler<ActionEvent> {
+public abstract class BaseUI implements PrintingService.IUIPrintable, EventHandler<ActionEvent> {
 
 	protected Stage mStage;
 	

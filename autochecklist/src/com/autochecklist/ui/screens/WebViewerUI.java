@@ -7,7 +7,6 @@ import org.apache.commons.io.FileUtils;
 
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
-import com.autochecklist.ui.widgets.ISearchCallable;
 import com.autochecklist.ui.widgets.SearchDialog;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
@@ -113,7 +112,7 @@ public class WebViewerUI extends BaseUI {
 			save();
 		} else if (event.getSource() == mMenuFind) {
 			if (mSearchDialog != null) mSearchDialog.close();
-			mSearchDialog = new SearchDialog(new ISearchCallable() {
+			mSearchDialog = new SearchDialog(new SearchDialog.ISearchCallable() {
 
 				@Override
 				public void onSearch(String text, boolean wrapAround) {
