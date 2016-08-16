@@ -17,7 +17,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -79,9 +79,8 @@ public class InitialUI extends BaseUI {
 		menuBar.getMenus().add(menu);
 		menuBar.prefWidthProperty().bind(mStage.widthProperty());
 
-		final TextArea chosenFile = new TextArea("(no file selected)");
+		final TextField chosenFile = new TextField("(no file selected)");
         chosenFile.setEditable(false);
-        chosenFile.setWrapText(true);
         chosenFile.prefWidthProperty().bind(mStage.widthProperty());
         chosenFile.setMaxHeight(30);
 		
@@ -124,6 +123,7 @@ public class InitialUI extends BaseUI {
 				}
 			}
 		});
+		openButton.requestFocus();
 
 		HBox captionContent = new HBox(10);
 		captionContent.setAlignment(Pos.TOP_CENTER);

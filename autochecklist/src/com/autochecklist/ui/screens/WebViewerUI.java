@@ -45,7 +45,7 @@ public class WebViewerUI extends BaseUI {
 
 	private SearchDialog mSearchDialog;
 
-	private boolean mIsHighlighting = false;
+	private String mPreviousSearchTerm = null;
 
 	public WebViewerUI(Pair<String, String>[] contents) {
 		super();
@@ -116,9 +116,9 @@ public class WebViewerUI extends BaseUI {
 			mSearchDialog = new SearchDialog(new ISearchCallable() {
 
 				@Override
-				public void onSearch(String text) {
+				public void onSearch(String text, boolean wrapAround) {
 					int index = tabPane.getSelectionModel().getSelectedIndex();
-					highlight(mWebViews[index].getEngine(), text);
+					findAndHighlight(mWebViews[index].getEngine(), text, wrapAround);
 				}
 				
 				@Override
@@ -168,20 +168,20 @@ public class WebViewerUI extends BaseUI {
         return browser;
 	}
 
-	private void highlight(WebEngine engine, String text) {
+	private void findAndHighlight(WebEngine engine, String text, boolean wrapAround) {
 		if ((engine != null) && (engine.getDocument() != null) && !Utils.isTextEmpty(text)) {
-			if (!mIsHighlighting) {
+			if (!text.equals(mPreviousSearchTerm)) {
                 engine.executeScript("$('body').removeHighlight().highlight('" + text + "')");
-                mIsHighlighting = true;
+                mPreviousSearchTerm = text;
 			}
-            engine.executeScript("window.find('" + text + "')");
+            engine.executeScript("window.find('" + text + "', false, false, " + (wrapAround ? "true" : "false") + ")");
 		}
     }
 
     private void clearHighlight(WebEngine engine) {
     	if ((engine != null) && (engine.getDocument() != null)) {
             engine.executeScript("$('body').removeHighlight()");
-            mIsHighlighting = false;
+            mPreviousSearchTerm = null;
     	}
     }
 

@@ -6,8 +6,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -17,6 +20,8 @@ import javafx.stage.WindowEvent;
 public class SearchDialog extends BaseWidget {
 
 	private ISearchCallable mEventHandler;
+
+	private CheckBox mWrapAround;
 
 	public SearchDialog(ISearchCallable eventHandler) {
 		super();
@@ -33,10 +38,23 @@ public class SearchDialog extends BaseWidget {
 		label.setText("Find:");
 		label.setTextAlignment(TextAlignment.CENTER);
 		
-		final TextArea searchField = new TextArea("");
-		searchField.setMaxHeight(20);
-		searchField.setMaxWidth(200);
-		searchField.setPrefHeight(20);
+		final TextField searchField = new TextField("");
+		searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				if (event.getCode().equals(KeyCode.ENTER)) {
+					if (mEventHandler != null) {
+						mEventHandler.onSearch(searchField.getText(), mWrapAround.isSelected());
+					}
+				} else if (event.getCode().equals(KeyCode.ESCAPE)) {
+					if (mEventHandler != null) {
+						mEventHandler.onClose();
+					}
+					close();
+				}
+			}
+		});
 		
 		HBox findContainer = new HBox(10);
 		findContainer.getChildren().addAll(label, searchField);
@@ -48,16 +66,28 @@ public class SearchDialog extends BaseWidget {
 			@Override
 			public void handle(ActionEvent event) {
 				event.consume();
-				mEventHandler.onSearch(searchField.getText());
+				mEventHandler.onSearch(searchField.getText(), mWrapAround.isSelected());
 			}
 		});
-		
+
 		HBox buttonContainer = new HBox(10);
 		buttonContainer.getChildren().add(searchButton);
-		buttonContainer.setAlignment(Pos.CENTER_RIGHT);
+		buttonContainer.setAlignment(Pos.BOTTOM_RIGHT);
+
+		mWrapAround = new CheckBox("Wrap around");
+		mWrapAround.setSelected(true);
+
+		HBox wrapSearchContainer = new HBox(10);
+		wrapSearchContainer.getChildren().add(mWrapAround);
+		wrapSearchContainer.setAlignment(Pos.BOTTOM_LEFT);
+
+		HBox bottomContainer = new HBox(10);
+		bottomContainer.setAlignment(Pos.CENTER);
+		bottomContainer.prefWidthProperty().bind(mStage.widthProperty());
+        bottomContainer.getChildren().addAll(wrapSearchContainer, buttonContainer);
 
 		VBox layout = new VBox(10);
-		layout.getChildren().addAll(findContainer, buttonContainer);
+		layout.getChildren().addAll(findContainer, bottomContainer);
 		layout.setPadding(new Insets(10, 10, 10, 10));
 		layout.setAlignment(Pos.CENTER);
 
