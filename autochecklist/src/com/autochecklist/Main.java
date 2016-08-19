@@ -8,7 +8,6 @@ public class Main {
 
 	public static void main(String[] args) {
 		if (args.length == 0) {
-			Utils.outputType = Utils.OUTPUT_USER_INTERFACE;
 			StartupUI.initUI(args);
 			return;
 		} else if (args.length >= 2) {

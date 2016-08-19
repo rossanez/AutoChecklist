@@ -1,6 +1,5 @@
 package com.autochecklist.utils.nlp;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +9,6 @@ import com.autochecklist.utils.Utils;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.tokensregex.CoreMapExpressionExtractor;
 import edu.stanford.nlp.ling.tokensregex.MatchedExpression;
-import edu.stanford.nlp.ling.tokensregex.TokenSequencePattern;
-import edu.stanford.nlp.ling.tokensregex.parser.ParseException;
-import edu.stanford.nlp.ling.tokensregex.parser.TokenSequenceParseException;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.util.CoreMap;
 
@@ -20,15 +16,8 @@ public class ExpressionExtractor {
 
 	private CoreMapExpressionExtractor<MatchedExpression> mExpressionExtractor;
 
-	@SuppressWarnings("unchecked")
 	public ExpressionExtractor(String extractorRulesResource) {
-		String strContent = Utils.getResourceAsString(extractorRulesResource);
-		try {
-			mExpressionExtractor = CoreMapExpressionExtractor.createExtractorFromString(TokenSequencePattern.getNewEnv(), strContent);
-		} catch (IOException | ParseException | TokenSequenceParseException e) {
-			Utils.printError("Error when creating expression extractor!");
-			throw new RuntimeException("Unable to create extractor from the passed rules! - " + e.getMessage());
-		}
+		mExpressionExtractor = CoreNLP.createExpressionExtractor(Utils.getResourceAsString(extractorRulesResource));
 	}
 
 	public List<Pair<String, String>> extract(String text) {

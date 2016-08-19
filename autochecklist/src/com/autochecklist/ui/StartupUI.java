@@ -1,6 +1,7 @@
 package com.autochecklist.ui;
 
 import com.autochecklist.ui.screens.InitialUI;
+import com.autochecklist.utils.Utils;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -18,6 +19,7 @@ public class StartupUI extends Application {
 	 * @param args Unused arguments.
 	 */
 	public static void initUI(String[] args) {
+		Utils.outputType = Utils.OUTPUT_USER_INTERFACE;
 		launch(args);
 	}
 
