@@ -48,7 +48,7 @@ public class Incompleteness extends AnalysisModule {
 			List<Pair<String, String>> matchedList = mMatchedExpressionsForReq.second;
 			for (Pair<String, String> matched : matchedList) {
 				if ((question.getAction().getType() == QuestionAction.EXTRACT_TERM_OR_EXPRESSION)
-						&& matched.first.equals(question.getAction().getExtractionTerm())) {
+						&& matched.first.equals(question.getAction().getSubType())) {
 					// Found a forbidden term or expression.
 					Finding finding = new Finding(question.getId(), requirement.getId(),
 							"Contains \"" + matched.second + "\".", Question.ANSWER_NO);

@@ -76,12 +76,9 @@ public class Checklist {
         String value = null;
         if (!Utils.isTextEmpty(params[1])) {
         	value = params[1].trim();
-        	value = value.replace(' ', '_');
+        	value = value.replace(' ', '_').toUpperCase();
         }
 
-        if (act == QuestionAction.CHECK_NUMBER_AND_UNIT) {
-        	return new QuestionAction(act, "NUMBER_AND_UNIT", value);
-        }
         return new QuestionAction(act, value);
 	}
 

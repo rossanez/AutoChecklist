@@ -52,7 +52,7 @@ public class Incorrectness extends AnalysisModule {
 			List<Pair<String, String>> matchedList = mMatchedExpressionsForReq.second;
 			for (Pair<String, String> matched : matchedList) {
 				if ((question.getAction().getType() == QuestionAction.EXTRACT_TERM_OR_EXPRESSION)
-						&& matched.first.equals(question.getAction().getExtractionTerm())) {
+						&& matched.first.equals(question.getAction().getSubType())) {
 					// Found a forbidden term or expression - generate a negative answer.
 					Finding finding = new Finding(question.getId(), requirement.getId(),
 							"Contains \"" + matched.second + "\".", Question.ANSWER_NO);
@@ -60,12 +60,12 @@ public class Incorrectness extends AnalysisModule {
 					question.addFinding(finding);
 					question.setAnswerType(finding.getAnswerType());
 				} else if ((question.getAction().getType() == QuestionAction.CHECK_NUMBER_AND_UNIT)
-						&& matched.first.equals(question.getAction().getExtractionTerm())) {
+						&& matched.first.equals("NUMBER_AND_UNIT")) {
 					// Found a numeric item.
 					String findingDescription = "Please check: ";
-					if ("unit".equals(question.getAction().getSecondaryType())) {
+					if ("UNIT".equals(question.getAction().getSubType())) {
 						findingDescription = "Check the unit: ";
-					} else if ("magnitude".equals(question.getAction().getSecondaryType())) {
+					} else if ("MAGNITUDE".equals(question.getAction().getSubType())) {
 						findingDescription = "Check the magnitude: ";
 					}
 
