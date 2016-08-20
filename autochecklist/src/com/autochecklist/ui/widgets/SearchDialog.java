@@ -51,7 +51,7 @@ public class SearchDialog extends BaseWidget {
 			@Override
 			public void handle(ActionEvent event) {
 				event.consume();
-				mEventHandler.onSearch(searchField.getText(), mWrapAround.isSelected());
+				mEventHandler.onSearch(searchField.getText().replace("'","\\'"), mWrapAround.isSelected());
 			}
 		});
 
@@ -85,7 +85,7 @@ public class SearchDialog extends BaseWidget {
 			public void handle(KeyEvent event) {
 				if (event.getCode().equals(KeyCode.ENTER)) {
 					if (mEventHandler != null) {
-						mEventHandler.onSearch(searchField.getText(), mWrapAround.isSelected());
+						mEventHandler.onSearch(searchField.getText().replace("'","\\'"), mWrapAround.isSelected());
 					}
 				} else if (event.getCode().equals(KeyCode.ESCAPE)) {
 					if (mEventHandler != null) {
