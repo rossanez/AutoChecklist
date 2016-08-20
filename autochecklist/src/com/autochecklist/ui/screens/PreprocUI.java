@@ -48,6 +48,7 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 	@Override
 	protected void initUI() {
 		if (Utils.isTextEmpty(mSRSFileName)) {
+			Utils.printError("No SRS file found!");
 			throw new RuntimeException("No SRS file name passed in to the UI!");
 		}
 

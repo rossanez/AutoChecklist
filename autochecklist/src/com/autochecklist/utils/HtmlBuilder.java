@@ -23,6 +23,7 @@ public class HtmlBuilder {
 		try {
 			return generateContent_internal(title, body, scriptSupport);
 		} catch (IOException e) {
+			Utils.printError("Unable to generate content! - " + e.getMessage());
 			throw new RuntimeException("Unable to generate content! - " + e.getMessage());
 		}
 	}
@@ -59,6 +60,7 @@ public class HtmlBuilder {
 
 	public String build(String content) {
 		if (Utils.isTextEmpty(mFileName)) {
+			Utils.printError("No content to be built!");
 			throw new RuntimeException("No file name passed in!");
 		}
 		
@@ -66,6 +68,7 @@ public class HtmlBuilder {
 			build_internal(content);
 			return mFileName;
 		} catch (IOException e) {
+			Utils.printError("Unable to generate output file! - " + e.getMessage());
 			throw new RuntimeException("Unable to generate output file! - " + e.getMessage());
 		}
 	}

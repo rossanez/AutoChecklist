@@ -55,7 +55,7 @@ public class InitialUI extends BaseUI {
 
 		mMenuExit = new MenuItem("Exit");
 		mMenuExit.setOnAction(this);
-		mMenuSwitchPreproc = new MenuItem("Switch to a pre-processed file");
+		mMenuSwitchPreproc = new MenuItem("Switch to a preprocessed file");
 		mMenuSwitchPreproc.setOnAction(this);
 		mMenuSwitchSRS = new MenuItem("Switch to a SRS document file");
 		mMenuSwitchSRS.setOnAction(this);
@@ -87,10 +87,10 @@ public class InitialUI extends BaseUI {
 		final FileChooser fileChooser = new FileChooser();
 		Label label = new Label();
 		if (state == STATE_PREPROC) {
-			fileChooser.setTitle("Open a pre-processed file...");
+			fileChooser.setTitle("Open a preprocessed file...");
 		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
-		    label.setText("Please choose a pre-processed file:");
-		    mEmptyFileDialog = new ChoiceDialog("No pre-processed file chosen!",
+		    label.setText("Please choose a preprocessed file:");
+		    mEmptyFileDialog = new ChoiceDialog("No preprocessed file chosen!",
 		    		"Would you like to switch to a SRS file?",
 					new EventHandler<ActionEvent>() {
 						@Override
@@ -103,7 +103,7 @@ public class InitialUI extends BaseUI {
 		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PDF Files", "*.pdf"));
 		    label.setText("Please choose a SRS document file:");
 		    mEmptyFileDialog = new ChoiceDialog("No SRS file chosen!",
-		    		"Would you like to switch to a pre-processed file?",
+		    		"Would you like to switch to a preprocessed file?",
 					new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {

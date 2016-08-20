@@ -42,6 +42,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	@Override
 	protected void initUI() {
 	    if (Utils.isTextEmpty(mPreprocFileName)) {
+	    	Utils.printError("No preprocessed file!");
 	    	throw new RuntimeException("No preprocessed file name passed in to the UI!");
 	    }
 

@@ -28,6 +28,7 @@ public class PreProcessor extends Module {
 
     private String getPlainText() {
     	if (mDocumentFileName == null) {
+    		Utils.printError("No document file to be preprocessed!");
 			throw new InvalidParameterException("Invalid document filename!");
 		}
 
@@ -40,6 +41,7 @@ public class PreProcessor extends Module {
 
     private File buildPreProcessedFile(String text) {
     	if (text == null) {
+    		Utils.printError("No plain text content!");
     		throw new InvalidParameterException("Invalid plain text passed in!");
     	}
 

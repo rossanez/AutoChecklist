@@ -33,6 +33,7 @@ public class PlainTextConverter {
 			Utils.print("done!");
 			return handler.toString();
 		} catch (IOException | SAXException | TikaException e) {
+			Utils.printError("Unable to convert to plain text!");
 			throw new RuntimeException("Error when converting document to plain text! - " + e.getMessage());
 		}
 	}

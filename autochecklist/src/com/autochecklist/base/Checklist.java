@@ -23,6 +23,7 @@ public class Checklist {
 		try {
 			parseChecklistResource_internal(resourceName, categories);
 		} catch (ParserConfigurationException | SAXException | IOException e) {
+			Utils.printError("Unable to parse checklist file! - " + e.getMessage());
 			throw new RuntimeException("Unable to parse checklist file! - " + e.getMessage());
 		}
 	}
@@ -35,7 +36,8 @@ public class Checklist {
 		doc.getDocumentElement().normalize();
 
 		if (!doc.getDocumentElement().getNodeName().equals("checklist")) {
-			throw new RuntimeException("Inconsistent checklist file!");
+			Utils.printError("Inconsistence on checklist file!");
+			throw new RuntimeException("Inconsistence on checklist file!");
 		}
 
 		NodeList nCategories = doc.getElementsByTagName("category");

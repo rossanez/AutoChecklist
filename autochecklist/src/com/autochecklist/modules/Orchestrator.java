@@ -81,7 +81,8 @@ public class Orchestrator {
 	 */
 	public OutputFormatter analyzeOnly() {
 		if (mPreProcFileName == null) {
-        	throw new RuntimeException("Need a pre-processed file for analysis!");
+			Utils.printError("No preprocessed file for analysis!");
+        	throw new RuntimeException("Need a preprocessed file for analysis!");
         }
 
 		Pair<RequirementList, List<QuestionCategory>> out =
@@ -91,7 +92,8 @@ public class Orchestrator {
 
 	private File preProcess() {
 		if (mSRSFileName == null) {
-        	throw new RuntimeException("Need a SRS file for pre-processing!");
+			Utils.printError("No SRS file for preprocessing!");
+        	throw new RuntimeException("Need a SRS file for preprocessing!");
         }
 
 		PreProcessor preproc = ModuleFactory.createPreProcessor(mSRSFileName);

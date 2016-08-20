@@ -15,6 +15,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.autochecklist.utils.Utils;
+
 public class RequirementList {
 
 	private List<Requirement> mRequirements;
@@ -40,7 +42,8 @@ public class RequirementList {
 		try {
 			obtainRequirements_internal(fileName);
 		} catch (SAXException | IOException | ParserConfigurationException e) {
-			throw new RuntimeException("Unable to parse pre-processed file! - " + e.getMessage());
+			Utils.printError("Unable to parse the preprocessed file! - " + e.getMessage());
+			throw new RuntimeException("Unable to parse preprocessed file! - " + e.getMessage());
 		}
 	}
 	
@@ -53,7 +56,8 @@ public class RequirementList {
 		doc.getDocumentElement().normalize();
 
 		if (!doc.getDocumentElement().getNodeName().equals("SRS")) {
-			throw new RuntimeException("Inconsistent pre-processed file!");
+			Utils.printError("Inconsistence on preprocessed file!");
+			throw new RuntimeException("Inconsistence on preprocessed file!");
 		}
 
 		NodeList nRequirements = doc.getElementsByTagName("requirement");

@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.autochecklist.utils.Utils;
 import com.autochecklist.utils.nlp.IRequirementsInfoOutBuildable;
 
 public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
@@ -31,6 +32,7 @@ public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
 		try {
 		    mDocBuilder = docFactory.newDocumentBuilder();
 	    } catch (ParserConfigurationException e) {
+	    	Utils.printError("Unable to create XML file! - " + e.getMessage());
 		    throw new RuntimeException("Unable to create XML file! - " + e.getMessage());
 	    }
 
@@ -50,6 +52,7 @@ public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
 	
 	public void addRequirementText(String req) {
 		if (mCurrentRequirement == null) {
+			Utils.printError("(add) Wrong XML tag sequence!");
 			throw new RuntimeException("(add) Wrong XML tag sequence!");
 		}
 
@@ -60,6 +63,7 @@ public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
 
 	public void appendRequirementText(String req) {
 		if (mCurrentRequirement == null) {
+			Utils.printError("(append) Wrong XML tag sequence!");
 			throw new RuntimeException("(append) Wrong XML tag sequence!");
 		}
 
@@ -88,6 +92,7 @@ public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 			transformer.transform(source, result);
 		} catch (TransformerException e) {
+			Utils.printError("Unable to generate XML file! - " + e.getMessage());
 			throw new RuntimeException("Unable to generate XML file! - " + e.getMessage());
 		}
 

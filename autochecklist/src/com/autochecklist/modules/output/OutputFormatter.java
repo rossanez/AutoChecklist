@@ -126,6 +126,7 @@ public class OutputFormatter extends Module {
 
 	public String generateNumericOccurrencesContent(boolean forUI) {
 		if (mNumericOcc == null) {
+			Utils.printError("No numeric occurrences reference on output formatter!");
 			throw new RuntimeException("Not able to generate numeric occurrences content!");
 		}
 

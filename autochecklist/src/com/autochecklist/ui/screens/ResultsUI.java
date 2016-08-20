@@ -7,6 +7,7 @@ import com.autochecklist.modules.output.OutputFormatter;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.utils.Pair;
+import com.autochecklist.utils.Utils;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -45,6 +46,7 @@ public class ResultsUI extends BaseUI {
 	@Override
 	protected void initUI() {
 		if (mOutputFormatter == null) {
+			Utils.printError("No output formatter found!");
 			throw new RuntimeException("Need an OutputFormatter object!");
 		}
 
