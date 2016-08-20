@@ -85,4 +85,15 @@ public class Utils {
 			return null;
 		}
 	}
+
+	public static String getCompositeResourceAsString(String resourceFileName, String... composingResourcesFileNames) {
+		String mainResource = getResourceAsString(resourceFileName);
+		for (String compositeResourceFileName : composingResourcesFileNames) {
+			String replacingPattern = "$INCLUDE_"
+					+ compositeResourceFileName.substring(compositeResourceFileName.indexOf("/") + 1,
+							compositeResourceFileName.indexOf(".compose")).toUpperCase();
+			mainResource = mainResource.replace(replacingPattern, getResourceAsString(compositeResourceFileName));
+		}
+		return mainResource;
+	}
 }

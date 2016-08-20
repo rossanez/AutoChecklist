@@ -1,5 +1,6 @@
-$NUMBER = "/[0-9]+([\.\,][0-9]+)?/"
-$UNIT = "/cm|centimeters|m|meters|km|kms|kilometers|h|hours|minutes|min|s|seconds|secs|ms|milliseconds|millisecs/"
+$NUMBER = "/$INCLUDE_NUMBERS(($INCLUDE_PREFIXES)?($INCLUDE_UNITS))?/"
+$NUMBER_AND_UNIT = "/($INCLUDE_NUMBERS)/ /($INCLUDE_PREFIXES)?($INCLUDE_UNITS)(\.)?/"
+$NUMBER_AND_UNIT_CAT = "/($INCLUDE_NUMBERS)($INCLUDE_PREFIXES)?($INCLUDE_UNITS)(\.)?/"
 {
    ruleType: "tokens",
    pattern: ( /should/ ),
@@ -22,7 +23,12 @@ $UNIT = "/cm|centimeters|m|meters|km|kms|kilometers|h|hours|minutes|min|s|second
 }
 {
    ruleType: "tokens",
-   pattern: ( $NUMBER $UNIT ),
+   pattern: ( $NUMBER_AND_UNIT ),
+   result: "NUMBER_AND_UNIT"
+}
+{
+   ruleType: "tokens",
+   pattern: ( $NUMBER_AND_UNIT_CAT ),
    result: "NUMBER_AND_UNIT"
 }
 {

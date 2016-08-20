@@ -20,6 +20,11 @@ public class ExpressionExtractor {
 		mExpressionExtractor = CoreNLP.createExpressionExtractor(Utils.getResourceAsString(extractorRulesResource));
 	}
 
+	public ExpressionExtractor(String extractorRulesMainResorce, String... composingResources) {
+		mExpressionExtractor = CoreNLP.createExpressionExtractor(
+				Utils.getCompositeResourceAsString(extractorRulesMainResorce, composingResources));
+	}
+
 	public List<Pair<String, String>> extract(String text) {
 		List<Pair<String, String>> retList = new ArrayList<Pair<String, String>>();
 		
