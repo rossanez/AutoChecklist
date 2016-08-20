@@ -75,14 +75,13 @@ public class Checklist {
         
         String value = null;
         if (!Utils.isTextEmpty(params[1])) {
-        	if (act == QuestionAction.CHECK_NUMBER_AND_UNIT) {
-        		value = "NUMBER_AND_UNIT";
-        	} else {
-        	    value = params[1].trim().toUpperCase();
-        	}
+        	value = params[1].trim();
         	value = value.replace(' ', '_');
         }
 
+        if (act == QuestionAction.CHECK_NUMBER_AND_UNIT) {
+        	return new QuestionAction(act, "NUMBER_AND_UNIT", value);
+        }
         return new QuestionAction(act, value);
 	}
 

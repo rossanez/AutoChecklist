@@ -52,18 +52,26 @@ public class Incorrectness extends AnalysisModule {
 			List<Pair<String, String>> matchedList = mMatchedExpressionsForReq.second;
 			for (Pair<String, String> matched : matchedList) {
 				if ((question.getAction().getType() == QuestionAction.EXTRACT_TERM_OR_EXPRESSION)
-						&& matched.first.equals(question.getAction().getWhat())) {
-					// Found a forbidden term or expression.
+						&& matched.first.equals(question.getAction().getExtractionTerm())) {
+					// Found a forbidden term or expression - generate a negative answer.
 					Finding finding = new Finding(question.getId(), requirement.getId(),
 							"Contains \"" + matched.second + "\".", Question.ANSWER_NO);
 					requirement.addFinding(finding);
 					question.addFinding(finding);
 					question.setAnswerType(finding.getAnswerType());
 				} else if ((question.getAction().getType() == QuestionAction.CHECK_NUMBER_AND_UNIT)
-						&& matched.first.equals(question.getAction().getWhat())) {
+						&& matched.first.equals(question.getAction().getExtractionTerm())) {
 					// Found a numeric item.
+					String findingDescription = "Please check: ";
+					if ("unit".equals(question.getAction().getSecondaryType())) {
+						findingDescription = "Check the unit: ";
+					} else if ("magnitude".equals(question.getAction().getSecondaryType())) {
+						findingDescription = "Check the magnitude: ";
+					}
+
+					// Generate a warning.
 					Finding finding = new Finding(question.getId(), requirement.getId(),
-							"Contains numeric value  \"" + matched.second + "\".", Question.ANSWER_WARNING);
+							findingDescription + matched.second, Question.ANSWER_WARNING);
 					requirement.addFinding(finding);
 					question.addFinding(finding);
 					question.setAnswerType(finding.getAnswerType());

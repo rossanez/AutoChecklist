@@ -7,18 +7,30 @@ public class QuestionAction {
 	public static final int CHECK_NUMBER_AND_UNIT = 1;
 
 	private int mType;
-	private String mParam;
+	private String mExtractionTerm;
+	private String mSecondaryType;
 
-	public QuestionAction(int type, String param) {
+	public QuestionAction(int type, String extractionTerm) {
 		mType = type;
-		mParam = param;
+		mExtractionTerm = extractionTerm;
+		mSecondaryType = null;
+	}
+
+	public QuestionAction(int type, String extractionTerm, String secondaryType) {
+		mType = type;
+		mExtractionTerm = extractionTerm;
+		mSecondaryType = secondaryType;
 	}
 
 	public int getType() {
 		return mType;
 	}
 
-	public String getWhat() {
-		return mParam;
+	public String getSecondaryType() {
+		return mSecondaryType;
+	}
+	
+	public String getExtractionTerm() {
+		return mExtractionTerm;
 	}
 }
