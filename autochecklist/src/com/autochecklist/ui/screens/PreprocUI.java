@@ -34,6 +34,7 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 	// This should hold the generated file.
 	private File mPreprocessedFile;
 
+	private MenuItem mMenuOpenPreprocDir;
 	private MenuItem mMenuSavePreproc;
 	private MenuItem mMenuRestartPreproc;
 
@@ -56,6 +57,9 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		mStage.setMinWidth(300);
 		mStage.setMinHeight(220);
 
+		mMenuOpenPreprocDir = new MenuItem("Open preprocessed file's folder");
+		mMenuOpenPreprocDir.setOnAction(this);
+		mMenuOpenPreprocDir.setDisable(true);
 		mMenuSavePreproc = new MenuItem("Save preprocessed file as...");
 		mMenuSavePreproc.setOnAction(this);
 		mMenuSavePreproc.setDisable(true);
@@ -70,6 +74,7 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		
 		MenuBar menuBar = new MenuBar();
 		Menu menu = new Menu("Actions");
+		menu.getItems().add(mMenuOpenPreprocDir);
 		menu.getItems().add(mMenuSavePreproc);
 		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(mMenuRestart);
@@ -118,6 +123,7 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		mMenuRestart.setDisable(true);
 		mMenuRestartPreproc.setDisable(true);
 		mMenuSavePreproc.setDisable(true);
+		mMenuOpenPreprocDir.setDisable(true);
 	}
 
 	@Override
@@ -130,10 +136,12 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		mMenuRestart.setDisable(false);
 		mMenuRestartPreproc.setDisable(false);
 		mMenuSavePreproc.setDisable(false);
+		mMenuOpenPreprocDir.setDisable(false);
 		mNextButton.setDisable(false);
 
 		new AlertDialog("Success: The preprocessing has finished!",
 		        "Please review the generated preprocessed file."
+				+ "\n(Actions -> Open preprocessed file's folder)"
 		        + "\nYou may also save it for a future analysis."
 		        + "\n(Actions -> Save preprocessed file as)").show();
 	}
@@ -155,6 +163,8 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		if (event.getSource() == mNextButton) {
 			new AnalysisUI(mPreprocessedFile.getPath()).show();
 			mStage.close();
+		} else if (event.getSource() == mMenuOpenPreprocDir) {
+			Utils.openDirectoryWithPlaformExplorerFromUI(mPreprocessedFile.getPath());
 		} else if (event.getSource() == mMenuSavePreproc) {
 			savePreprocFileAs();
 		} else if (event.getSource() == mMenuRestartPreproc) {
@@ -169,9 +179,12 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		fileChooser.setTitle("Save a pre-processed file...");
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
 		File file = fileChooser.showSaveDialog(mStage);
+		if (file == null) return; // User may have cancelled the dialog.
+
 		if(!file.getPath().endsWith(".xml")) {
 			  file = new File(file.getPath() + ".xml");
 		}
+
 		try {
 			Files.move(mPreprocessedFile, file);
 			mPreprocessedFile = file;

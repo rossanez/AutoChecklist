@@ -1,5 +1,6 @@
 package com.autochecklist.utils;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,6 +71,62 @@ public class Utils {
 	        }
 	    }
 	    file.delete();
+	}
+
+	/**
+	 * Opens the current platform's file explorer to open the directory where
+	 * the passed in file is located. Please call this method from the UI.
+	 * @param fileNameWithFullPath The passed in file name with full path.
+	 */
+	public static void openDirectoryWithPlaformExplorerFromUI(final String fileNameWithFullPath) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				openDirectoryWithPlatformExplorer(fileNameWithFullPath);
+			}
+		}).start();
+	}
+
+	/**
+	 * Opens the current platform's file explorer to open the directory where
+	 * the passed in file is located. ATTENTION: Do not call this method from
+	 * the UI. Call {@code openDirectoryWithPlaformExplorerFromUI} method instead.
+	 * 
+	 * @param fileNameWithFullPath The passed in file name with full path.
+	 */
+	public static void openDirectoryWithPlatformExplorer(String fileNameWithFullPath) {
+		if (isTextEmpty(fileNameWithFullPath)) {
+			Utils.printError("No file name passed in!");
+			return;
+		}
+
+		File file = new File(fileNameWithFullPath);
+		if (!file.exists()) {
+			Utils.printError("File does not exists!");
+			return;
+		}
+
+		if (!file.isDirectory()) {
+			String parentPath = file.getParent();
+			if (Utils.isTextEmpty(parentPath)) {
+				Utils.printError("Unable to get the directory for this file!");
+				return;
+			}
+
+			file = new File(parentPath);
+		}
+
+		if (!Desktop.isDesktopSupported()) {
+			Utils.printError("Function not supported in this platform!");
+			return;
+		}
+		
+		try {
+			Desktop.getDesktop().open(file);
+		} catch (IOException e) {
+			Utils.printError("Unable to open directory! - " + e.getMessage());
+		}
 	}
 
 	public static InputStream getResourceAsInputStream(String resourceFileName) {
