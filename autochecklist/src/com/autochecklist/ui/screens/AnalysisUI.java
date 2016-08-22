@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
@@ -29,6 +30,8 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	private Button mNextButton;
 
 	private MenuItem mMenuRestartAnalysis;
+
+	private ProgressBar mProgressBar;
 
 	// This should be the analysis output.
 	private OutputFormatter mOutputFormatter;
@@ -85,16 +88,27 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
         bufferGroup.getChildren().add(mBuffer);
 
         HBox nextContent = new HBox(10);
-		nextContent.setPadding(new Insets(5, 0, 0, 0));
 		nextContent.setAlignment(Pos.BOTTOM_RIGHT);
         mNextButton = new Button("Results >>");
 		mNextButton.setOnAction(this);
 		mNextButton.setDisable(true);
+		mNextButton.setMinWidth(100);
 		nextContent.getChildren().add(mNextButton);
+
+		HBox progressContent = new HBox(10);
+		progressContent.setAlignment(Pos.BOTTOM_LEFT);
+		mProgressBar = new ProgressBar();
+		mProgressBar.setProgress(0);
+		progressContent.prefWidthProperty().bind(mStage.widthProperty());
+		progressContent.getChildren().add(mProgressBar);
+
+		HBox bottomContent = new HBox(10);
+		bottomContent.setPadding(new Insets(5, 0, 0, 0));
+		bottomContent.getChildren().addAll(progressContent, nextContent);
 
 		VBox content = new VBox(10);
         content.setPadding(new Insets(0, 10, 10, 10));
-        content.getChildren().addAll(subTitleGroup, bufferGroup, nextContent);
+        content.getChildren().addAll(subTitleGroup, bufferGroup, bottomContent);
 		
 		VBox rootGroup = new VBox(10);
 		rootGroup.getChildren().addAll(menuBar, content);
@@ -107,6 +121,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	protected void beforeWork() {
 		mMenuRestart.setDisable(true);
 		mMenuRestartAnalysis.setDisable(true);
+		mProgressBar.setProgress(-1); // Indeterminate.
 	}
 
 	@Override
@@ -119,6 +134,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 		mNextButton.setDisable(false);
 		mMenuRestart.setDisable(false);
 		mMenuRestartAnalysis.setDisable(false);
+		mProgressBar.setProgress(1);
 
 		new AlertDialog("Success!",
                 "The analysis has finished!\nYou may proceed to the results.").show();
@@ -128,6 +144,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	protected void workFailed(boolean cancelled) {
 		mMenuRestart.setDisable(false);
 		mMenuRestartAnalysis.setDisable(false);
+		mProgressBar.setProgress(0);
 
 		if (cancelled) {
 		    new AlertDialog("Stopped!", "The analysis has been cancelled!").show();
