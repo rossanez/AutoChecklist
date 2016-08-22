@@ -37,8 +37,10 @@ public class SearchDialog extends BaseWidget {
 		Label label = new Label();
 		label.setText("Find:");
 		label.setTextAlignment(TextAlignment.CENTER);
-		
+		label.setMinWidth(40);
+
 		final TextField searchField = new TextField("");
+		searchField.prefWidthProperty().bind(mStage.widthProperty());
 		
 		HBox findContainer = new HBox(10);
 		findContainer.prefWidthProperty().bind(mStage.widthProperty());
@@ -54,6 +56,7 @@ public class SearchDialog extends BaseWidget {
 				mEventHandler.onSearch(searchField.getText().replace("'","\\'"), mWrapAround.isSelected());
 			}
 		});
+		searchButton.setMinWidth(70);
 
 		HBox buttonContainer = new HBox(10);
 		buttonContainer.getChildren().add(searchButton);
@@ -61,6 +64,7 @@ public class SearchDialog extends BaseWidget {
 
 		mWrapAround = new CheckBox("Wrap around");
 		mWrapAround.setSelected(true);
+		mWrapAround.prefWidthProperty().bind(mStage.widthProperty());
 
 		HBox wrapSearchContainer = new HBox(10);
 		wrapSearchContainer.getChildren().add(mWrapAround);
