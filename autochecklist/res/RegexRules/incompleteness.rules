@@ -15,6 +15,6 @@
 }
 {
    ruleType: "tokens",
-   pattern: ( /to be confirmed/ ),
+   pattern: ( /to/ /be/ /confirmed/ ),
    result: "TBC"
 }

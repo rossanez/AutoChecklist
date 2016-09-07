@@ -2,10 +2,12 @@ package com.autochecklist.utils.nlp;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import com.autochecklist.utils.Utils;
 
 import edu.stanford.nlp.ling.tokensregex.CoreMapExpressionExtractor;
+import edu.stanford.nlp.ling.tokensregex.Env;
 import edu.stanford.nlp.ling.tokensregex.MatchedExpression;
 import edu.stanford.nlp.ling.tokensregex.TokenSequencePattern;
 import edu.stanford.nlp.ling.tokensregex.parser.ParseException;
@@ -60,7 +62,10 @@ public class CoreNLP {
 	@SuppressWarnings("unchecked")
 	public static CoreMapExpressionExtractor<MatchedExpression> createExpressionExtractor(String extractionRules) {
 		try {
-			return CoreMapExpressionExtractor.createExtractorFromString(TokenSequencePattern.getNewEnv(), extractionRules);
+			Env env = TokenSequencePattern.getNewEnv();
+			env.setDefaultStringPatternFlags(Pattern.CASE_INSENSITIVE);
+
+			return CoreMapExpressionExtractor.createExtractorFromString(env, extractionRules);
 		} catch (IOException | ParseException | TokenSequenceParseException e) {
 			Utils.printError("Error when creating expression extractor!");
 			throw new RuntimeException("Unable to create extractor from the passed rules! - " + e.getMessage());
