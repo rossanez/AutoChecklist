@@ -46,16 +46,10 @@ public class RequirementsInfoExtractor {
 				// Is it a requirement candidate?
 				if ("MD".equals(pos) && "shall".equals(word)) {
 					if (foundARequirement = hasRequirementStructure(sentenceTokens)) {
-						String rawRequirement = sentence.toString();
 		            	if (processingARequirement) {
-		            		String appendedReq = rawRequirement.replaceAll("\n", " ");
-		            		Utils.println("Appending req.: " + appendedReq);
-		            		mOutputBuilder.appendRequirementText(appendedReq);
+		            		appendSentenceToCurrentRequirement(sentence);
 		            	} else {
-		            		mOutputBuilder.createNewRequirement(previousSentence.replaceAll("\n", " "));
-		            		String newReq = rawRequirement.replaceAll("\n", " ");
-		            		Utils.println("New req.: " + newReq);
-		                    mOutputBuilder.addRequirementText(newReq);
+		            		createNewRequirement(previousSentence, sentence);
 		            	}
 
 		            	processingARequirement = true;
@@ -69,10 +63,7 @@ public class RequirementsInfoExtractor {
 
 			if (!foundARequirement) {
 				if (processingARequirement && ".".equals(lastWord)) {
-					String rawRequirement = sentence.toString();
-					String appendedReq = rawRequirement.replaceAll("\n", " ");
-            		Utils.println("Appending req.: " + appendedReq);
-            		mOutputBuilder.appendRequirementText(appendedReq);
+					appendSentenceToCurrentRequirement(sentence);
 				} else {
 				    processingARequirement = false;
 				}
@@ -90,10 +81,10 @@ public class RequirementsInfoExtractor {
     }
 
 	/**
-	 * Checks if the sentence (already converted as to a list of tokens) has the structure of a requirement.
+	 * Checks if the sentence (already converted to a list of tokens) has the structure of a requirement.
 	 * Requirements consist of a noun phrase, followed by a verbal phrase, which starts with the "shall" modal:
 	 * (S (NP ...) (VP (MD shall) (VP ...))
-	 * @param sentenceTokens
+	 * @param sentenceTokens The list of tokens.
 	 * @return true if the sentence tokens have a requirement structure, false otherwise.
 	 */
 	private boolean hasRequirementStructure(List<CoreLabel> sentenceTokens) {
@@ -123,5 +114,18 @@ public class RequirementsInfoExtractor {
         }
 
         return false;
+	}
+
+	private void createNewRequirement(String previousSentence, CoreMap sentence) {
+		mOutputBuilder.createNewRequirement(previousSentence.replaceAll("\n", " "));
+		String newReq = sentence.toString().replaceAll("\n", " ");
+		Utils.println("New req.: " + newReq);
+        mOutputBuilder.addRequirementText(newReq);
+	}
+
+	private void appendSentenceToCurrentRequirement(CoreMap sentence) {
+		String appendedReq = sentence.toString().replaceAll("\n", " ");
+		Utils.println("Appending: " + appendedReq);
+		mOutputBuilder.appendRequirementText(appendedReq);
 	}
 }
