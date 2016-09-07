@@ -28,7 +28,7 @@ public class PlainTextConverter {
 		AutoDetectParser parser = new AutoDetectParser();
 		Metadata metadata = new Metadata();
 	    try (InputStream stream = new FileInputStream(new File(fileName))) {
-	    	Utils.println("Converting document to plain text... ");
+	    	Utils.println("Converting document to plain text...");
 			parser.parse(stream, handler, metadata);
 			Utils.print("done!");
 			return handler.toString();

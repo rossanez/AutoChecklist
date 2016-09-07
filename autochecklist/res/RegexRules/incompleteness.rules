@@ -5,6 +5,16 @@
 }
 {
    ruleType: "tokens",
+   pattern: ( /to/ /be/ /defined/ ),
+   result: "TBD"
+}
+{
+   ruleType: "tokens",
    pattern: ( /TBC/ ),
+   result: "TBC"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /to be confirmed/ ),
    result: "TBC"
 }

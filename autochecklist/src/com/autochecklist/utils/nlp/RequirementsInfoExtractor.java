@@ -38,61 +38,45 @@ public class RequirementsInfoExtractor {
 			List<CoreLabel> sentenceTokens = sentence.get(TokensAnnotation.class);
 
 			boolean foundARequirement = false;
+			String lastWord = null;
 			for (CoreLabel token : sentenceTokens) {
 				String word = token.get(TextAnnotation.class);
 				String pos = token.get(PartOfSpeechAnnotation.class);
 
-				// Requirement: (S (NP ...) (VP (MD shall) (VP ...))
+				// Is it a requirement candidate?
 				if ("MD".equals(pos) && "shall".equals(word)) {
-					Tree parseTree = CoreNLP.getInstance().getParser().apply(sentenceTokens);
+					if (foundARequirement = hasRequirementStructure(sentenceTokens)) {
+						String rawRequirement = sentence.toString();
+		            	if (processingARequirement) {
+		            		String appendedReq = rawRequirement.replaceAll("\n", " ");
+		            		Utils.println("Appending req.: " + appendedReq);
+		            		mOutputBuilder.appendRequirementText(appendedReq);
+		            	} else {
+		            		mOutputBuilder.createNewRequirement(previousSentence.replaceAll("\n", " "));
+		            		String newReq = rawRequirement.replaceAll("\n", " ");
+		            		Utils.println("New req.: " + newReq);
+		                    mOutputBuilder.addRequirementText(newReq);
+		            	}
 
-					// http://tides.umiacs.umd.edu/webtrec/stanfordParser/javadoc/index.html?edu/stanford/nlp/trees/tregex/TregexPattern.html
-		            TregexMatcher sentenceMatcher = TregexPattern.compile("ROOT << (NP=np $++ VP=vp)").matcher(parseTree);
-
-		            while (sentenceMatcher.find()) {
-		                //Tree sentenceTree = sentenceMatcher.getMatch();
-		                //Tree nounPhraseTree = sentenceMatcher.getNode("np");
-		    			Tree verbalPhraseTree = sentenceMatcher.getNode("vp");
-
-		                TregexMatcher verbalPhraseMatcher = TregexPattern.compile("VP <<, MD=md").matcher(verbalPhraseTree);
-
-		                while (verbalPhraseMatcher.find()) {
-
-		                	// Consistency check - it should be "shall"!
-		                	List<Word> words = verbalPhraseMatcher.getNode("md").yieldWords();
-		                	if ((words.size() != 1) || !"shall".equals(words.get(0).toString())) {
-		                		break;
-		                	}
-
-		                	// Found a requirement; Adding it to the output builder.
-		                	foundARequirement = true;
-
-		                	String rawRequirement = sentence.toString();
-		                	if (processingARequirement) {
-		                		String appendedReq = rawRequirement.replaceAll("\n", " ");
-		                		Utils.println("Appending req.: " + appendedReq);
-		                		mOutputBuilder.appendRequirementText(appendedReq);
-		                	} else {
-		                		mOutputBuilder.createNewRequirement(previousSentence.replaceAll("\n", " "));
-		                		String newReq = rawRequirement.replaceAll("\n", " ");
-		                		Utils.println("New req.: " + newReq);
-                                mOutputBuilder.addRequirementText(newReq);
-		                	}
-
-		                	processingARequirement = true;
-                            break;
-		                }
-
-		                // Skip the remaining parse tree.
-		                if (foundARequirement) break;
-		            }
-		            
-		            // Skip the remaining sentence tokens.
-		            if (foundARequirement) break;
+		            	processingARequirement = true;
+		                break;
+					}
 				}
+
+				// Update lastWord
+				lastWord = word;
 			}
 
-			if (!foundARequirement) processingARequirement = false;
+			if (!foundARequirement) {
+				if (processingARequirement && ".".equals(lastWord)) {
+					String rawRequirement = sentence.toString();
+					String appendedReq = rawRequirement.replaceAll("\n", " ");
+            		Utils.println("Appending req.: " + appendedReq);
+            		mOutputBuilder.appendRequirementText(appendedReq);
+				} else {
+				    processingARequirement = false;
+				}
+			}
 			
 			// TODO Workaround! This should ideally be implemented
 			// at the plain text converter level.
@@ -104,4 +88,40 @@ public class RequirementsInfoExtractor {
     
     	return mOutputBuilder;
     }
+
+	/**
+	 * Checks if the sentence (already converted as to a list of tokens) has the structure of a requirement.
+	 * Requirements consist of a noun phrase, followed by a verbal phrase, which starts with the "shall" modal:
+	 * (S (NP ...) (VP (MD shall) (VP ...))
+	 * @param sentenceTokens
+	 * @return true if the sentence tokens have a requirement structure, false otherwise.
+	 */
+	private boolean hasRequirementStructure(List<CoreLabel> sentenceTokens) {
+		Tree parseTree = CoreNLP.getInstance().getParser().apply(sentenceTokens);
+
+		// http://tides.umiacs.umd.edu/webtrec/stanfordParser/javadoc/index.html?edu/stanford/nlp/trees/tregex/TregexPattern.html
+        TregexMatcher sentenceMatcher = TregexPattern.compile("ROOT << (NP=np $++ VP=vp)").matcher(parseTree);
+
+        while (sentenceMatcher.find()) {
+            //Tree sentenceTree = sentenceMatcher.getMatch();
+            //Tree nounPhraseTree = sentenceMatcher.getNode("np");
+			Tree verbalPhraseTree = sentenceMatcher.getNode("vp");
+
+            TregexMatcher verbalPhraseMatcher = TregexPattern.compile("VP <<, MD=md").matcher(verbalPhraseTree);
+
+            while (verbalPhraseMatcher.find()) {
+
+            	// Consistency check - it should be "shall"!
+            	List<Word> words = verbalPhraseMatcher.getNode("md").yieldWords();
+            	if ((words.size() != 1) || !"shall".equals(words.get(0).toString())) {
+            		break;
+            	}
+
+            	// Found a requirement; Adding it to the output builder.
+            	return true;
+            }
+        }
+
+        return false;
+	}
 }
