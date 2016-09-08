@@ -2,6 +2,7 @@ package com.autochecklist.utils.nlp;
 
 import java.util.List;
 
+import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
@@ -49,10 +50,9 @@ public class RequirementsInfoExtractor {
 		            	if (processingARequirement) {
 		            		appendSentenceToCurrentRequirement(sentence);
 		            	} else {
-		            		createNewRequirement(previousSentence, sentence);
+		            		processingARequirement = createNewRequirement(previousSentence, sentence);
 		            	}
 
-		            	processingARequirement = true;
 		                break;
 					}
 				}
@@ -116,11 +116,47 @@ public class RequirementsInfoExtractor {
         return false;
 	}
 
-	private void createNewRequirement(String previousSentence, CoreMap sentence) {
-		mOutputBuilder.createNewRequirement(previousSentence.replaceAll("\n", " "));
+	private boolean isARequirementId(String str) {
+		if (Utils.isTextEmpty(str)) {
+			Utils.printError("Empty text when evaluating a requirement!");
+			return false;
+		}
+
+		if (str.startsWith("Re")) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private Pair<String, String> retrieveRequirementId(String previousSentence, String requirement) {
+		if (isARequirementId(previousSentence)) {
+		    return new Pair<String, String>(previousSentence, requirement);
+		} else {
+			String[] tokens = requirement.split(" ");
+			if ((tokens != null) && (tokens.length > 0)
+				&& isARequirementId(tokens[0])) {
+				requirement = requirement.substring(tokens[0].length() + 1);
+				return new Pair<String, String>(tokens[0], requirement);
+		    }			
+		}
+
+		return null;
+	}
+	
+	private boolean createNewRequirement(String previousSentence, CoreMap sentence) {
 		String newReq = sentence.toString().replaceAll("\n", " ");
-		Utils.println("New req.: " + newReq);
-        mOutputBuilder.addRequirementText(newReq);
+		Pair<String, String> reqIdAndReqText = retrieveRequirementId(previousSentence.replaceAll("\n", " "), newReq);
+		if (reqIdAndReqText == null) {
+			Utils.printError("No requirement ID found!");
+			return false;
+		}
+		mOutputBuilder.createNewRequirement(reqIdAndReqText.first);
+		Utils.println("New req. ID: " + reqIdAndReqText.first);
+        mOutputBuilder.addRequirementText(reqIdAndReqText.second);
+        Utils.println("Req. text: " + reqIdAndReqText.second);
+
+        return true;
 	}
 
 	private void appendSentenceToCurrentRequirement(CoreMap sentence) {
