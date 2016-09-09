@@ -21,10 +21,12 @@ public class RequirementsInfoExtractor {
 
 	private String mPlainText;
 	private IRequirementsInfoOutBuildable mOutputBuilder;
+	private ExpressionExtractor mReqIdExtractor;
 	
 	public RequirementsInfoExtractor(String text, IRequirementsInfoOutBuildable outputBuilder) {
 		this.mPlainText = text;
 		this.mOutputBuilder = outputBuilder;
+		this.mReqIdExtractor = new ExpressionExtractor("RegexRules/requirementid.rules");
 	}
 	
 	public IRequirementsInfoOutBuildable extract() {
@@ -122,7 +124,9 @@ public class RequirementsInfoExtractor {
 			return false;
 		}
 
-		if (str.startsWith("Re")) {
+		List<Pair<String, String>> matched = mReqIdExtractor.extract(str);
+		if ((matched != null) && (!matched.isEmpty())) {
+			// No need to check the contents, as there is only one possible: REQUIREMENT_ID.
 			return true;
 		}
 
