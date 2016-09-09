@@ -48,7 +48,7 @@ public class RequirementsInfoExtractor {
 
 				// Is it a requirement candidate?
 				if ("MD".equals(pos) && "shall".equals(word)) {
-					if (foundARequirement = hasRequirementStructure(sentenceTokens)) {
+					if (foundARequirement = hasRequirementStructure(sentence.toString())) {
 		            	if (processingARequirement) {
 		            		appendSentenceToCurrentRequirement(sentence);
 		            	} else {
@@ -83,14 +83,14 @@ public class RequirementsInfoExtractor {
     }
 
 	/**
-	 * Checks if the sentence (already converted to a list of tokens) has the structure of a requirement.
+	 * Checks if the sentence has the structure of a requirement.
 	 * Requirements consist of a noun phrase, followed by a verbal phrase, which starts with the "shall" modal:
 	 * (S (NP ...) (VP (MD shall) (VP ...))
-	 * @param sentenceTokens The list of tokens.
+	 * @param sentence The sentence.
 	 * @return true if the sentence tokens have a requirement structure, false otherwise.
 	 */
-	private boolean hasRequirementStructure(List<CoreLabel> sentenceTokens) {
-		Tree parseTree = CoreNLP.getInstance().getParser().apply(sentenceTokens);
+	private boolean hasRequirementStructure(String sentence) {
+		Tree parseTree = CoreNLP.getInstance().getParser().parse(sentence);
 
 		// http://tides.umiacs.umd.edu/webtrec/stanfordParser/javadoc/index.html?edu/stanford/nlp/trees/tregex/TregexPattern.html
         TregexMatcher sentenceMatcher = TregexPattern.compile("ROOT << (NP=np $++ VP=vp)").matcher(parseTree);

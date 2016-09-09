@@ -35,6 +35,8 @@ public class CoreNLP {
 
 		mPipeline = new StanfordCoreNLP(props);
 
+		// Keeping the parser separated from the pipeline so that parsing
+		// does not gets influenced by the PoS tagging results.
 		mParser = LexicalizedParser.loadModel("edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz");
 	}
 
