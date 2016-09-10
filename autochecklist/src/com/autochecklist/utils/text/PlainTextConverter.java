@@ -14,6 +14,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 import com.autochecklist.utils.Utils;
+import com.uwyn.jhighlight.fastutil.Arrays;
 
 /**
  * This class encapsulates the text handling methods.
@@ -41,23 +42,25 @@ public class PlainTextConverter {
 
 /*package*/ class CustomBodyContentHandler extends BodyContentHandler {
 
-	private boolean ignoreWhitespace = false;
+	private boolean ignoreLineBreak = false;
 	private boolean brokeLine = false;
 
 	@Override
 	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-		if (ignoreWhitespace) {
-			ignoreWhitespace = false;
+		if (ignoreLineBreak && isLineBreak(ch, start, length)) {
+			ignoreLineBreak = false;
 		} else {
+			if (isLineBreak(ch, start, length)) {
+				brokeLine = true;
+			}
 			super.ignorableWhitespace(ch, start, length);
-			brokeLine = true;
 		}
 	}
 
 	@Override
 	public void startElement(String uri, String localName, String name, Attributes atts) throws SAXException {
 		if ("p".equals(localName) || "div".equals(localName) || "meta".equals(localName)) {
-			ignoreWhitespace = true;
+			ignoreLineBreak = true;
 		}
 		super.startElement(uri, localName, name, atts);
 	}
@@ -82,5 +85,16 @@ public class PlainTextConverter {
 	@Override
 	public void endElement(String uri, String localName, String name) throws SAXException {
 		super.endElement(uri, localName, name);
+	}
+
+	private boolean isLineBreak(char[] ch, int start, int length) {
+		String str = String.valueOf(ch, start, length);
+		if (!Utils.isTextEmpty(str)) {
+			if ("\n".equals(str) || "\r\n".equals(str) || "\n\r".equals(str)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
