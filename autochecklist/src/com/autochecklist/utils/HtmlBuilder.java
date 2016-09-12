@@ -42,7 +42,9 @@ public class HtmlBuilder {
 		body = body.replace(" /--- ", "</h3>");
 
 		body = body.replace("- Answer: Yes", "<p> &rarr; <i>Answer:</i> <b><font color='green'>YES</font></b>");
+		body = body.replace("- Answer: Possible Yes", "<p> &rarr; <i>Answer:</i> <b><font color='green'><i>Possible</i> YES</font></b>");
 		body = body.replace("- Answer: No", "<p> &rarr; <i>Answer:</i> <b><font color='red'>NO</font></b>");
+		body = body.replace("- Answer: Possible No", "<p> &rarr; <i>Answer:</i> <b><font color='red'><i>Possible</i> NO</font></b>");
 		body = body.replace("- Answer: Warning", "<p> &rarr; <i>Answer:</i> <b><font color='orange'>WARNING</font></b>");
 
 		body = body.replace("- Value: ", "<p> &rarr; <b>Value: </b>");

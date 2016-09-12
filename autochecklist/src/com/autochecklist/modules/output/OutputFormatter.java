@@ -89,23 +89,56 @@ public class OutputFormatter extends Module {
         for(Requirement requirement : mRequirements.getRequirements()) {
         	outBuilder.append(requirement.getId()).append(" ---- ")
         	          .append(requirement.getText()).append('\n');
- 
+
+        	// Following this precedence order:
+        	// No > Possible No > Warning > Possible Yes > Yes
+        	boolean hasFindings = false;
         	List<Finding> noFindings = requirement.getNoFindings();
         	if (!noFindings.isEmpty()) {
+        		hasFindings = true;
         		outBuilder.append(" - Answer: No").append('\n');
         		for (Finding finding : noFindings) {
         			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n');
         		}
         	}
 
+        	List<Finding> possibleNoFindings = requirement.getPossibleNoFindings();
+        	if (!possibleNoFindings.isEmpty()) {
+                if (!hasFindings) {
+                	hasFindings = true;
+            		outBuilder.append(" - Answer: Possible No").append('\n');
+                }
+        		for (Finding finding : possibleNoFindings) {
+        			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n');
+        		}
+        	}
+
         	List<Finding> warningFindings = requirement.getWarningFindings();
         	if (!warningFindings.isEmpty()) {
-        		outBuilder.append(" - Answer: Warning").append('\n');
+                if (!hasFindings) {
+                	hasFindings = true;
+        		    outBuilder.append(" - Answer: Warning").append('\n');
+                }
         		for (Finding finding : warningFindings) {
         			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n');
         		}
         	}
-        	
+
+        	List<Finding> possibleYesFindings = requirement.getPossibleYesFindings();
+        	if (!possibleYesFindings.isEmpty()) {
+                if (!hasFindings) {
+                	hasFindings = true;
+        		    outBuilder.append(" - Answer: Possible Yes").append('\n');
+                }
+        		for (Finding finding : possibleYesFindings) {
+        			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n');
+        		}
+        	}
+
+        	if (!hasFindings) {
+        		outBuilder.append(" - Answer: Yes").append('\n');
+        	}
+
         	outBuilder.append('\n');
         }
 

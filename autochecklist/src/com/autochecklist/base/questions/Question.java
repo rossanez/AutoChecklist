@@ -9,8 +9,10 @@ public class Question {
 
 	// Possible answer types.
 	public static final int ANSWER_YES = 0;
-	public static final int ANSWER_NO = 1;
+	public static final int ANSWER_POSSIBLE_YES = 1;
 	public static final int ANSWER_WARNING = 2;
+	public static final int ANSWER_POSSIBLE_NO = 3;
+	public static final int ANSWER_NO = 4;
 
 	private int mAnswerType = ANSWER_YES;
 	private List<Finding> mFindings;
@@ -47,8 +49,9 @@ public class Question {
 	}
 
 	public void setAnswerType(int answer) {
-		if (mAnswerType == ANSWER_NO) {
-			// "No" should have precedence over the others.
+		// Considering the following precedence order:
+		// No > Possible No > Warning > Possible Yes > Yes
+		if (mAnswerType >= answer) {
 			return;
 		}
 
@@ -67,6 +70,10 @@ public class Question {
 			    return "No";
             case ANSWER_WARNING:
 			    return "Warning";
+            case ANSWER_POSSIBLE_YES:
+            	return "Possible Yes";
+            case ANSWER_POSSIBLE_NO:
+            	return "Possible No";
 			default:
 				return null;
 		}

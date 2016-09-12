@@ -21,6 +21,6 @@ public class Inconsistency extends AnalysisModule {
 	@Override
 	protected void processRequirementForQuestion(Requirement requirement, Question question) {
 		// TODO process this correctly.
-		question.setAnswerType(Question.ANSWER_WARNING);
+		question.setAnswerType(Question.ANSWER_YES);
 	}
 }
