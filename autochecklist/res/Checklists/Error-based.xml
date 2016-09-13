@@ -11,7 +11,7 @@
         <question id="6">In the text of the software requirements in which there should be the specification of a numeric value, is this numeric value defined?</question>
         <question id="7" action="extract, TBC">Are all the requirements without "TBC"?</question>
         <question id="8" action="extract, TBD">Are all the requirements without "TBD"?</question>
-        <question id="9">In the requirements in which there is a description of the actions of the software with the occurrence of some events, does this (these) requirement(s) consider all the possible events in the situation considered in the text?</question>
+        <question id="9" action="detect, event and action">In the requirements in which there is a description of the actions of the software with the occurrence of some events, does this (these) requirement(s) consider all the possible events in the situation considered in the text?</question>
     </category>
     <category type="incorrectness">
         <question id="10" action="extract, should">Are all the requirements without the word "should" indicating a non-mandatory feature of the system?</question>

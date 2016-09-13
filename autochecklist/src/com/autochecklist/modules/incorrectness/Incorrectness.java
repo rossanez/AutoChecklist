@@ -36,14 +36,7 @@ public class Incorrectness extends AnalysisModule {
 
 	@Override
 	protected void processRequirementForQuestion(Requirement requirement, Question question) {
-		if (question.getAction() == null) {
-			// TODO work on the other question types.
-			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Please check it manually.", Question.ANSWER_WARNING);
-			requirement.addFinding(finding);
-			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
-		} else {
+		if (question.hasAction()) {
 			if ((mMatchedExpressionsForReq == null) || (!requirement.getId().equals(mMatchedExpressionsForReq.first))) {
 				// These are not for this requirement.
 				return;
@@ -51,7 +44,7 @@ public class Incorrectness extends AnalysisModule {
 			
 			List<Pair<String, String>> matchedList = mMatchedExpressionsForReq.second;
 			for (Pair<String, String> matched : matchedList) {
-				if ((question.getAction().getType() == QuestionAction.EXTRACT_TERM_OR_EXPRESSION)
+				if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_EXTRACT_TERM_OR_EXPRESSION)
 						&& matched.first.equals(question.getAction().getSubType())) {
 					// Found a forbidden term or expression - generate a negative answer.
 					Finding finding = new Finding(question.getId(), requirement.getId(),
@@ -59,7 +52,7 @@ public class Incorrectness extends AnalysisModule {
 					requirement.addFinding(finding);
 					question.addFinding(finding);
 					question.setAnswerType(finding.getAnswerType());
-				} else if ((question.getAction().getType() == QuestionAction.CHECK_NUMBER_AND_UNIT)
+				} else if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_CHECK_NUMBER_AND_UNIT)
 						&& matched.first.equals("NUMBER_AND_UNIT")) {
 					// Found a numeric item.
 					String findingDescription = "Please check: ";
@@ -80,7 +73,14 @@ public class Incorrectness extends AnalysisModule {
 					mNumUnitOcc.put(matched.second, requirement.getId());
 				}
 			}
-		}
+		} else {
+			// No action: Must be completely manually checked.
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Please check it manually.", Question.ANSWER_WARNING);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		} 
 	}
 
 	public NumberAndUnitOccurrences getNumericOccurrences() {

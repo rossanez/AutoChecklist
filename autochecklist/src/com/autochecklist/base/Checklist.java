@@ -83,8 +83,9 @@ public class Checklist {
 	}
 
 	private int resolveAction(String action) {
-		if ("extract".equals(action)) return QuestionAction.EXTRACT_TERM_OR_EXPRESSION;
-		else if ("numeric".equals(action)) return QuestionAction.CHECK_NUMBER_AND_UNIT;
+		if ("extract".equals(action)) return QuestionAction.ACTION_TYPE_EXTRACT_TERM_OR_EXPRESSION;
+		else if ("numeric".equals(action)) return QuestionAction.ACTION_TYPE_CHECK_NUMBER_AND_UNIT;
+		else if ("detect".equals(action)) return QuestionAction.ACTION_TYPE_DETECT;
 
 		return -1;
 	}
