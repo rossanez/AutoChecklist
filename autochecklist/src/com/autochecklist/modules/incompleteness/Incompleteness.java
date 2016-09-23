@@ -1,6 +1,7 @@
 package com.autochecklist.modules.incompleteness;
 
 import java.util.List;
+import java.util.Set;
 
 import com.autochecklist.base.Finding;
 import com.autochecklist.base.questions.Question;
@@ -37,9 +38,16 @@ public class Incompleteness extends AnalysisModule {
 	protected void processRequirementForQuestion(Requirement requirement, Question question) {
 		if (question.hasAction()) {
 		    if (question.getAction().getType() == QuestionAction.ACTION_TYPE_DETECT) {
-				if (mEventActionDetector.detect(requirement.getText())) {
+		    	Set<String> detectedEvents = mEventActionDetector.detect(requirement.getText());
+				if (!detectedEvents.isEmpty()) {
+					StringBuilder sb = new StringBuilder();
+					for (String event : detectedEvents) {
+						sb.append('\n').append("    ").append(event);
+					}
+					
 					Finding finding = new Finding(question.getId(), requirement.getId(),
-							"Contains actions. Please check if all the possible actions are considered.", Question.ANSWER_WARNING);
+							"Please check if all the possible events are considered. Events found:" + sb.toString(),
+							Question.ANSWER_WARNING);
 					requirement.addFinding(finding);
 					question.addFinding(finding);
 					question.setAnswerType(finding.getAnswerType());

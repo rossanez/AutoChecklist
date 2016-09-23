@@ -30,7 +30,7 @@ public class CoreNLP {
 	
 	private CoreNLP() {
 		Properties props = new Properties();
-		props.put("annotators", "tokenize, ssplit, pos");
+		props.put("annotators", "tokenize, ssplit, pos, lemma");
 		props.put("ssplit.newlineIsSentenceBreak", "two_consecutive");
 
 		mPipeline = new StanfordCoreNLP(props);

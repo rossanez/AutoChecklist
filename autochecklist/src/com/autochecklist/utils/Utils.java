@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
 
@@ -131,6 +132,10 @@ public class Utils {
 
 	public static InputStream getResourceAsInputStream(String resourceFileName) {
 		return Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFileName);
+	}
+
+	public static URL getResourceAsURL(String resourceFileName) {
+		return Thread.currentThread().getContextClassLoader().getResource(resourceFileName);
 	}
 
 	public static String getResourceAsString(String resourceFileName) {
