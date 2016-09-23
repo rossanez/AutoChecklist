@@ -39,7 +39,7 @@ import edu.stanford.nlp.util.CoreMap;
 public class EventActionDetector {
 
 	private LexicalizedParser mParser;
-	private Set<String> mActionEventIndicators;
+	private Set<String> mWeakActionIndicators;
 	private static IDictionary mDictionary;
 
 	public EventActionDetector() {
@@ -48,9 +48,9 @@ public class EventActionDetector {
 	}
 
 	private void initActionEventIndicators() {
-		mActionEventIndicators = new HashSet<String>();
-		mActionEventIndicators.add("if");
-		mActionEventIndicators.add("else");
+		mWeakActionIndicators = new HashSet<String>();
+		mWeakActionIndicators.add("if");
+		mWeakActionIndicators.add("else");
 	}
 
 	public Set<String> detect(String text) {
@@ -58,6 +58,9 @@ public class EventActionDetector {
 		Annotation document = CoreNLP.getInstance().annotate(text);
 
 		for (CoreMap sentence : document.get(SentencesAnnotation.class)) {
+			Tree parseTree = mParser.parse(sentence.toString());
+			if (!sentenceContainsActions(parseTree)) continue;
+
 			List<CoreLabel> verbalEventCandidates = new ArrayList<CoreLabel>();
 			List<CoreLabel> nounEventCandidates = new ArrayList<CoreLabel>();
 			List<CoreLabel> adjectiveEventCandidates = new ArrayList<CoreLabel>();
@@ -215,32 +218,28 @@ public class EventActionDetector {
 		return ret;
 	}
 	
-	private boolean detectOnSentece(String sentence) {
-		Tree parseTree = mParser.parse(sentence);
-
+	private boolean sentenceContainsActions(Tree parseTree) {
 		TregexMatcher sentenceMatcher = TregexPattern.compile("ROOT << SBAR=sbar").matcher(parseTree);
 
         while (sentenceMatcher.find()) {
         	Tree sbarPhraseTree = sentenceMatcher.getNode("sbar");
 
-            TregexMatcher sbarPhraseMatcher = TregexPattern.compile("SBAR <<, IN=in").matcher(sbarPhraseTree);
+            TregexMatcher sbarPhraseMatcher = TregexPattern.compile("SBAR << VB=vb").matcher(sbarPhraseTree);
 
             while (sbarPhraseMatcher.find()) {
-            	List<Word> words = sbarPhraseMatcher.getNode("in").yieldWords();
-            	if ((words.size() != 1) || !isActionEventIndicator(words.get(0).toString())) {
-            		break;
+            	List<Word> words = sbarPhraseMatcher.getNode("vb").yieldWords();
+            	if ((words.size() == 1) && !isWeakVerbForAction(words.get(0).toString())) {
+            		return true;
             	}
-
-            	return true;
             }
         }
 
 		return false;
 	}
 
-	private boolean isActionEventIndicator(String word) {
+	private boolean isWeakVerbForAction(String word) {
 		if (Utils.isTextEmpty(word)) return false;
 
-		return mActionEventIndicators.contains(word.toLowerCase());
+		return mWeakActionIndicators.contains(word.toLowerCase());
 	}
 }
