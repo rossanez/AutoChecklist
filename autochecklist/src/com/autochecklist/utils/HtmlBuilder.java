@@ -50,8 +50,12 @@ public class HtmlBuilder {
 		body = body.replace("- Value: ", "<p> &rarr; <b>Value: </b>");
 
 		body = body.replace(" -- ", " &bull; ");
-	
 		body = body.replace(" ---- ", "&mdash;");
+
+		body = body.replace("-LRB-", "(");
+		body = body.replace("-RRB-", ")");
+		body = body.replace("-LSB-", "[");
+		body = body.replace("-RSB-", "]");
 
 		body = "<h2>" + title + "</h2>" + body;
 

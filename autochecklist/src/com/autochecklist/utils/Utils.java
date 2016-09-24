@@ -189,7 +189,7 @@ public class Utils {
             	throw new IOException("temporary directory is a file, not a directory ");
             }
 
-            File wordNetDir = new File(tempDirString+'/'+"wordnet178558556719");
+            File wordNetDir = new File(tempDirString + File.separatorChar + "wordnet20160924152707");
             wordNetDir.mkdir();
 
             copyResourcesToDirectory(jarFile, resourceFileName, wordNetDir.getAbsolutePath());
@@ -202,7 +202,7 @@ public class Utils {
 		for (Enumeration<JarEntry> entries = fromJar.entries(); entries.hasMoreElements();) {
 			JarEntry entry = entries.nextElement();
 			if (entry.getName().startsWith(jarDir) && !entry.isDirectory()) {
-				File dest = new File(destDir + "/" + entry.getName());
+				File dest = new File(destDir + File.separatorChar + entry.getName());
 				File parent = dest.getParentFile();
 				if (parent != null) {
 					parent.mkdirs();
