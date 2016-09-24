@@ -33,14 +33,14 @@ import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
 import edu.stanford.nlp.util.CoreMap;
 
-public class EventActionDetector {
+/* package */ class EventActionDetector {
 
 	private LexicalizedParser mParser;
 	private Set<String> mWeakActionIndicators;
-	private static IDictionary mDictionary;
+	private static IDictionary mDictionary; // Keeping it as static to avoid loading more than once.
 
-	public EventActionDetector() {
-		mParser = CoreNLP.getInstance().getParser();
+	public EventActionDetector(LexicalizedParser parser) {
+		mParser = parser;
 		initActionEventIndicators();
 	}
 
@@ -50,7 +50,7 @@ public class EventActionDetector {
 		mWeakActionIndicators.add("else");
 	}
 
-	public Set<String> getEvents(String text) {
+	public Set<String> checkIfHasActionsAndGetEvents(String text) {
 		Set<String> eventsFound = new HashSet<String>();
 		Annotation document = CoreNLP.getInstance().annotate(text);
 
@@ -81,8 +81,7 @@ public class EventActionDetector {
 			}
 
 			if (hasEventCandidates) {
-				eventsFound.addAll(handleEventCandidates(verbalEventCandidates, nounEventCandidates, adjectiveEventCandidates,
-						mParser.parse(sentence.toString())));
+				eventsFound.addAll(handleEventCandidates(verbalEventCandidates, nounEventCandidates, adjectiveEventCandidates, parseTree));
 			}
 		}
 
@@ -200,7 +199,7 @@ public class EventActionDetector {
 
 	private static IDictionary dicitionaryFactory() throws IOException {
         if (mDictionary == null) {
-           mDictionary = new Dictionary(Utils.getResourceAsURL("WordNet/dict")); 
+           mDictionary = new Dictionary(Utils.getResourceAsURL("WordNet/dict/")); 
            mDictionary.open();
         }
 

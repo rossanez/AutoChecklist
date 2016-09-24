@@ -2,6 +2,7 @@ package com.autochecklist.utils.nlp;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import com.autochecklist.utils.Utils;
@@ -17,7 +18,7 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 /**
- * Singleton class providing access to methods from Stanford's CoreNLP pipeline.
+ * Singleton class providing access to Natural Language Processing methods and entities.
  * 
  * @author Anderson Rossanez
  */
@@ -26,7 +27,8 @@ public class CoreNLP {
 	private static CoreNLP mPipelineInstance;
 	
 	private StanfordCoreNLP mPipeline;
-	private LexicalizedParser mParser; 
+	private LexicalizedParser mParser;
+	private EventActionDetector mEventActionDetector;
 	
 	private CoreNLP() {
 		Properties props = new Properties();
@@ -38,6 +40,8 @@ public class CoreNLP {
 		// Keeping the parser separated from the pipeline so that parsing
 		// does not gets influenced by the PoS tagging results.
 		mParser = LexicalizedParser.loadModel("edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz");
+
+		mEventActionDetector = new EventActionDetector(mParser);
 	}
 
 	public static CoreNLP getInstance() {
@@ -52,6 +56,10 @@ public class CoreNLP {
 
 	public LexicalizedParser getParser() {
 		return mParser;
+	}
+
+	public Set<String> checkIfHasActionsAndGetEvents(String text) {
+		return mEventActionDetector.checkIfHasActionsAndGetEvents(text);
 	}
 
 	public Annotation annotate(String text) {

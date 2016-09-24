@@ -11,18 +11,16 @@ import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.EventActionDetector;
+import com.autochecklist.utils.nlp.CoreNLP;
 import com.autochecklist.utils.nlp.ExpressionExtractor;
 
 public class Incompleteness extends AnalysisModule {
 
 	private Pair<String, List<Pair<String, String>>> mMatchedExpressionsForReq;
-	private EventActionDetector mEventActionDetector;
 	
 	public Incompleteness(QuestionCategory questions) {
 		super(questions);
 		mExpressionExtractor = new ExpressionExtractor("RegexRules/incompleteness.rules");
-		mEventActionDetector = new EventActionDetector();
 	}
 
 	@Override
@@ -38,7 +36,7 @@ public class Incompleteness extends AnalysisModule {
 	protected void processRequirementForQuestion(Requirement requirement, Question question) {
 		if (question.hasAction()) {
 		    if (question.getAction().getType() == QuestionAction.ACTION_TYPE_DETECT) {
-		    	Set<String> detectedEvents = mEventActionDetector.getEvents(requirement.getText());
+		    	Set<String> detectedEvents = CoreNLP.getInstance().checkIfHasActionsAndGetEvents(requirement.getText());
 				if (!detectedEvents.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
 					for (String event : detectedEvents) {

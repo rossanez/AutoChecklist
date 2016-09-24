@@ -14,7 +14,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 import com.autochecklist.utils.Utils;
-import com.uwyn.jhighlight.fastutil.Arrays;
 
 /**
  * This class encapsulates the text handling methods.

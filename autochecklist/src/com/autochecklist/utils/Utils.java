@@ -2,9 +2,15 @@ package com.autochecklist.utils;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.apache.commons.io.IOUtils;
 
@@ -134,8 +140,17 @@ public class Utils {
 		return Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFileName);
 	}
 
-	public static URL getResourceAsURL(String resourceFileName) {
-		return Thread.currentThread().getContextClassLoader().getResource(resourceFileName);
+	public static URL getResourceAsURL(String resourceFileName) throws MalformedURLException {
+		URL res = Thread.currentThread().getContextClassLoader().getResource(resourceFileName);
+		if ("jar".equals(res.getProtocol())) {
+			try {
+				res = new URL("file", null, exportResource(resourceFileName).getPath() + File.separatorChar + resourceFileName);
+			} catch (URISyntaxException | IOException e) {
+				Utils.printError("Unable to get resource from within a jar file!");
+			}
+		}
+
+		return res;
 	}
 
 	public static String getResourceAsString(String resourceFileName) {
@@ -157,5 +172,65 @@ public class Utils {
 			mainResource = mainResource.replace(replacingPattern, getResourceAsString(compositeResourceFileName));
 		}
 		return mainResource;
+	}
+
+	private static File exportResource(String resourceFileName) throws URISyntaxException, IOException {
+		try (JarFile jarFile = new JarFile(Utils.class.getProtectionDomain().getCodeSource().getLocation().getPath())) {
+            String tempDirString = System.getProperty("java.io.tmpdir");
+            if(tempDirString==null) {
+            	throw new IOException("java.io.tmpdir not set");
+            }
+
+            File tempDir = new File(tempDirString);
+            if (!tempDir.exists()) {
+            	throw new IOException("temporary directory does not exist");
+            }
+            if (!tempDir.isDirectory()) {
+            	throw new IOException("temporary directory is a file, not a directory ");
+            }
+
+            File wordNetDir = new File(tempDirString+'/'+"wordnet178558556719");
+            wordNetDir.mkdir();
+
+            copyResourcesToDirectory(jarFile, resourceFileName, wordNetDir.getAbsolutePath());
+
+            return wordNetDir;
+        }
+    }
+
+	private static void copyResourcesToDirectory(JarFile fromJar, String jarDir, String destDir) throws IOException {
+		for (Enumeration<JarEntry> entries = fromJar.entries(); entries.hasMoreElements();) {
+			JarEntry entry = entries.nextElement();
+			if (entry.getName().startsWith(jarDir) && !entry.isDirectory()) {
+				File dest = new File(destDir + "/" + entry.getName());
+				File parent = dest.getParentFile();
+				if (parent != null) {
+					parent.mkdirs();
+				}
+
+				FileOutputStream out = new FileOutputStream(dest);
+				InputStream in = fromJar.getInputStream(entry);
+
+				try {
+					byte[] buffer = new byte[8 * 1024];
+
+					int s = 0;
+					while ((s = in.read(buffer)) > 0) {
+						out.write(buffer, 0, s);
+					}
+				} catch (IOException e) {
+					throw new IOException("Could not copy asset from jar file", e);
+				} finally {
+					try {
+						in.close();
+					} catch (IOException ignored) {
+					}
+					try {
+						out.close();
+					} catch (IOException ignored) {
+					}
+				}
+			}
+		}
 	}
 }
