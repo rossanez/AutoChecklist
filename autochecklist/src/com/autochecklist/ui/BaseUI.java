@@ -138,7 +138,7 @@ public abstract class BaseUI implements PrintingService.IUIPrintable, EventHandl
 
 	private void showRestartDialog() {
 		new ChoiceDialog("Restarting...",
-				"The current analysis will be stopped!\nAre you sure about it?",
+				"The current analysis will be dropped!\nAre you sure about it?",
 				new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {

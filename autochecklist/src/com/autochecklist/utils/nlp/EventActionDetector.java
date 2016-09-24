@@ -1,8 +1,6 @@
 package com.autochecklist.utils.nlp;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,7 +16,6 @@ import edu.mit.jwi.item.ISynset;
 import edu.mit.jwi.item.ISynsetID;
 import edu.mit.jwi.item.IWord;
 import edu.mit.jwi.item.IWordID;
-import edu.mit.jwi.item.IndexWord;
 import edu.mit.jwi.item.POS;
 import edu.mit.jwi.item.Pointer;
 import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
@@ -53,7 +50,7 @@ public class EventActionDetector {
 		mWeakActionIndicators.add("else");
 	}
 
-	public Set<String> detect(String text) {
+	public Set<String> getEvents(String text) {
 		Set<String> eventsFound = new HashSet<String>();
 		Annotation document = CoreNLP.getInstance().annotate(text);
 
@@ -87,8 +84,6 @@ public class EventActionDetector {
 				eventsFound.addAll(handleEventCandidates(verbalEventCandidates, nounEventCandidates, adjectiveEventCandidates,
 						mParser.parse(sentence.toString())));
 			}
-
-			//if (detectOnSentece(sentence.toString())) return true;
 		}
 
 		return eventsFound;

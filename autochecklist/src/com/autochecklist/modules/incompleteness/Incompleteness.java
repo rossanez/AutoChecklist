@@ -38,7 +38,7 @@ public class Incompleteness extends AnalysisModule {
 	protected void processRequirementForQuestion(Requirement requirement, Question question) {
 		if (question.hasAction()) {
 		    if (question.getAction().getType() == QuestionAction.ACTION_TYPE_DETECT) {
-		    	Set<String> detectedEvents = mEventActionDetector.detect(requirement.getText());
+		    	Set<String> detectedEvents = mEventActionDetector.getEvents(requirement.getText());
 				if (!detectedEvents.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
 					for (String event : detectedEvents) {
