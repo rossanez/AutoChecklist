@@ -36,8 +36,12 @@ import edu.stanford.nlp.util.CoreMap;
 /* package */ class EventActionDetector {
 
 	private LexicalizedParser mParser;
-	private Set<String> mWeakActionIndicators;
-	private static IDictionary mDictionary; // Keeping it as static to avoid loading more than once.
+
+	private Set<String> mWeakActionVerbs;
+	private Set<String> mWeakStativeVerbs;
+	private Set<String> mAdjectiveEvents;
+
+	private static IDictionary sDictionary; // Keeping it as static to avoid loading more than once.
 
 	public EventActionDetector(LexicalizedParser parser) {
 		mParser = parser;
@@ -45,9 +49,45 @@ import edu.stanford.nlp.util.CoreMap;
 	}
 
 	private void initActionEventIndicators() {
-		mWeakActionIndicators = new HashSet<String>();
-		mWeakActionIndicators.add("if");
-		mWeakActionIndicators.add("else");
+		mWeakActionVerbs = new HashSet<String>();
+		mWeakActionVerbs.add("be");
+		mWeakActionVerbs.add("have");
+
+		mWeakStativeVerbs = new HashSet<String>();
+		mWeakStativeVerbs.add("be");
+		mWeakStativeVerbs.add("have");
+		mWeakStativeVerbs.add("contain");
+		mWeakStativeVerbs.add("define");
+
+		mAdjectiveEvents = new HashSet<String>();
+		mAdjectiveEvents.add("amateur");
+		mAdjectiveEvents.add("attempted");
+		mAdjectiveEvents.add("commemorative");
+		mAdjectiveEvents.add("desperate");
+		mAdjectiveEvents.add("face-saving");
+		mAdjectiveEvents.add("hostile");
+		mAdjectiveEvents.add("lame");
+		mAdjectiveEvents.add("limp");
+		mAdjectiveEvents.add("maiden");
+		mAdjectiveEvents.add("negative");
+		mAdjectiveEvents.add("official");
+		mAdjectiveEvents.add("on-the-job");
+		mAdjectiveEvents.add("paid");
+		mAdjectiveEvents.add("parting");
+		mAdjectiveEvents.add("part-time");
+		mAdjectiveEvents.add("personal");
+		mAdjectiveEvents.add("physical");
+		mAdjectiveEvents.add("positive");
+		mAdjectiveEvents.add("preventative");
+		mAdjectiveEvents.add("preventive");
+		mAdjectiveEvents.add("procedural");
+		mAdjectiveEvents.add("reciprocal");
+		mAdjectiveEvents.add("recreational");
+		mAdjectiveEvents.add("saltwater");
+		mAdjectiveEvents.add("token");
+		mAdjectiveEvents.add("two-handed");
+		mAdjectiveEvents.add("two-step");
+		mAdjectiveEvents.add("unprompted");
 	}
 
 	public Set<String> checkIfHasActionsAndGetEvents(String text) {
@@ -67,16 +107,18 @@ import edu.stanford.nlp.util.CoreMap;
 				String pos = token.get(PartOfSpeechAnnotation.class);
 
 				if (pos.startsWith("VB")) {
-					hasEventCandidates = true;
 					if (!isWeakStativeVerb(token.get(LemmaAnnotation.class))) {
+						hasEventCandidates = true;
 					    verbalEventCandidates.add(token);
 					}
 				} else if (pos.startsWith("NN")) {
 				    hasEventCandidates = true;
 				    nounEventCandidates.add(token);
 				} else if (pos.startsWith("JJ")) {
-					hasEventCandidates = true;
-					adjectiveEventCandidates.add(token);
+					if (isAdjectiveEventCandidate(token.get(TextAnnotation.class))) {
+					    hasEventCandidates = true;
+					    adjectiveEventCandidates.add(token);
+					}
 				}
 			}
 
@@ -131,14 +173,6 @@ import edu.stanford.nlp.util.CoreMap;
 		}
 
 		return null;
-	}
-	
-	private boolean isWeakStativeVerb(String verb) {
-		if ("be".equals(verb) || "have".equals(verb) || "contain".equals(verb)) {
-			return true;
-		}
-
-		return false;
 	}
 
 	private Set<String> handleNounEventCandidates(List<CoreLabel> nounEventCandidates, Tree parseTree) {
@@ -198,31 +232,57 @@ import edu.stanford.nlp.util.CoreMap;
 	}
 
 	private static IDictionary dicitionaryFactory() throws IOException {
-        if (mDictionary == null) {
-           mDictionary = new Dictionary(Utils.getResourceAsURL("WordNet/dict/")); 
-           mDictionary.open();
+        if (sDictionary == null) {
+           sDictionary = new Dictionary(Utils.getResourceAsURL("WordNet/dict/")); 
+           sDictionary.open();
         }
 
-        return mDictionary;
+        return sDictionary;
     }
 
 	private Set<String> handleAdjectiveEventCandidates(List<CoreLabel> adjectiveEventCandidates, Tree parseTree) {
 		Set<String> ret = new HashSet<String>();
+		for (CoreLabel token : adjectiveEventCandidates) {
+			for (Tree subTree : parseTree) {
+				if (token.get(PartOfSpeechAnnotation.class).equals(subTree.label().value())
+					&& (token.get(TextAnnotation.class).equals(subTree.firstChild().value()))) {
+					ret.add(Sentence.listToString(subTree.parent().yield()));
+				}
+			}
+		}
 
 		return ret;
 	}
 	
 	private boolean sentenceContainsActions(Tree parseTree) {
-		TregexMatcher sentenceMatcher = TregexPattern.compile("ROOT << SBAR=sbar").matcher(parseTree);
+		TregexMatcher sentenceMatcher = TregexPattern.compile("ROOT << S=s").matcher(parseTree);
 
         while (sentenceMatcher.find()) {
-        	Tree sbarPhraseTree = sentenceMatcher.getNode("sbar");
+        	Tree sentencePhraseTree = sentenceMatcher.getNode("s");
 
-            TregexMatcher sbarPhraseMatcher = TregexPattern.compile("SBAR << VB=vb").matcher(sbarPhraseTree);
+            TregexMatcher infinitiveVerbPhraseMatcher = TregexPattern.compile("S << VB=vb").matcher(sentencePhraseTree);
 
-            while (sbarPhraseMatcher.find()) {
-            	List<Word> words = sbarPhraseMatcher.getNode("vb").yieldWords();
-            	if ((words.size() == 1) && !isWeakVerbForAction(words.get(0).toString())) {
+            while (infinitiveVerbPhraseMatcher.find()) {
+            	List<Word> verbs = infinitiveVerbPhraseMatcher.getNode("vb").yieldWords();
+            	if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
+            		return true;
+            	}
+            }
+
+            TregexMatcher presentVerb3rdPersonPhraseMatcher = TregexPattern.compile("S << VBZ=vbz").matcher(sentencePhraseTree);
+            
+            while (presentVerb3rdPersonPhraseMatcher.find()) {
+                List<Word> verbs = presentVerb3rdPersonPhraseMatcher.getNode("vbz").yieldWords();
+                if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
+            		return true;
+            	}
+            }
+
+            TregexMatcher presentVerbNon3rdPersonPhraseMatcher = TregexPattern.compile("S << VBP=vbp").matcher(sentencePhraseTree);
+            
+            while (presentVerbNon3rdPersonPhraseMatcher.find()) {
+                List<Word> verbs = presentVerbNon3rdPersonPhraseMatcher.getNode("vbp").yieldWords();
+                if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
             		return true;
             	}
             }
@@ -234,6 +294,18 @@ import edu.stanford.nlp.util.CoreMap;
 	private boolean isWeakVerbForAction(String word) {
 		if (Utils.isTextEmpty(word)) return false;
 
-		return mWeakActionIndicators.contains(word.toLowerCase());
+		return mWeakActionVerbs.contains(word.toLowerCase());
+	}
+
+	private boolean isWeakStativeVerb(String verb) {
+		if (Utils.isTextEmpty(verb)) return false;
+
+		return mWeakStativeVerbs.contains(verb.toLowerCase());
+	}
+
+	private boolean isAdjectiveEventCandidate(String adjective) {
+		if (Utils.isTextEmpty(adjective)) return false;
+		
+        return mAdjectiveEvents.contains(adjective.toLowerCase());
 	}
 }
