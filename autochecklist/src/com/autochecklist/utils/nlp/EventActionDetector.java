@@ -35,6 +35,9 @@ import edu.stanford.nlp.util.CoreMap;
 
 /* package */ class EventActionDetector {
 
+	// Maximum number of characters to represent an event in the final output.
+	private static final int EVENT_TEXT_MAX_SIZE = 30;
+
 	private LexicalizedParser mParser;
 
 	private Set<String> mWeakActionVerbs;
@@ -152,7 +155,7 @@ import edu.stanford.nlp.util.CoreMap;
             	CoreLabel foundToken = getTokenFromTreeRoot(verbalEventCandidates, subTree);
             	if (foundToken != null) {
             		verbalEventCandidates.remove(foundToken);
-            		ret.add(Sentence.listToString(verbalPhraseTree.yield()));
+            		ret.add(formatEventText(Sentence.listToString(verbalPhraseTree.yield())));
             		
             		if (verbalEventCandidates.isEmpty()) {
             			return ret;
@@ -188,7 +191,7 @@ import edu.stanford.nlp.util.CoreMap;
 	            	if (foundToken != null) {
 	            		nounEventCandidates.remove(foundToken);
 	            	}
-                    ret.add(Sentence.listToString(subTree.yield()));
+                    ret.add(formatEventText(Sentence.listToString(subTree.yield())));
             		
             		if (nounEventCandidates.isEmpty()) {
             			return ret;
@@ -246,7 +249,7 @@ import edu.stanford.nlp.util.CoreMap;
 			for (Tree subTree : parseTree) {
 				if (token.get(PartOfSpeechAnnotation.class).equals(subTree.label().value())
 					&& (token.get(TextAnnotation.class).equals(subTree.firstChild().value()))) {
-					ret.add(Sentence.listToString(subTree.parent().yield()));
+					ret.add(formatEventText(Sentence.listToString(subTree.parent().yield())));
 				}
 			}
 		}
@@ -307,5 +310,14 @@ import edu.stanford.nlp.util.CoreMap;
 		if (Utils.isTextEmpty(adjective)) return false;
 		
         return mAdjectiveEvents.contains(adjective.toLowerCase());
+	}
+
+	private String formatEventText(String eventText) {
+		if (Utils.isTextEmpty(eventText)) {
+			return eventText;
+		}
+
+		return (eventText.length() < EVENT_TEXT_MAX_SIZE) ?
+				eventText : eventText.substring(0, EVENT_TEXT_MAX_SIZE) + "...";
 	}
 }
