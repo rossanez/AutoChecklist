@@ -49,7 +49,11 @@ public class HtmlBuilder {
 
 		body = body.replace("- Value: ", "<p> &rarr; <b>Value: </b>");
 
-		body = body.replace(" -- ", " &bull; ");
+		body = body.replace(" -init-list- ", " <ul data-role='listview'> ");
+		body = body.replace(" -end-list- ", " </ul> ");
+		
+		body = body.replace(" -- ", " <li> ");
+		body = body.replace(" /-- ", " </li> ");
 		body = body.replace(" ---- ", "&mdash;");
 
 		body = body.replace("-LRB-", "(");

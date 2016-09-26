@@ -44,7 +44,7 @@ public class Incompleteness extends AnalysisModule {
 					}
 
 					Finding finding = new Finding(question.getId(), requirement.getId(),
-							"Please check if all the possible events are considered.\nFound some (possible) events:" + sb.toString(),
+							"Please check if all the possible events are considered. Found some (possible) events:" + sb.toString(),
 							Question.ANSWER_WARNING);
 					requirement.addFinding(finding);
 					question.addFinding(finding);

@@ -61,8 +61,12 @@ public class OutputFormatter extends Module {
 				    .append(question.getText()).append('\n');
 				outBuilder.append(" - Answer: ").append(question.getAnswerAsString()).append('\n');
 				List<Finding> findings = question.getFindings();
-				for (Finding finding : findings) {
-					outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n');
+				if (!findings.isEmpty()) {
+					outBuilder.append(" -init-list- ");
+				    for (Finding finding : findings) {
+					    outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
+				    }
+				    outBuilder.append(" -end-list- ");
 				}
 				
 				outBuilder.append('\n');
@@ -97,9 +101,11 @@ public class OutputFormatter extends Module {
         	if (!noFindings.isEmpty()) {
         		hasFindings = true;
         		outBuilder.append(" - Answer: No").append('\n');
+        		outBuilder.append(" -init-list- ");
         		for (Finding finding : noFindings) {
-        			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n');
+        			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n').append(" /-- ");
         		}
+        		outBuilder.append(" -end-list- ");
         	}
 
         	List<Finding> possibleNoFindings = requirement.getPossibleNoFindings();
@@ -108,9 +114,11 @@ public class OutputFormatter extends Module {
                 	hasFindings = true;
             		outBuilder.append(" - Answer: Possible No").append('\n');
                 }
+                outBuilder.append(" -init-list- ");
         		for (Finding finding : possibleNoFindings) {
-        			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n');
+        			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n').append(" /-- ");
         		}
+        		outBuilder.append(" -end-list- ");
         	}
 
         	List<Finding> warningFindings = requirement.getWarningFindings();
@@ -119,9 +127,11 @@ public class OutputFormatter extends Module {
                 	hasFindings = true;
         		    outBuilder.append(" - Answer: Warning").append('\n');
                 }
+                outBuilder.append(" -init-list- ");
         		for (Finding finding : warningFindings) {
-        			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n');
+        			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n').append(" /-- ");
         		}
+        		outBuilder.append(" -end-list- ");
         	}
 
         	List<Finding> possibleYesFindings = requirement.getPossibleYesFindings();
@@ -130,9 +140,11 @@ public class OutputFormatter extends Module {
                 	hasFindings = true;
         		    outBuilder.append(" - Answer: Possible Yes").append('\n');
                 }
+                outBuilder.append(" -init-list- ");
         		for (Finding finding : possibleYesFindings) {
-        			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n');
+        			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n').append(" /-- ");
         		}
+        		outBuilder.append(" -end-list- ");
         	}
 
         	if (!hasFindings) {

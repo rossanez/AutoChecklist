@@ -36,7 +36,7 @@ import edu.stanford.nlp.util.CoreMap;
 /* package */ class EventActionDetector {
 
 	// Maximum number of characters to represent an event in the final output.
-	private static final int EVENT_TEXT_MAX_SIZE = 30;
+	private static final int EVENT_TEXT_MAX_SIZE = 35;
 
 	private LexicalizedParser mParser;
 
