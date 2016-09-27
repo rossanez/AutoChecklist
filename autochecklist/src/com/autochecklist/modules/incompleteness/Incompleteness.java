@@ -40,11 +40,11 @@ public class Incompleteness extends AnalysisModule {
 				if (!detectedEvents.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
 					for (String event : detectedEvents) {
-						sb.append('\n').append("    ").append(event);
+						sb.append('\n').append("- ").append(event);
 					}
 
 					Finding finding = new Finding(question.getId(), requirement.getId(),
-							"Please check if all the possible events are considered. Found some (possible) events:" + sb.toString(),
+							"Please check if all the possible events are considered. Possible event indicatives:" + sb.toString(),
 							Question.ANSWER_WARNING);
 					requirement.addFinding(finding);
 					question.addFinding(finding);
