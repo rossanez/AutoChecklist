@@ -49,6 +49,13 @@ public class Incompleteness extends AnalysisModule {
 					requirement.addFinding(finding);
 					question.addFinding(finding);
 					question.setAnswerType(finding.getAnswerType());
+				} else {
+					Finding finding = new Finding(question.getId(), requirement.getId(),
+							"Unable to find event indicatives automatically. You may want to check it manually.",
+							Question.ANSWER_POSSIBLE_YES);
+					requirement.addFinding(finding);
+					question.addFinding(finding);
+					question.setAnswerType(finding.getAnswerType());
 				}
 			} else {
 				// Terms and expressions extraction.
