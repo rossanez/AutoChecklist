@@ -29,6 +29,7 @@ public class CoreNLP {
 	private StanfordCoreNLP mPipeline;
 	private LexicalizedParser mParser;
 	private EventActionDetector mEventActionDetector;
+	private MissingNumericValueIndicativesDetector mMissingNumericValueDetector;
 	
 	private CoreNLP() {
 		Properties props = new Properties();
@@ -42,6 +43,7 @@ public class CoreNLP {
 		mParser = LexicalizedParser.loadModel("edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz");
 
 		mEventActionDetector = new EventActionDetector(mParser);
+		mMissingNumericValueDetector = new MissingNumericValueIndicativesDetector();
 	}
 
 	public static CoreNLP getInstance() {
@@ -60,6 +62,10 @@ public class CoreNLP {
 
 	public Set<String> checkIfHasActionsAndGetEvents(String text) {
 		return mEventActionDetector.checkIfHasActionsAndGetEvents(text);
+	}
+
+	public Set<String> getMissingNumericValueIndicators(String text) {
+		return mMissingNumericValueDetector.detect(text);
 	}
 
 	public Annotation annotate(String text) {

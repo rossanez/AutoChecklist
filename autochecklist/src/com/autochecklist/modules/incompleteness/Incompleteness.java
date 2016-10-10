@@ -36,26 +36,52 @@ public class Incompleteness extends AnalysisModule {
 	protected void processRequirementForQuestion(Requirement requirement, Question question) {
 		if (question.hasAction()) {
 		    if (question.getAction().getType() == QuestionAction.ACTION_TYPE_DETECT) {
-		    	Set<String> detectedEvents = CoreNLP.getInstance().checkIfHasActionsAndGetEvents(requirement.getText());
-				if (!detectedEvents.isEmpty()) {
-					StringBuilder sb = new StringBuilder();
-					for (String event : detectedEvents) {
-						sb.append('\n').append("- ").append(event);
-					}
+				if ("EVENT_AND_ACTION".equals(question.getAction().getSubType())) {
+					Set<String> detectedEvents = CoreNLP.getInstance().checkIfHasActionsAndGetEvents(requirement.getText());
+					if (!detectedEvents.isEmpty()) {
+						StringBuilder sb = new StringBuilder();
+						for (String event : detectedEvents) {
+							sb.append('\n').append("- ").append(event);
+						}
 
-					Finding finding = new Finding(question.getId(), requirement.getId(),
-							"Please check if all the possible events are considered. Possible event indicatives:" + sb.toString(),
-							Question.ANSWER_WARNING);
-					requirement.addFinding(finding);
-					question.addFinding(finding);
-					question.setAnswerType(finding.getAnswerType());
-				} else {
-					Finding finding = new Finding(question.getId(), requirement.getId(),
-							"Unable to find event indicatives automatically. You may want to check it manually.",
-							Question.ANSWER_POSSIBLE_YES);
-					requirement.addFinding(finding);
-					question.addFinding(finding);
-					question.setAnswerType(finding.getAnswerType());
+						Finding finding = new Finding(question.getId(), requirement.getId(),
+								"Please check if all the possible events are considered. Possible event indicatives:"
+										+ sb.toString(),
+								Question.ANSWER_WARNING);
+						requirement.addFinding(finding);
+						question.addFinding(finding);
+						question.setAnswerType(finding.getAnswerType());
+					} else {
+						Finding finding = new Finding(question.getId(), requirement.getId(),
+								"Unable to find event indicatives automatically. You may want to check it manually.",
+								Question.ANSWER_POSSIBLE_YES);
+						requirement.addFinding(finding);
+						question.addFinding(finding);
+						question.setAnswerType(finding.getAnswerType());
+					}
+				} else if ("MISSING_NUMERIC_VALUE".equals(question.getAction().getSubType())) {
+                    Set<String> missingNumericValueIndicators = CoreNLP.getInstance().getMissingNumericValueIndicators(requirement.getText());
+                    if (!missingNumericValueIndicators.isEmpty()) {
+                    	StringBuilder sb = new StringBuilder();
+						for (String indicator : missingNumericValueIndicators) {
+							sb.append('\n').append("- ").append(indicator);
+						}
+
+						Finding finding = new Finding(question.getId(), requirement.getId(),
+								"Please check if there are missing numeric values. Possible indicatives:"
+										+ sb.toString(),
+								Question.ANSWER_WARNING);
+						requirement.addFinding(finding);
+						question.addFinding(finding);
+						question.setAnswerType(finding.getAnswerType());
+                    } else {
+                    	Finding finding = new Finding(question.getId(), requirement.getId(),
+								"Unable to find missing numeric values indicatives automatically. You may want to check it manually.",
+								Question.ANSWER_POSSIBLE_YES);
+						requirement.addFinding(finding);
+						question.addFinding(finding);
+						question.setAnswerType(finding.getAnswerType());
+                    }
 				}
 			} else {
 				// Terms and expressions extraction.

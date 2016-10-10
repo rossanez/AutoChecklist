@@ -8,7 +8,7 @@
         <question id="5">In the text of the software requirements in which there is a reference to another requirement or a section of the same document, is this reference traced to the correct requirement or section?</question>
     </category>
     <category type="incompleteness">
-        <question id="6">In the text of the software requirements in which there should be the specification of a numeric value, is this numeric value defined?</question>
+        <question id="6" action="detect, missing numeric value">In the text of the software requirements in which there should be the specification of a numeric value, is this numeric value defined?</question>
         <question id="7" action="extract, TBC">Are all the requirements without "TBC"?</question>
         <question id="8" action="extract, TBD">Are all the requirements without "TBD"?</question>
         <question id="9" action="detect, event and action">In the requirements in which there is a description of the actions of the software with the occurrence of some events, does this (these) requirement(s) consider all the possible events in the situation considered in the text?</question>
