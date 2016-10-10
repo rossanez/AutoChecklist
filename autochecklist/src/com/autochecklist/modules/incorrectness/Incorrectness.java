@@ -47,30 +47,11 @@ public class Incorrectness extends AnalysisModule {
 				if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_EXTRACT_TERM_OR_EXPRESSION)
 						&& matched.first.equals(question.getAction().getSubType())) {
 					// Found a forbidden term or expression - generate a negative answer.
-					Finding finding = new Finding(question.getId(), requirement.getId(),
-							"Contains \"" + matched.second + "\".", Question.ANSWER_NO);
-					requirement.addFinding(finding);
-					question.addFinding(finding);
-					question.setAnswerType(finding.getAnswerType());
+					handleForbiddenTermsOrExpressions(requirement, question, matched);
 				} else if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_CHECK_NUMBER_AND_UNIT)
 						&& matched.first.equals("NUMBER_AND_UNIT")) {
 					// Found a numeric item.
-					String findingDescription = "Please check: ";
-					if ("UNIT".equals(question.getAction().getSubType())) {
-						findingDescription = "Check the unit: ";
-					} else if ("MAGNITUDE".equals(question.getAction().getSubType())) {
-						findingDescription = "Check the magnitude: ";
-					}
-
-					// Generate a warning.
-					Finding finding = new Finding(question.getId(), requirement.getId(),
-							findingDescription + matched.second, Question.ANSWER_WARNING);
-					requirement.addFinding(finding);
-					question.addFinding(finding);
-					question.setAnswerType(finding.getAnswerType());
-
-					// Add it to the numeric occurrences.
-					mNumUnitOcc.put(matched.second, requirement.getId());
+					handleNumbersAndUnits(requirement, question, matched);
 				}
 			}
 		} else {
@@ -81,6 +62,34 @@ public class Incorrectness extends AnalysisModule {
 			question.addFinding(finding);
 			question.setAnswerType(finding.getAnswerType());
 		} 
+	}
+
+	private void handleForbiddenTermsOrExpressions(Requirement requirement, Question question,
+			Pair<String, String> matched) {
+		Finding finding = new Finding(question.getId(), requirement.getId(),
+				"Contains \"" + matched.second + "\".", Question.ANSWER_NO);
+		requirement.addFinding(finding);
+		question.addFinding(finding);
+		question.setAnswerType(finding.getAnswerType());
+	}
+
+	private void handleNumbersAndUnits(Requirement requirement, Question question, Pair<String, String> matched) {
+		String findingDescription = "Please check: ";
+		if ("UNIT".equals(question.getAction().getSubType())) {
+			findingDescription = "Check the unit: ";
+		} else if ("MAGNITUDE".equals(question.getAction().getSubType())) {
+			findingDescription = "Check the magnitude: ";
+		}
+
+		// Generate a warning.
+		Finding finding = new Finding(question.getId(), requirement.getId(),
+				findingDescription + matched.second, Question.ANSWER_WARNING);
+		requirement.addFinding(finding);
+		question.addFinding(finding);
+		question.setAnswerType(finding.getAnswerType());
+
+		// Add it to the numeric occurrences.
+		mNumUnitOcc.put(matched.second, requirement.getId());
 	}
 
 	public NumberAndUnitOccurrences getNumericOccurrences() {
