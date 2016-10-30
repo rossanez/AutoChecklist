@@ -29,7 +29,7 @@ public class RequirementsInfoExtractor {
 		this.mReqIdExtractor = new ExpressionExtractor("RegexRules/requirementid.rules");
 	}
 	
-	public IRequirementsInfoOutBuildable extract() {
+	public void extract() {
     	Annotation document = CoreNLP.getInstance().annotate(mPlainText);
 
     	Utils.println("Extracting requirements...");
@@ -78,8 +78,6 @@ public class RequirementsInfoExtractor {
 			    previousSentence = previousSentenceCandidate;
 			}
 		}
-    
-    	return mOutputBuilder;
     }
 
 	/**

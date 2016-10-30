@@ -8,5 +8,7 @@ public interface IRequirementsInfoOutBuildable {
 	void addRequirementText(String reqText);
     void appendRequirementText(String reqText);
 
+    void addDocumentSection(String id, String name);
+
     File generateOutputFile(String fileName);
 }

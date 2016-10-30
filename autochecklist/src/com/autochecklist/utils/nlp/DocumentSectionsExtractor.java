@@ -12,16 +12,20 @@ import com.autochecklist.utils.Utils;
 
 public class DocumentSectionsExtractor {
 
+	private String mPlainText;
+    private IRequirementsInfoOutBuildable mOutputBuilder;
 	private ExpressionExtractor mSectionIdExtractor;
 
-	public DocumentSectionsExtractor() {
+	public DocumentSectionsExtractor(String text, IRequirementsInfoOutBuildable outputBuilder) {
+		mPlainText = text;
+		mOutputBuilder = outputBuilder;
 		this.mSectionIdExtractor = new ExpressionExtractor("RegexRules/sectionid.rules");
 	}
 	
-	public Set<String> extract(String document) {
+	public void extract() {
 		Set<String> sections = new HashSet<String>();
 
-		BufferedReader bufReader = new BufferedReader(new StringReader(document));
+		BufferedReader bufReader = new BufferedReader(new StringReader(mPlainText));
 		String line = null;
 		try {
 			while ((line = bufReader.readLine()) != null) {
@@ -31,14 +35,19 @@ public class DocumentSectionsExtractor {
 					List<Pair<String, String>> matched = mSectionIdExtractor.extract(titleCandidate[0]);
 					if ((matched == null) || matched.isEmpty()) continue;
 
-					Utils.println(line);
-					sections.add(line);
+					String sectionId = titleCandidate[0];
+					if ("APPENDIX_ID".equals(matched.get(0).first)) {
+						sectionId += " " + titleCandidate[1];
+					}
+					
+					if (sections.add(sectionId)) {
+					    Utils.println(line);
+					    mOutputBuilder.addDocumentSection(sectionId, line);
+					}
 				}
 			}
 		} catch (IOException e) {
 			Utils.printError("Error when trying to extract the document sections!");
 		}
-
-		return sections;
 	}
 }

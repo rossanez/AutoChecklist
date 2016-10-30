@@ -24,6 +24,9 @@ public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
 	private DocumentBuilder mDocBuilder;
 	private Document mDoc;
 	private Element mRootElement;
+	private Element mRequirementsElement;
+	private Element mSectionsElement;
+	private Element mRTMElement;
 	private Element mCurrentRequirement;
 	
 	public XMLOutPreProcBuilder() {
@@ -39,6 +42,15 @@ public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
 		mDoc = mDocBuilder.newDocument();
 		mRootElement = mDoc.createElement("SRS");
 		mDoc.appendChild(mRootElement);
+
+		mRequirementsElement = mDoc.createElement("requirements");
+		mRootElement.appendChild(mRequirementsElement);
+
+		mSectionsElement = mDoc.createElement("sections");
+		mRootElement.appendChild(mSectionsElement);
+
+		mRTMElement = mDoc.createElement("RTM");
+		mRootElement.appendChild(mRTMElement);
 	}
 
 	public void createNewRequirement(String reqId) {
@@ -46,7 +58,7 @@ public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
 		Element requirementId = mDoc.createElement("id");
 		requirementId.appendChild(mDoc.createTextNode(reqId));
 		requirement.appendChild(requirementId);
-		mRootElement.appendChild(requirement);
+		mRequirementsElement.appendChild(requirement);
 		mCurrentRequirement = requirement;
 	}
 	
@@ -76,6 +88,20 @@ public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
 		mCurrentRequirement.appendChild(requirementText);
 	}
 
+	public void addDocumentSection(String id, String name) {
+		Element section = mDoc.createElement("section");
+		
+		Element sectionId = mDoc.createElement("id");
+		sectionId.appendChild(mDoc.createTextNode(id));
+		section.appendChild(sectionId);
+
+		Element sectionName = mDoc.createElement("name");
+		sectionName.appendChild(mDoc.createTextNode(name));
+		section.appendChild(sectionName);
+
+		mSectionsElement.appendChild(section);
+	}
+	
 	public File generateOutputFile(String fileName) {
 		File resultFile = new File(fileName);
         if (resultFile.exists() & !resultFile.isDirectory()) {
