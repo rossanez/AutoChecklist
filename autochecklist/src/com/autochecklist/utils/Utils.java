@@ -175,7 +175,7 @@ public class Utils {
 	}
 
 	private static File exportResource(String resourceFileName) throws URISyntaxException, IOException {
-		try (JarFile jarFile = new JarFile(Utils.class.getProtectionDomain().getCodeSource().getLocation().getPath())) {
+		try (JarFile jarFile = new JarFile(new File(Utils.class.getProtectionDomain().getCodeSource().getLocation().getPath().replace("%20", " ")))) {
             String tempDirString = System.getProperty("java.io.tmpdir");
             if(tempDirString==null) {
             	throw new IOException("java.io.tmpdir not set");
