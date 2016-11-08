@@ -76,9 +76,9 @@ public class Incorrectness extends AnalysisModule {
 	private void handleNumbersAndUnits(Requirement requirement, Question question, Pair<String, String> matched) {
 		String findingDescription = "Please check: ";
 		if ("UNIT".equals(question.getAction().getSubType())) {
-			findingDescription = "Check the unit: ";
+			findingDescription = "Please check the unit: ";
 		} else if ("MAGNITUDE".equals(question.getAction().getSubType())) {
-			findingDescription = "Check the magnitude: ";
+			findingDescription = "Please check the magnitude: ";
 		}
 
 		// Generate a warning.

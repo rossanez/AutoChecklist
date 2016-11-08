@@ -64,6 +64,9 @@ public class OutputFormatter extends Module {
 				if (!findings.isEmpty()) {
 					outBuilder.append(" -init-list- ");
 				    for (Finding finding : findings) {
+				    	// We will not show "Yes" and "Possible Yes" findings in this view.
+				    	if (finding.getAnswerType() < Question.ANSWER_WARNING) continue;
+
 					    outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
 				    }
 				    outBuilder.append(" -end-list- ");
