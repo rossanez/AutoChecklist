@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class NumberAndUnitOccurrences {
 
@@ -32,6 +34,10 @@ public class NumberAndUnitOccurrences {
 	}
 
 	public Set<String> getAllOccurrences() {
-		return mOccurrences.keySet();
+		// First, adding all the occurrences to a sorted set.
+		// Providing the values sorted should be easier to find issues.
+		SortedSet<String> sorted = new TreeSet<String>();
+		sorted.addAll(mOccurrences.keySet());
+		return sorted;
 	}
 }
