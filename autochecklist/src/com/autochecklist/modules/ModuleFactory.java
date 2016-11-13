@@ -6,6 +6,7 @@ import java.util.List;
 import com.autochecklist.base.ErrorBasedChecklist;
 import com.autochecklist.base.NumberAndUnitOccurrences;
 import com.autochecklist.base.documentsections.DocumentSectionList;
+import com.autochecklist.base.documentsections.RequirementsTraceabilityMatrix;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.RequirementList;
 import com.autochecklist.modules.incompleteness.Incompleteness;
@@ -21,8 +22,10 @@ public class ModuleFactory {
 		return new PreProcessor(srsFileName);
 	}
 
-	public static Traceability createTraceability(ErrorBasedChecklist check, DocumentSectionList sections) {
-		return new Traceability(check.getTraceabilityQuestions(), sections);
+	public static Traceability createTraceability(ErrorBasedChecklist check,
+			                                      DocumentSectionList sections,
+			                                      RequirementsTraceabilityMatrix rtmSection) {
+		return new Traceability(check.getTraceabilityQuestions(), sections, rtmSection);
 	}
 
 	public static Incompleteness createIncompleteness(ErrorBasedChecklist check) {
@@ -43,9 +46,10 @@ public class ModuleFactory {
 	}
 
 	public static List<AnalysisModule> createAllAnalysisModules(ErrorBasedChecklist check,
-			                                                    DocumentSectionList sections) {
+			                                                    DocumentSectionList sections,
+			                                                    RequirementsTraceabilityMatrix rtmSection) {
 		List<AnalysisModule> list = new ArrayList<AnalysisModule>();
-		list.add(createTraceability(check, sections));
+		list.add(createTraceability(check, sections, rtmSection));
 		list.add(createIncompleteness(check));
 		list.add(createIncorrectness(check));
 		list.add(createInconsistency(check));

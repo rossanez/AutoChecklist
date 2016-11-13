@@ -7,6 +7,7 @@ import java.util.List;
 import com.autochecklist.base.ErrorBasedChecklist;
 import com.autochecklist.base.NumberAndUnitOccurrences;
 import com.autochecklist.base.documentsections.DocumentSectionList;
+import com.autochecklist.base.documentsections.RequirementsTraceabilityMatrix;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.RequirementList;
 import com.autochecklist.modules.incorrectness.Incorrectness;
@@ -26,6 +27,7 @@ public class Orchestrator {
 	private RequirementList mRequirements;
 	private NumberAndUnitOccurrences mNumericOcc;
 	private DocumentSectionList mDocumentSections;
+	private RequirementsTraceabilityMatrix mRTMSection;
 
 	/**
 	 * This constructor should be used for passing a SRS file only.
@@ -52,6 +54,7 @@ public class Orchestrator {
 		mPreProcFileName = preProcFile;
 		mRequirements = new RequirementList(mPreProcFileName);
 		mDocumentSections = new DocumentSectionList(mPreProcFileName);
+		mRTMSection = new RequirementsTraceabilityMatrix(mPreProcFileName);
 	}
 
 	/**
@@ -117,7 +120,7 @@ public class Orchestrator {
 	}
 
 	private List<AnalysisModule> getAllAnalysisModules() {
-		return ModuleFactory.createAllAnalysisModules(new ErrorBasedChecklist(), mDocumentSections);
+		return ModuleFactory.createAllAnalysisModules(new ErrorBasedChecklist(), mDocumentSections, mRTMSection);
 	}
 
 	private OutputFormatter getOutputFormatter(Pair<RequirementList, List<QuestionCategory>> output) {
