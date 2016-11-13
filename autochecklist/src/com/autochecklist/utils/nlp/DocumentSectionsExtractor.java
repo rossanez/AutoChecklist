@@ -49,9 +49,17 @@ public class DocumentSectionsExtractor {
 						sectionIds.remove(sectionId);
 					}
 					sectionIds.add(sectionId);
-					
-					DocumentSection currSection = new DocumentSection(sectionId, 
-							line.substring(sectionId.length()));
+
+					String description = line.substring(sectionId.length());
+					if (!Utils.isTextEmpty(description)) {
+						description = description.trim();
+					} else {
+						// Get the next line as description.
+						while ((description != null) && (Utils.isTextEmpty(description))) {
+						    description = bufReader.readLine();
+						}
+					}
+					DocumentSection currSection = new DocumentSection(sectionId, description);
 					sections.put(sectionId, currSection);
 				}
 			}
