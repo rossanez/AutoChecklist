@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.autochecklist.base.documentsections.DocumentSection;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 
@@ -16,6 +17,7 @@ public class DocumentSectionsExtractor {
 	private String mPlainText;
     private IRequirementsInfoOutBuildable mOutputBuilder;
 	private ExpressionExtractor mSectionIdExtractor;
+	private RequirementsTraceabilityMatrixSection mRTMSection;
 
 	public DocumentSectionsExtractor(String text, IRequirementsInfoOutBuildable outputBuilder) {
 		mPlainText = text;
@@ -33,6 +35,11 @@ public class DocumentSectionsExtractor {
 		String line = null;
 		try {
 			while ((line = bufReader.readLine()) != null) {
+				if ((mRTMSection != null) && mRTMSection.isAcquiringSectionLines()
+						&& !Utils.isTextEmpty(line)) {
+						mRTMSection.appendLine(line);
+				}
+
 				if (!Utils.isTextEmpty(line)) {
 					String[] titleCandidate = line.split(" ");
 					if ((titleCandidate == null) || (titleCandidate.length < 2)) continue;
@@ -61,27 +68,32 @@ public class DocumentSectionsExtractor {
 					}
 					DocumentSection currSection = new DocumentSection(sectionId, description);
 					sections.put(sectionId, currSection);
+
+					if (RequirementsTraceabilityMatrixSection.isRTMSectionDescription(description)) {
+						mRTMSection = new RequirementsTraceabilityMatrixSection(currSection);
+						mRTMSection.setAcquiringSectionLines(true);
+					} else if (mRTMSection != null) {
+						mRTMSection.setAcquiringSectionLines(false);
+					}
 				}
 			}
 		} catch (IOException e) {
 			Utils.printError("Error when trying to extract the document sections!");
 		}
 
+		populateOutputFile(sectionIds, sections);
+	}
+
+	private void populateOutputFile(List<String> sectionIds, Map<String, DocumentSection> sections) {
 		for (String sectionId : sectionIds) {
-			String id = sections.get(sectionId).id;
-			String description = sections.get(sectionId).description;
+			String id = sections.get(sectionId).getId();
+			String description = sections.get(sectionId).getDescription();
 			Utils.println(id + " " + description);
 		    mOutputBuilder.addDocumentSection(id, description);
 		}
-	}
-	
-	private class DocumentSection {
-		public String id;
-		public String description;
-		
-		public DocumentSection(String id, String description) {
-			this.id = id;
-			this.description = description;
+
+		if (mRTMSection != null) {
+		    mOutputBuilder.addRTMContents(mRTMSection.getContents());
 		}
 	}
 }

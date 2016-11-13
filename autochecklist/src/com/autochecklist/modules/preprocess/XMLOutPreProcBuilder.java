@@ -101,6 +101,12 @@ public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
 
 		mSectionsElement.appendChild(section);
 	}
+
+	public void addRTMContents(String contents) {
+		if (Utils.isTextEmpty(contents)) return;
+
+		mRTMElement.appendChild(mDoc.createTextNode(contents));
+	}
 	
 	public File generateOutputFile(String fileName) {
 		File resultFile = new File(fileName);

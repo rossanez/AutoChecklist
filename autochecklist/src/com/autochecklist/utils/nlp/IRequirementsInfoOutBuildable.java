@@ -10,5 +10,7 @@ public interface IRequirementsInfoOutBuildable {
 
     void addDocumentSection(String id, String name);
 
+    void addRTMContents(String contents);
+
     File generateOutputFile(String fileName);
 }
