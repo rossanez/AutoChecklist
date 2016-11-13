@@ -1,5 +1,6 @@
 package com.autochecklist.modules.traceability;
 
+import com.autochecklist.base.documentsections.DocumentSectionList;
 import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
@@ -8,8 +9,11 @@ import com.autochecklist.utils.Utils;
 
 public class Traceability extends AnalysisModule {
 
-	public Traceability(QuestionCategory questions) {
+	private DocumentSectionList mDocumentSections;
+
+	public Traceability(QuestionCategory questions, DocumentSectionList sections) {
 		super(questions);
+		mDocumentSections = sections;
 	}
 
 	@Override

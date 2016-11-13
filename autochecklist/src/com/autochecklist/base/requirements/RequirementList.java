@@ -25,9 +25,9 @@ public class RequirementList {
 		mRequirements = new ArrayList<Requirement>();
 	}
 	
-	public RequirementList(String fileName) {
+	public RequirementList(String preprocFileName) {
 		mRequirements = new ArrayList<Requirement>();
-		obtainRequirements(fileName);
+		obtainRequirements(preprocFileName);
 	}
 
 	public List<Requirement> getRequirements() {
@@ -42,8 +42,8 @@ public class RequirementList {
 		try {
 			obtainRequirements_internal(fileName);
 		} catch (SAXException | IOException | ParserConfigurationException e) {
-			Utils.printError("Unable to parse the preprocessed file! - " + e.getMessage());
-			throw new RuntimeException("Unable to parse preprocessed file! - " + e.getMessage());
+			Utils.printError("Unable to parse the preprocessed file for obtaining requirements! - " + e.getMessage());
+			throw new RuntimeException("Unable to parse preprocessed file for obtaining requirements! - " + e.getMessage());
 		}
 	}
 	
