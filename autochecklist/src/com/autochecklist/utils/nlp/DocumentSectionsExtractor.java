@@ -23,7 +23,7 @@ public class DocumentSectionsExtractor {
 		mPlainText = text;
 		mOutputBuilder = outputBuilder;
 		mSectionIdExtractor = new ExpressionExtractor("RegexRules/sectionid.rules");
-		mRTMSectionExtractor = new RequirementsTraceabilityMatrixSectionExtractor();
+		mRTMSectionExtractor = new RequirementsTraceabilityMatrixSectionExtractor(outputBuilder);
 	}
 	
 	public void extract() {
@@ -95,8 +95,6 @@ public class DocumentSectionsExtractor {
 		}
 
 		// Then the RTM content.
-		if (mRTMSectionExtractor != null) {
-		    mOutputBuilder.addRTMContents(mRTMSectionExtractor.getContents());
-		}
+		mRTMSectionExtractor.populateOutputFile();
 	}
 }

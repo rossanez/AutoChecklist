@@ -9,9 +9,11 @@ import com.autochecklist.utils.Utils;
 
 	private StringBuilder mSectionContents;
 	private ExpressionExtractor mRTMIndicationExtractor;
+	private IRequirementsInfoOutBuildable mOutputBuilder;
 	private boolean mIsAcquiringSectionLines = false;
 
-	public RequirementsTraceabilityMatrixSectionExtractor() {
+	public RequirementsTraceabilityMatrixSectionExtractor(IRequirementsInfoOutBuildable outputBuilder) {
+		mOutputBuilder = outputBuilder;
 		mRTMIndicationExtractor = new ExpressionExtractor("RegexRules/rtmsection.rules");
 		clearContents();
 	}
@@ -43,5 +45,11 @@ import com.autochecklist.utils.Utils;
 		if ((matched == null) || matched.isEmpty()) return false;
 
 		return true;
+	}
+
+	public void populateOutputFile() {
+		if (mOutputBuilder != null) {
+		    mOutputBuilder.addRTMContents(getContents());
+		}
 	}
 }
