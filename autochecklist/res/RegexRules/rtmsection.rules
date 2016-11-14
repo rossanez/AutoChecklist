@@ -1,0 +1,45 @@
+{
+   ruleType: "tokens",
+   pattern: ( /requirements-traceability-matrix/ ),
+   result: "REQUIREMENTS-TRACEABILITY-MATRIX_ID"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /requirements-traceability/ /matrix/ ),
+   result: "REQUIREMENTS-TRACEABILITY_MATRIX_ID"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /requirements/ /traceability/ /matrix/ ),
+   result: "REQUIREMENTS_TRACEABILITY_MATRIX_ID"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /requirements-traceability/ ),
+   result: "REQUIREMENTS-TRACEABILITY_ID"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /requirements/ /traceability/ ),
+   result: "REQUIREMENTS_TRACEABILITY_ID"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /traceability-matrix/ ),
+   result: "TRACEABILITY-MATRIX_ID"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /traceability/ /matrix/ ),
+   result: "TRACEABILITY_MATRIX_ID"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /traceability/ ),
+   result: "TRACEABILITY_ID"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /RTM/ ),
+   result: "RTM_ID"
+}

@@ -17,12 +17,13 @@ public class DocumentSectionsExtractor {
 	private String mPlainText;
     private IRequirementsInfoOutBuildable mOutputBuilder;
 	private ExpressionExtractor mSectionIdExtractor;
-	private RequirementsTraceabilityMatrixSection mRTMSection;
+	private RequirementsTraceabilityMatrixSectionExtractor mRTMSectionExtractor;
 
 	public DocumentSectionsExtractor(String text, IRequirementsInfoOutBuildable outputBuilder) {
 		mPlainText = text;
 		mOutputBuilder = outputBuilder;
-		this.mSectionIdExtractor = new ExpressionExtractor("RegexRules/sectionid.rules");
+		mSectionIdExtractor = new ExpressionExtractor("RegexRules/sectionid.rules");
+		mRTMSectionExtractor = new RequirementsTraceabilityMatrixSectionExtractor();
 	}
 	
 	public void extract() {
@@ -35,9 +36,9 @@ public class DocumentSectionsExtractor {
 		String line = null;
 		try {
 			while ((line = bufReader.readLine()) != null) {
-				if ((mRTMSection != null) && mRTMSection.isAcquiringSectionLines()
-						&& !Utils.isTextEmpty(line)) {
-						mRTMSection.appendLine(line);
+				// Append RTM content if applicable.
+				if (mRTMSectionExtractor.isAcquiringSectionLines() && !Utils.isTextEmpty(line)) {
+					mRTMSectionExtractor.appendLine(line);
 				}
 
 				if (!Utils.isTextEmpty(line)) {
@@ -69,11 +70,11 @@ public class DocumentSectionsExtractor {
 					DocumentSection currSection = new DocumentSection(sectionId, description);
 					sections.put(sectionId, currSection);
 
-					if (RequirementsTraceabilityMatrixSection.isRTMSectionDescription(description)) {
-						mRTMSection = new RequirementsTraceabilityMatrixSection(currSection);
-						mRTMSection.setAcquiringSectionLines(true);
-					} else if (mRTMSection != null) {
-						mRTMSection.setAcquiringSectionLines(false);
+					if (mRTMSectionExtractor.isRTMSectionDescription(description)) {
+						mRTMSectionExtractor.clearContents();
+						mRTMSectionExtractor.setAcquiringSectionLines(true);
+					} else {
+						mRTMSectionExtractor.setAcquiringSectionLines(false);
 					}
 				}
 			}
@@ -85,6 +86,7 @@ public class DocumentSectionsExtractor {
 	}
 
 	private void populateOutputFile(List<String> sectionIds, Map<String, DocumentSection> sections) {
+		// First the sections content.
 		for (String sectionId : sectionIds) {
 			String id = sections.get(sectionId).getId();
 			String description = sections.get(sectionId).getDescription();
@@ -92,8 +94,9 @@ public class DocumentSectionsExtractor {
 		    mOutputBuilder.addDocumentSection(id, description);
 		}
 
-		if (mRTMSection != null) {
-		    mOutputBuilder.addRTMContents(mRTMSection.getContents());
+		// Then the RTM content.
+		if (mRTMSectionExtractor != null) {
+		    mOutputBuilder.addRTMContents(mRTMSectionExtractor.getContents());
 		}
 	}
 }
