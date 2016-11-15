@@ -15,7 +15,11 @@ public class Question {
 	public static final int ANSWER_NO = 4;
 
 	private int mAnswerType = ANSWER_YES;
-	private List<Finding> mFindings;
+
+	private List<Finding> mWarningFindings;
+	private List<Finding> mNoFindings;
+	private List<Finding> mPossibleNoFindings;
+	private List<Finding> mPossibleYesFindings;
 
 	private String mText;
 	private int mId;
@@ -25,7 +29,10 @@ public class Question {
 		mId = id;
 		mText = text;
 
-		mFindings = new ArrayList<Finding>();
+		mWarningFindings = new ArrayList<Finding>();
+		mNoFindings = new ArrayList<Finding>();
+		mPossibleNoFindings = new ArrayList<Finding>();
+		mPossibleYesFindings = new ArrayList<Finding>();
 	}
 
 	public void setAction(QuestionAction action) {
@@ -80,10 +87,30 @@ public class Question {
 	}
 
 	public void addFinding(Finding finding) {
-		mFindings.add(finding);
+		if (finding.getAnswerType() == Question.ANSWER_NO) {
+			mNoFindings.add(finding);
+		} else if (finding.getAnswerType() == Question.ANSWER_POSSIBLE_NO) {
+			mPossibleNoFindings.add(finding);
+		} else if (finding.getAnswerType() == Question.ANSWER_WARNING) {
+			mWarningFindings.add(finding);
+		} else if (finding.getAnswerType() == Question.ANSWER_POSSIBLE_YES) {
+			mPossibleYesFindings.add(finding);
+		}
 	}
 
-	public List<Finding> getFindings() {
-		return mFindings;
+	public List<Finding> getPossibleYesFindings() {
+		return mPossibleYesFindings;
+	}
+
+	public List<Finding> getWarningFindings() {
+		return mWarningFindings;
+	}
+
+	public List<Finding> getNoFindings() {
+		return mNoFindings;
+	}
+
+	public List<Finding> getPossibleNoFindings() {
+		return mPossibleNoFindings;
 	}
 }

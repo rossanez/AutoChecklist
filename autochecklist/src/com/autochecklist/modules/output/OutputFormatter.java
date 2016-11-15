@@ -59,20 +59,63 @@ public class OutputFormatter extends Module {
 			for (Question question : questionCat.getAllQuestions()) {
 				outBuilder.append(question.getId()).append(". ")
 				    .append(question.getText()).append('\n');
-				outBuilder.append(" - Answer: ").append(question.getAnswerAsString()).append('\n');
-				List<Finding> findings = question.getFindings();
-				if (!findings.isEmpty()) {
-					outBuilder.append(" -init-list- ");
-				    for (Finding finding : findings) {
-				    	// We will not show "Yes" and "Possible Yes" findings in this view.
-				    	if (finding.getAnswerType() < Question.ANSWER_WARNING) continue;
 
-					    outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
-				    }
-				    outBuilder.append(" -end-list- ");
-				}
-				
-				outBuilder.append('\n');
+				// Following this precedence order:
+	        	// No > Possible No > Warning > Possible Yes > Yes
+	        	boolean hasFindings = false;
+	        	List<Finding> noFindings = question.getNoFindings();
+	        	if (!noFindings.isEmpty()) {
+	        		hasFindings = true;
+	        		outBuilder.append(" - Answer: No").append('\n');
+	        		outBuilder.append(" -init-list- ");
+	        		for (Finding finding : noFindings) {
+	        			outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
+	        		}
+	        		outBuilder.append(" -end-list- ");
+	        	}
+
+	        	List<Finding> possibleNoFindings = question.getPossibleNoFindings();
+	        	if (!possibleNoFindings.isEmpty()) {
+	                hasFindings = true;
+	        		outBuilder.append(" - Answer: Possible No").append('\n');
+
+	                outBuilder.append(" -init-list- ");
+	        		for (Finding finding : possibleNoFindings) {
+	        			outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
+	        		}
+	        		outBuilder.append(" -end-list- ");
+	        	}
+
+	        	List<Finding> warningFindings = question.getWarningFindings();
+	        	if (!warningFindings.isEmpty()) {
+	                hasFindings = true;
+	        		outBuilder.append(" - Answer: Warning").append('\n');
+
+	                outBuilder.append(" -init-list- ");
+	        		for (Finding finding : warningFindings) {
+	        			outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
+	        		}
+	        		outBuilder.append(" -end-list- ");
+	        	}
+
+	        	// Considering only findings more severe than "Possible Yes" in this view.
+//	        	List<Finding> possibleYesFindings = question.getPossibleYesFindings();
+//	        	if (!possibleYesFindings.isEmpty()) {
+//	                hasFindings = true;
+//	        		outBuilder.append(" - Answer: Possible Yes").append('\n');
+//
+//	                outBuilder.append(" -init-list- ");
+//	        		for (Finding finding : possibleYesFindings) {
+//	        			outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
+//	        		}
+//	        		outBuilder.append(" -end-list- ");
+//	        	}
+
+	        	if (!hasFindings) {
+	        		outBuilder.append(" - Answer: Yes").append('\n');
+	        	}
+
+	        	outBuilder.append('\n');
 			}
 		}
 
@@ -113,10 +156,9 @@ public class OutputFormatter extends Module {
 
         	List<Finding> possibleNoFindings = requirement.getPossibleNoFindings();
         	if (!possibleNoFindings.isEmpty()) {
-                if (!hasFindings) {
-                	hasFindings = true;
-            		outBuilder.append(" - Answer: Possible No").append('\n');
-                }
+                hasFindings = true;
+        		outBuilder.append(" - Answer: Possible No").append('\n');
+
                 outBuilder.append(" -init-list- ");
         		for (Finding finding : possibleNoFindings) {
         			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n').append(" /-- ");
@@ -126,10 +168,9 @@ public class OutputFormatter extends Module {
 
         	List<Finding> warningFindings = requirement.getWarningFindings();
         	if (!warningFindings.isEmpty()) {
-                if (!hasFindings) {
-                	hasFindings = true;
-        		    outBuilder.append(" - Answer: Warning").append('\n');
-                }
+                hasFindings = true;
+        		outBuilder.append(" - Answer: Warning").append('\n');
+
                 outBuilder.append(" -init-list- ");
         		for (Finding finding : warningFindings) {
         			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n').append(" /-- ");
@@ -139,10 +180,9 @@ public class OutputFormatter extends Module {
 
         	List<Finding> possibleYesFindings = requirement.getPossibleYesFindings();
         	if (!possibleYesFindings.isEmpty()) {
-                if (!hasFindings) {
-                	hasFindings = true;
-        		    outBuilder.append(" - Answer: Possible Yes").append('\n');
-                }
+                hasFindings = true;
+        		outBuilder.append(" - Answer: Possible Yes").append('\n');
+
                 outBuilder.append(" -init-list- ");
         		for (Finding finding : possibleYesFindings) {
         			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n').append(" /-- ");
