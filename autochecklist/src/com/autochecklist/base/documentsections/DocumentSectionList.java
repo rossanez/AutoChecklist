@@ -34,7 +34,7 @@ public class DocumentSectionList {
 		return mDocumentSections;
 	}
 
-	public void addRequirements(List<DocumentSection> sections) {
+	public void addSections(List<DocumentSection> sections) {
 		mDocumentSections.addAll(sections);
 	}
 

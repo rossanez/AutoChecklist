@@ -24,6 +24,10 @@ public class RequirementsTraceabilityMatrix {
 		obtainRTM(preprocFileName);
 	}
 
+	public boolean hasContents() {
+		return !Utils.isTextEmpty(mContents);
+	}
+
 	public String getContents() {
 		return mContents;
 	}
@@ -63,12 +67,13 @@ public class RequirementsTraceabilityMatrix {
 
 		NodeList nRTMSections = doc.getElementsByTagName("RTM");
 		
-		if ((nRTMSections == null) || (nRTMSections.getLength() != 1)) {
+		if (nRTMSections == null) { // It may be empty, but not null!
 			Utils.printError("Inconsistence on preprocessed file for RTM matrix!");
 			throw new RuntimeException("Inconsistence on preprocessed file for RTM matrix!");
 		}
 
 		Node nRTMSection = nRTMSections.item(0);
+		if (nRTMSection == null) return;
 		if (nRTMSection.getNodeType() == Node.ELEMENT_NODE) {
 			Element eElement = (Element) nRTMSection;
 			mContents = eElement.getTextContent();
