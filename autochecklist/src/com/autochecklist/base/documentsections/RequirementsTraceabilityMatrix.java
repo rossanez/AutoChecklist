@@ -7,6 +7,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -27,6 +28,17 @@ public class RequirementsTraceabilityMatrix {
 		return mContents;
 	}
 
+	public int countInstances(String instance) {
+		if (Utils.isTextEmpty(instance)) return -1;
+		if (Utils.isTextEmpty(mContents)) return -1;
+
+		return StringUtils.countMatches(mContents, instance);
+	}
+
+	public boolean containInstances(String instance) {
+		return countInstances(instance) > 0;
+	}
+	
 	private void obtainRTM(String fileName) {
 		try {
 			obtainRTM_internal(fileName);
