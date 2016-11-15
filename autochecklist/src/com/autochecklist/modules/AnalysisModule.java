@@ -1,5 +1,6 @@
 package com.autochecklist.modules;
 
+import com.autochecklist.base.Finding;
 import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
@@ -48,12 +49,21 @@ public abstract class AnalysisModule extends Module {
 	}
 
 	/**
+	 * This method should be overridden in the child classes if they need
+	 * to perform some action with the requirement before dealing with the questions.
+	 * @param requirement The current requirement.
+	 */
+	protected void preProcessRequirement(Requirement requirement) { }
+	
+	/**
 	 * This method will be called for each requirement in the list.
 	 * After it getting called, it will call {@code processRequirementForQuestion}
 	 * in a loop, for each available question.
 	 * @param requirement The current requirement
 	 */
-	protected void processRequirement(Requirement requirement) {
+	 protected final void processRequirement(Requirement requirement) {
+		preProcessRequirement(requirement);
+
 		for (Question question : mQuestions.getAllQuestions()) {
 			processRequirementForQuestion(requirement, question);
 		}
@@ -64,5 +74,39 @@ public abstract class AnalysisModule extends Module {
 	 * @param requirement The current requirement
 	 * @param question The current question
 	 */
-	protected abstract void processRequirementForQuestion(Requirement requirement, Question question);
+	protected final void processRequirementForQuestion(Requirement requirement, Question question) {
+		if (!question.hasAction()) {
+			handleQuestionWithoutAction(requirement, question);
+			return;
+		}
+
+		// Sends the action type and sub-type as parameters for convenience.
+		performQuestionAction(requirement, question,
+				question.getAction().getType(), question.getAction().getSubType());
+	}
+
+	/**
+	 * This method will be called for each question containing a defined action, 
+	 * given a requirement.
+	 * @param requirement The current requirement
+	 * @param question The current question
+	 * @param action The question action
+	 * @param subAction The question subAction (it may be null!)
+	 */
+	protected abstract void performQuestionAction(Requirement requirement, Question question,
+			int actionType, String actionSubType);
+
+	/**
+	 * This method sets a generic finding for each question which does not have a defined action.
+	 * @param requirement The current requirement
+	 * @param question The current question
+	 */
+	protected void handleQuestionWithoutAction(Requirement requirement, Question question) {
+		// Must be completely manually checked.
+		Finding finding = new Finding(question.getId(), requirement.getId(),
+				"Please check it manually.", Question.ANSWER_WARNING);
+		requirement.addFinding(finding);
+		question.addFinding(finding);
+		question.setAnswerType(finding.getAnswerType());
+	}
 }

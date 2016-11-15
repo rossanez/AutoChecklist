@@ -24,51 +24,41 @@ public class Incompleteness extends AnalysisModule {
 	}
 
 	@Override
-	public void processRequirement(Requirement requirement) {
-		Utils.println("Incompleteness: processing requirement " + requirement.getId());
+	public void preProcessRequirement(Requirement requirement) {
+		Utils.println("Incompleteness: Requirement " + requirement.getId());
 		List<Pair<String, String>> matchedExpressions = mExpressionExtractor.extract(requirement.getText());
 		mMatchedExpressionsForReq = new Pair<String, List<Pair<String, String>>> (requirement.getId(), matchedExpressions);
-
-        super.processRequirement(requirement);
 	}
 
 	@Override
-	protected void processRequirementForQuestion(Requirement requirement, Question question) {
-		if (question.hasAction()) {
-		    if (question.getAction().getType() == QuestionAction.ACTION_TYPE_DETECT) {
-				if ("EVENT_AND_ACTION".equals(question.getAction().getSubType())) {
-					handleActionsAndEvents(requirement, question);
-				} else if ("MISSING_NUMERIC_VALUE".equals(question.getAction().getSubType())) {
-                    handleMissingNumericValues(requirement, question);
-				}
-			} else {
-				// Terms and expressions extraction.
-				if ((mMatchedExpressionsForReq == null)
-						|| (!requirement.getId().equals(mMatchedExpressionsForReq.first))) {
-					// These are not for this requirement.
-					return;
-				}
-
-				List<Pair<String, String>> matchedList = mMatchedExpressionsForReq.second;
-				for (Pair<String, String> matched : matchedList) {
-					if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_EXTRACT_TERM_OR_EXPRESSION)
-							&& matched.first.equals(question.getAction().getSubType())) {
-						// Found a forbidden term or expression.
-						Finding finding = new Finding(question.getId(), requirement.getId(),
-								"Contains \"" + matched.second + "\".", Question.ANSWER_NO);
-						requirement.addFinding(finding);
-						question.addFinding(finding);
-						question.setAnswerType(finding.getAnswerType());
-					}
-				}
+	protected void performQuestionAction(Requirement requirement, Question question,
+			int actionType, String actionSubType) {
+	   if (actionType == QuestionAction.ACTION_TYPE_DETECT) {
+			if ("EVENT_AND_ACTION".equals(actionSubType)) {
+				handleActionsAndEvents(requirement, question);
+			} else if ("MISSING_NUMERIC_VALUE".equals(actionSubType)) {
+                handleMissingNumericValues(requirement, question);
 			}
 		} else {
-			// No action: Must be completely manually checked.
-			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Please check it manually.", Question.ANSWER_WARNING);
-			requirement.addFinding(finding);
-			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
+			// Terms and expressions extraction.
+			if ((mMatchedExpressionsForReq == null)
+					|| (!requirement.getId().equals(mMatchedExpressionsForReq.first))) {
+				// These are not for this requirement.
+				return;
+			}
+
+			List<Pair<String, String>> matchedList = mMatchedExpressionsForReq.second;
+			for (Pair<String, String> matched : matchedList) {
+				if ((actionType == QuestionAction.ACTION_TYPE_EXTRACT_TERM_OR_EXPRESSION)
+						&& matched.first.equals(actionSubType)) {
+					// Found a forbidden term or expression.
+					Finding finding = new Finding(question.getId(), requirement.getId(),
+							"Contains \"" + matched.second + "\".", Question.ANSWER_NO);
+					requirement.addFinding(finding);
+					question.addFinding(finding);
+					question.setAnswerType(finding.getAnswerType());
+				}
+			}
 		}
 	}
 

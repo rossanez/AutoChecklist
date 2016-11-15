@@ -27,35 +27,31 @@ public class Traceability extends AnalysisModule {
 	}
 
 	@Override
-	public void processRequirement(Requirement requirement) {
-		Utils.println("Traceability: processing requirement " + requirement.getId());
+	public void preProcessRequirement(Requirement requirement) {
+		Utils.println("Traceability: Requirement " + requirement.getId());
 
 		// Get the number of occurrences of the requirement in the traceability matrix.
 		int numRTMInstances = mRTM.countInstances(requirement.getId());
 		if (numRTMInstances > 0) {
 			mRTMInstances.put(requirement.getId(), numRTMInstances);
 		}
-
-		super.processRequirement(requirement);
 	}
 
 	@Override
-	protected void processRequirementForQuestion(Requirement requirement, Question question) {
-		if (question.hasAction()) {
-			if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_CONTAINS)
-			   && ("RTM".equals(question.getAction().getSubType()))) {
-				handleRTMContains(requirement, question);
-			} else if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_CORRECT_TRACEABILITY)
-					   && ("RTM".equals(question.getAction().getSubType()))) {
-				handleRTMContainsCorrect(requirement, question);
-			}
-		} else {
-			// No action: Must be completely manually checked.
-			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Please check it manually.", Question.ANSWER_WARNING);
-			requirement.addFinding(finding);
-			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
+	protected void handleQuestionWithoutAction(Requirement requirement, Question question) {
+		// TODO delete this method and implement performQuestionAction below completely!
+		question.setAnswerType(Question.ANSWER_YES);
+	}
+
+	@Override
+	protected void performQuestionAction(Requirement requirement, Question question,
+			int actionType, String actionSubType) {
+		if ((actionType == QuestionAction.ACTION_TYPE_CONTAINS)
+		   && ("RTM".equals(actionSubType))) {
+			handleRTMContains(requirement, question);
+		} else if ((actionType == QuestionAction.ACTION_TYPE_CORRECT_TRACEABILITY)
+				   && ("RTM".equals(actionSubType))) {
+			handleRTMContainsCorrect(requirement, question);
 		}
 	}
 

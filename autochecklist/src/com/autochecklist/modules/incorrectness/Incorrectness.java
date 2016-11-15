@@ -26,42 +26,32 @@ public class Incorrectness extends AnalysisModule {
 	}
 
 	@Override
-	public void processRequirement(Requirement requirement) {
-		Utils.println("Incorrectness: processing requirement " + requirement.getId());
+	public void preProcessRequirement(Requirement requirement) {
+		Utils.println("Incorrectness: Requirement " + requirement.getId());
 		List<Pair<String, String>> matchedExpressions = mExpressionExtractor.extract(requirement.getText());
 		mMatchedExpressionsForReq = new Pair<String, List<Pair<String, String>>> (requirement.getId(), matchedExpressions);
-
-		super.processRequirement(requirement);
 	}
 
 	@Override
-	protected void processRequirementForQuestion(Requirement requirement, Question question) {
-		if (question.hasAction()) {
-			if ((mMatchedExpressionsForReq == null) || (!requirement.getId().equals(mMatchedExpressionsForReq.first))) {
-				// These are not for this requirement.
-				return;
-			}
+	protected void performQuestionAction(Requirement requirement, Question question,
+			int actionType, String actionSubType) {
+		if ((mMatchedExpressionsForReq == null) || (!requirement.getId().equals(mMatchedExpressionsForReq.first))) {
+			// These are not for this requirement.
+			return;
+		}
 			
-			List<Pair<String, String>> matchedList = mMatchedExpressionsForReq.second;
-			for (Pair<String, String> matched : matchedList) {
-				if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_EXTRACT_TERM_OR_EXPRESSION)
-						&& matched.first.equals(question.getAction().getSubType())) {
-					// Found a forbidden term or expression - generate a negative answer.
-					handleForbiddenTermsOrExpressions(requirement, question, matched);
-				} else if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_CHECK_NUMBER_AND_UNIT)
-						&& matched.first.equals("NUMBER_AND_UNIT")) {
-					// Found a numeric item.
-					handleNumbersAndUnits(requirement, question, matched);
-				}
+		List<Pair<String, String>> matchedList = mMatchedExpressionsForReq.second;
+		for (Pair<String, String> matched : matchedList) {
+			if ((actionType == QuestionAction.ACTION_TYPE_EXTRACT_TERM_OR_EXPRESSION)
+					&& matched.first.equals(actionSubType)) {
+				// Found a forbidden term or expression - generate a negative answer.
+				handleForbiddenTermsOrExpressions(requirement, question, matched);
+			} else if ((actionType == QuestionAction.ACTION_TYPE_CHECK_NUMBER_AND_UNIT)
+					&& matched.first.equals("NUMBER_AND_UNIT")) {
+				// Found a numeric item.
+				handleNumbersAndUnits(requirement, question, matched);
 			}
-		} else {
-			// No action: Must be completely manually checked.
-			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Please check it manually.", Question.ANSWER_WARNING);
-			requirement.addFinding(finding);
-			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
-		} 
+		}
 	}
 
 	private void handleForbiddenTermsOrExpressions(Requirement requirement, Question question,
