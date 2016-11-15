@@ -86,6 +86,8 @@ public class Checklist {
 		if ("extract".equals(action)) return QuestionAction.ACTION_TYPE_EXTRACT_TERM_OR_EXPRESSION;
 		else if ("numeric".equals(action)) return QuestionAction.ACTION_TYPE_CHECK_NUMBER_AND_UNIT;
 		else if ("detect".equals(action)) return QuestionAction.ACTION_TYPE_DETECT;
+		else if ("contains".equals(action)) return QuestionAction.ACTION_TYPE_CONTAINS;
+		else if ("correct".equals(action)) return QuestionAction.ACTION_TYPE_CORRECT_TRACEABILITY;
 
 		return -1;
 	}

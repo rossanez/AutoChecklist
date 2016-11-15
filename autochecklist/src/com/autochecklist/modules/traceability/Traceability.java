@@ -1,8 +1,13 @@
 package com.autochecklist.modules.traceability;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.autochecklist.base.Finding;
 import com.autochecklist.base.documentsections.DocumentSectionList;
 import com.autochecklist.base.documentsections.RequirementsTraceabilityMatrix;
 import com.autochecklist.base.questions.Question;
+import com.autochecklist.base.questions.QuestionAction;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.AnalysisModule;
@@ -12,22 +17,96 @@ public class Traceability extends AnalysisModule {
 
 	private DocumentSectionList mDocumentSections;
 	private RequirementsTraceabilityMatrix mRTM;
+	private Map<String, Integer> mRTMInstances;
 
 	public Traceability(QuestionCategory questions, DocumentSectionList sections, RequirementsTraceabilityMatrix rtmSection) {
 		super(questions);
 		mDocumentSections = sections;
 		mRTM = rtmSection;
+		mRTMInstances = new HashMap<String, Integer>();
 	}
 
 	@Override
 	public void processRequirement(Requirement requirement) {
 		Utils.println("Traceability: processing requirement " + requirement.getId());
+
+		// Get the number of occurrences of the requirement in the traceability matrix.
+		int numRTMInstances = mRTM.countInstances(requirement.getId());
+		if (numRTMInstances > 0) {
+			mRTMInstances.put(requirement.getId(), numRTMInstances);
+		}
+
 		super.processRequirement(requirement);
 	}
 
 	@Override
 	protected void processRequirementForQuestion(Requirement requirement, Question question) {
-        // TODO process this correctly.
-		question.setAnswerType(Question.ANSWER_YES);
+		if (question.hasAction()) {
+			if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_CONTAINS)
+			   && ("RTM".equals(question.getAction().getSubType()))) {
+				handleRTMContains(requirement, question);
+			} else if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_CORRECT_TRACEABILITY)
+					   && ("RTM".equals(question.getAction().getSubType()))) {
+				handleRTMContainsCorrect(requirement, question);
+			}
+		} else {
+			// No action: Must be completely manually checked.
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Please check it manually.", Question.ANSWER_WARNING);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		}
+	}
+
+	private void handleRTMContains(Requirement requirement, Question question) {
+		if (!mRTM.hasContents()) {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Unable to find the requirements traceability matrix in the document!",
+					Question.ANSWER_WARNING);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		} else if (mRTMInstances.containsKey(requirement.getId())) {
+			int numInstances = mRTMInstances.get(requirement.getId());
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Found " + numInstances
+			        + ((numInstances > 1) ? " instances" : " instance") 
+					+ " of \"" + requirement.getId() + "\" in the traceability matrix.",
+					Question.ANSWER_POSSIBLE_YES);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		} else {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Not found in the traceability matrix!", Question.ANSWER_NO);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		}
+	}
+
+	private void handleRTMContainsCorrect(Requirement requirement, Question question) {
+		if (!mRTM.hasContents()) {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Unable to find the requirements traceability matrix in the document!",
+					Question.ANSWER_WARNING);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		} else if (mRTMInstances.containsKey(requirement.getId())) {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Please check if the traceability is correct.",
+					Question.ANSWER_WARNING);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		} else {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Not found in the traceability matrix!", Question.ANSWER_NO);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		}
 	}
 }
