@@ -38,6 +38,24 @@ public class DocumentSectionList {
 		mDocumentSections.addAll(sections);
 	}
 
+	public boolean isEmpty() {
+		return (mDocumentSections == null) || mDocumentSections.isEmpty();
+	}
+
+	public boolean containsId(String id) {
+		if (isEmpty()) return false;
+		if (Utils.isTextEmpty(id)) return false;
+
+		// Sequential search :-(
+		for (DocumentSection section : mDocumentSections) {
+			if (id.equals(section.getId())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private void obtainDocumentSections(String fileName) {
 		try {
 			obtainDocumentSections_internal(fileName);

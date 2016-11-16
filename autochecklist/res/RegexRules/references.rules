@@ -1,0 +1,12 @@
+$REFERENCE_ID_FORMAT = "/[0-9]+([\.\-][0-9]+)+[\:\;\-]?/"
+$SQBRACKETS_REFERENCE_ID_FORMAT = "/\[(a-zA-Z0-9)+\]/"
+{
+   ruleType: "tokens",
+   pattern: ( $REFERENCE_ID_FORMAT ),
+   result: "REFERENCE_ID"
+}
+{
+   ruleType: "tokens",
+   pattern: ( $SQBRACKETS_REFERENCE_ID_FORMAT ),
+   result: "SQBRACKETS_REFERENCE_ID"
+}

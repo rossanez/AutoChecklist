@@ -42,7 +42,7 @@ public abstract class AnalysisModule extends Module {
 	 * This method will start the analysis of the requirements.
 	 * @param requirements The list of requirements
 	 */
-	private void processRequirements(RequirementList requirements) {
+	protected void processRequirements(RequirementList requirements) {
 		for (Requirement req : requirements.getRequirements()) {
 			processRequirement(req);
 		}
