@@ -3,9 +3,9 @@
     <category type="traceability">
         <question id="1" action="contains, RTM">In the traceability matrix of the software requirements document, are all the software requirements traced to at least a system or an interface requirement?</question>
         <question id="2" action="correct, RTM">In the traceability matrix of the software requirements document, are all the software requirements traced to the correct system or interface requirement?</question>
-        <question id="3">In the text of the software requirements in which there is a reference to a requirement or section of other document, is this reference traced to the correct requirement or section?</question>
+        <question id="3" action="reference, external">In the text of the software requirements in which there is a reference to a requirement or section of other document, is this reference traced to the correct requirement or section?</question>
         <question id="4">In the text of the software requirements in which there is a reference to some function, is this reference traced to the correct function?</question>
-        <question id="5">In the text of the software requirements in which there is a reference to another requirement or a section of the same document, is this reference traced to the correct requirement or section?</question>
+        <question id="5" action="reference, internal">In the text of the software requirements in which there is a reference to another requirement or a section of the same document, is this reference traced to the correct requirement or section?</question>
     </category>
     <category type="incompleteness">
         <question id="6" action="detect, missing numeric value">In the text of the software requirements in which there should be the specification of a numeric value, is this numeric value defined?</question>

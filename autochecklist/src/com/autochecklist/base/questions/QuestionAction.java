@@ -8,6 +8,7 @@ public class QuestionAction {
 	public static final int ACTION_TYPE_DETECT = 2;
 	public static final int ACTION_TYPE_CONTAINS = 3;
 	public static final int ACTION_TYPE_CORRECT_TRACEABILITY = 4;
+	public static final int ACTION_TYPE_REFERENCE = 5;
 
 	private int mType;
 	private String mSubType;

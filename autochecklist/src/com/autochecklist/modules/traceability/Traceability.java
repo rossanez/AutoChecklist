@@ -86,9 +86,82 @@ public class Traceability extends AnalysisModule {
 		} else if ((actionType == QuestionAction.ACTION_TYPE_CORRECT_TRACEABILITY)
 				   && ("RTM".equals(actionSubType))) {
 			handleRTMContainsCorrect(requirement, question);
+		} else if (actionType == QuestionAction.ACTION_TYPE_REFERENCE) {
+			handleReferences(requirement, question, actionSubType);
 		}
 	}
 
+	private void handleReferences(Requirement requirement, Question question, String type) {
+		if ("INTERNAL".equals(type)) {
+			handleInternalReferences(requirement, question);
+		} else if ("EXTERNAL".equals(type)) {
+			handleExternalReferences(requirement, question);
+		}
+	}
+
+	private void handleInternalReferences(Requirement requirement, Question question) {
+		StringBuilder sb = new StringBuilder();
+		if ((mInternalReferences != null) && !mInternalReferences.isEmpty()) {
+			sb.append('\n').append("Possible internal references:");
+			for (String internalRef : mInternalReferences) {
+				sb.append('\n').append("- ").append(internalRef);
+			}
+		}
+		if ((mInternalReqReferences != null) && !mInternalReqReferences.isEmpty()) {
+			sb.append('\n').append("Possible internal requirements:");
+			for (String internalReq : mInternalReqReferences) {
+				sb.append('\n').append("- ").append(internalReq);
+			}
+		}
+
+		if (sb.length() > 0) {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Please check if the internal references are correct." + sb.toString(),
+					Question.ANSWER_WARNING);
+		    question.addFinding(finding);
+		    requirement.addFinding(finding);
+		    question.setAnswerType(finding.getAnswerType());
+		} else {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Unable to find instances of internal requirements or references. You may want to check it manually.",
+					Question.ANSWER_POSSIBLE_YES);
+		    question.addFinding(finding);
+		    requirement.addFinding(finding);
+		    question.setAnswerType(finding.getAnswerType());
+		}
+	}
+
+	private void handleExternalReferences(Requirement requirement, Question question) {
+		StringBuilder sb = new StringBuilder();
+		if ((mExternalReferences != null) && !mExternalReferences.isEmpty()) {
+			sb.append('\n').append("Possible external references:");
+			for (String internalRef : mExternalReferences) {
+				sb.append('\n').append("- ").append(internalRef);
+			}
+		}
+		if ((mExternalReqReferences != null) && !mExternalReqReferences.isEmpty()) {
+			sb.append('\n').append("Possible external requirements:");
+			for (String internalReq : mExternalReqReferences) {
+				sb.append('\n').append("- ").append(internalReq);
+			}
+		}
+
+		if (sb.length() > 0) {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Please check if the external references are correct." + sb.toString(),
+					Question.ANSWER_WARNING);
+		    question.addFinding(finding);
+		    requirement.addFinding(finding);
+		    question.setAnswerType(finding.getAnswerType());
+		} else {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Unable to find instances of external requirements or references. You may want to check it manually.",
+					Question.ANSWER_POSSIBLE_YES);
+		    question.addFinding(finding);
+		    requirement.addFinding(finding);
+		    question.setAnswerType(finding.getAnswerType());
+		}
+	}
 
 	private void evaluateReferences(Requirement requirement) {
 		// Clear all the lists.

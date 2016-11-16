@@ -88,6 +88,7 @@ public class Checklist {
 		else if ("detect".equals(action)) return QuestionAction.ACTION_TYPE_DETECT;
 		else if ("contains".equals(action)) return QuestionAction.ACTION_TYPE_CONTAINS;
 		else if ("correct".equals(action)) return QuestionAction.ACTION_TYPE_CORRECT_TRACEABILITY;
+		else if ("reference".equals(action)) return QuestionAction.ACTION_TYPE_REFERENCE;
 
 		return -1;
 	}
