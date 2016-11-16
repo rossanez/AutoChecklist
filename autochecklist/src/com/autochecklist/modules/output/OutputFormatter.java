@@ -98,18 +98,19 @@ public class OutputFormatter extends Module {
 	        		outBuilder.append(" -end-list- ");
 	        	}
 
-	        	// Considering only findings more severe than "Possible Yes" in this view.
-//	        	List<Finding> possibleYesFindings = question.getPossibleYesFindings();
-//	        	if (!possibleYesFindings.isEmpty()) {
-//	                hasFindings = true;
-//	        		outBuilder.append(" - Answer: Possible Yes").append('\n');
-//
-//	                outBuilder.append(" -init-list- ");
+	        	List<Finding> possibleYesFindings = question.getPossibleYesFindings();
+	        	if (!possibleYesFindings.isEmpty()) {
+	        		outBuilder.append(" - Answer: Possible Yes").append('\n');
+	        		hasFindings = true;
+
+	                outBuilder.append(" -init-list- ");
+	                outBuilder.append(" -- ").append("Please check the requirements view for further information.").append(" /-- ");
+	                // Considering only findings more severe than "Possible Yes" in this view.
 //	        		for (Finding finding : possibleYesFindings) {
 //	        			outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
 //	        		}
-//	        		outBuilder.append(" -end-list- ");
-//	        	}
+	        		outBuilder.append(" -end-list- ");
+	        	}
 
 	        	if (!hasFindings) {
 	        		outBuilder.append(" - Answer: Yes").append('\n');
