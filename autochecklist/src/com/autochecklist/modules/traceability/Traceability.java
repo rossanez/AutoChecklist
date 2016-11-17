@@ -102,7 +102,7 @@ public class Traceability extends AnalysisModule {
 	private void handleInternalReferences(Requirement requirement, Question question) {
 		StringBuilder sb = new StringBuilder();
 		if ((mInternalReferences != null) && !mInternalReferences.isEmpty()) {
-			sb.append('\n').append("Possible internal sections:");
+			sb.append('\n').append("Possible internal references:");
 			for (String internalRef : mInternalReferences) {
 				sb.append('\n').append("- ").append(internalRef);
 			}
@@ -134,7 +134,7 @@ public class Traceability extends AnalysisModule {
 	private void handleExternalReferences(Requirement requirement, Question question) {
 		StringBuilder sb = new StringBuilder();
 		if ((mExternalReferences != null) && !mExternalReferences.isEmpty()) {
-			sb.append('\n').append("Possible external sections:");
+			sb.append('\n').append("Possible external references:");
 			for (String internalRef : mExternalReferences) {
 				sb.append('\n').append("- ").append(internalRef);
 			}
