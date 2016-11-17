@@ -102,7 +102,7 @@ public class Traceability extends AnalysisModule {
 	private void handleInternalReferences(Requirement requirement, Question question) {
 		StringBuilder sb = new StringBuilder();
 		if ((mInternalReferences != null) && !mInternalReferences.isEmpty()) {
-			sb.append('\n').append("Possible internal references:");
+			sb.append('\n').append("Possible internal sections:");
 			for (String internalRef : mInternalReferences) {
 				sb.append('\n').append("- ").append(internalRef);
 			}
@@ -134,7 +134,7 @@ public class Traceability extends AnalysisModule {
 	private void handleExternalReferences(Requirement requirement, Question question) {
 		StringBuilder sb = new StringBuilder();
 		if ((mExternalReferences != null) && !mExternalReferences.isEmpty()) {
-			sb.append('\n').append("Possible external references:");
+			sb.append('\n').append("Possible external sections:");
 			for (String internalRef : mExternalReferences) {
 				sb.append('\n').append("- ").append(internalRef);
 			}
@@ -170,9 +170,9 @@ public class Traceability extends AnalysisModule {
 		mExternalReqReferences.clear();
 		mExternalReferences.clear();
 
-		// Search for references.
-		findRequirementsReferences(requirement.getText());
+		// Search for references. The calling order matters!
 		findReferences(requirement.getText());
+		findRequirementsReferences(requirement.getText());
 	}
 
 	private void findRequirementsReferences(String reqText) {
@@ -181,11 +181,23 @@ public class Traceability extends AnalysisModule {
 		List<Pair<String, String>> matched = mReqIdExtractor.extract(reqText);
 		if ((matched != null) && (!matched.isEmpty())) {
 			for (Pair<String, String> instance : matched) {
-				String reqRef = instance.second;
-				if (isInternalReqReference(reqRef)) {
-					mInternalReqReferences.add(reqRef);
+				// Take the ID from the text, not the matched, because it may not be exactly as is.
+				String matchedReqReference = instance.second;
+				String reqIdFound = reqText.substring(reqText.indexOf(matchedReqReference)).trim();
+				int lastIndex = reqIdFound.indexOf(" ");
+				if (lastIndex < 0) lastIndex = reqIdFound.length();
+				reqIdFound = reqIdFound.substring(0, lastIndex);
+
+				if (Utils.isTextEmpty(reqIdFound)) continue;
+
+				if (isInternalReqReference(reqIdFound)) {
+					mInternalReqReferences.add(reqIdFound);
 				} else {
-					mExternalReqReferences.add(reqRef);
+					// For the external case, some requirements/sections
+					// may be repeated.
+					if (!mExternalReferences.contains(reqIdFound)) {
+					    mExternalReqReferences.add(reqIdFound);
+					}
 				}
 			}
 		}
@@ -218,7 +230,11 @@ public class Traceability extends AnalysisModule {
 				if (isInternalReference(ref)) {
 					mInternalReferences.add(ref);
 				} else {
-					mExternalReferences.add(ref);
+					// For the external case, some requirements/sections
+					// may be repeated.
+					if (!mExternalReqReferences.contains(ref)) {
+					    mExternalReferences.add(ref);
+					}
 				}
 			}
 		}
