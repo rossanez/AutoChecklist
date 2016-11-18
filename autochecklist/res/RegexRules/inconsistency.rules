@@ -1,0 +1,15 @@
+{
+   ruleType: "tokens",
+   pattern: ( /watch-dog/ ),
+   result: "WATCH-DOG"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /watch/ /dog/ ),
+   result: "WATCH_DOG"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /watchdog/ ),
+   result: "WATCHDOG"
+}
