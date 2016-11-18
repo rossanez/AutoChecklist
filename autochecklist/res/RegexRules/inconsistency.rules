@@ -1,3 +1,15 @@
+$NUMBER_AND_UNIT = "/($INCLUDE_NUMBERS)/ /(($INCLUDE_PREFIXES)?($INCLUDE_TIME_FREQUENCY)([0-9]+)?)([\/\-\.]($INCLUDE_PREFIXES)?($INCLUDE_TIME_FREQUENCY)([0-9]+)?)?[\.]?/"
+$NUMBER_AND_UNIT_CAT = "/($INCLUDE_NUMBERS)(($INCLUDE_PREFIXES)?($INCLUDE_TIME_FREQUENCY)([0-9]+)?)([\/\-\.]($INCLUDE_PREFIXES)?($INCLUDE_TIME_FREQUENCY)([0-9]+)?)?[\.]?/"
+{
+   ruleType: "tokens",
+   pattern: ( $NUMBER_AND_UNIT ),
+   result: "TIME_NUMBER_AND_UNIT"
+}
+{
+   ruleType: "tokens",
+   pattern: ( $NUMBER_AND_UNIT_CAT ),
+   result: "TIME_NUMBER_AND_UNIT"
+}
 {
    ruleType: "tokens",
    pattern: ( /watch-dog/ ),
