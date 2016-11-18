@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.autochecklist.base.Finding;
 import com.autochecklist.base.questions.Question;
+import com.autochecklist.base.questions.QuestionAction;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.AnalysisModule;
@@ -15,13 +17,13 @@ import com.autochecklist.utils.nlp.ExpressionExtractor;
 public class Inconsistency extends AnalysisModule {
 
 	private ExpressionExtractor mExpressionExtractor;
-	private Set<String> mContainsWatchDogReferences;
+	private Set<String> mWatchDogReferences;
 
 	public Inconsistency(QuestionCategory questions) {
 		super(questions);
 
 		mExpressionExtractor = new ExpressionExtractor("RegexRules/inconsistency.rules");
-		mContainsWatchDogReferences = new HashSet<String>();
+		mWatchDogReferences = new HashSet<String>();
 	}
 
 	@Override
@@ -29,7 +31,7 @@ public class Inconsistency extends AnalysisModule {
 		Utils.println("Inconsistency: Requirement " + requirement.getId());
 
 		if (findWatchDogReferences(requirement.getText())) {
-			mContainsWatchDogReferences.add(requirement.getId());
+			mWatchDogReferences.add(requirement.getId());
 		}
 	}
 
@@ -42,9 +44,30 @@ public class Inconsistency extends AnalysisModule {
 	@Override
 	protected void performQuestionAction(Requirement requirement, Question question,
 			int actionType, String actionSubType) {
-		// TODO implement it!
+		if ((actionType == QuestionAction.ACTION_TYPE_CONTAINS)
+				   && ("WATCHDOG".equals(actionSubType))) {
+			handleWatchDogReferences(requirement, question);
+		}
 	}
 
+	private void handleWatchDogReferences(Requirement requirement, Question question) {
+		if (mWatchDogReferences.contains(requirement.getId())) {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Contains watch dog references. Please check for consistency!",
+					Question.ANSWER_WARNING);
+		    question.addFinding(finding);
+		    requirement.addFinding(finding);
+		    question.setAnswerType(finding.getAnswerType());
+		} else {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Unable to find watch dog references. You may want to check it manually.",
+					Question.ANSWER_POSSIBLE_YES);
+		    question.addFinding(finding);
+		    requirement.addFinding(finding);
+		    question.setAnswerType(finding.getAnswerType());
+		}
+	}
+	
 	private boolean findWatchDogReferences(String text) {
 		if (Utils.isTextEmpty(text)) return false;
 
