@@ -23,7 +23,7 @@ public class Traceability extends AnalysisModule {
 	private DocumentSectionList mDocumentSections;
 	private RequirementsTraceabilityMatrix mRTM;
 
-	private ExpressionExtractor mReqIdExtractor;
+	private ExpressionExtractor mInternalReqIdExtractor;
 	private ExpressionExtractor mReferencesExtractor;
 
 	private List<Requirement> mRequirementList;
@@ -39,7 +39,7 @@ public class Traceability extends AnalysisModule {
 		super(questions);
 		mDocumentSections = sections;
 		mRTM = rtmSection;
-		mReqIdExtractor = new ExpressionExtractor("RegexRules/requirementid.rules");
+		mInternalReqIdExtractor = new ExpressionExtractor("RegexRules/requirementid.rules");
 		mReferencesExtractor = new ExpressionExtractor("RegexRules/references.rules");
 		mRTMInstances = new HashMap<String, Integer>();
 		mInternalReqReferences = new ArrayList<String>();
@@ -171,14 +171,14 @@ public class Traceability extends AnalysisModule {
 		mExternalReferences.clear();
 
 		// Search for references. The calling order matters!
-		findReferences(requirement.getText());
-		findRequirementsReferences(requirement.getText());
+		findReferencesAndExternalRequirements(requirement.getText());
+		findInternalRequirements(requirement.getText());
 	}
 
-	private void findRequirementsReferences(String reqText) {
+	private void findInternalRequirements(String reqText) {
 		if (Utils.isTextEmpty(reqText)) return;
 
-		List<Pair<String, String>> matched = mReqIdExtractor.extract(reqText);
+		List<Pair<String, String>> matched = mInternalReqIdExtractor.extract(reqText);
 		if ((matched != null) && (!matched.isEmpty())) {
 			for (Pair<String, String> instance : matched) {
 				// Take the ID from the text, not the matched, because it may not be exactly as is.
@@ -190,17 +190,86 @@ public class Traceability extends AnalysisModule {
 
 				if (Utils.isTextEmpty(reqIdFound)) continue;
 
+				// Only adding if it is an internal requirement.
+				// External references will be evaluated on findReferencesAndExternalRequirements.
 				if (isInternalReqReference(reqIdFound)) {
-					mInternalReqReferences.add(reqIdFound);
-				} else {
-					// For the external case, some requirements/sections
-					// may be repeated.
-					if (!mExternalReferences.contains(reqIdFound)) {
-					    mExternalReqReferences.add(reqIdFound);
-					}
+				    addFoundReqReference(reqIdFound);
 				}
 			}
 		}
+	}
+
+	private void findReferencesAndExternalRequirements(String reqText) {
+		if (Utils.isTextEmpty(reqText)) return;
+
+		List<Pair<String, String>> matched = mReferencesExtractor.extract(reqText);
+		if ((matched != null) && (!matched.isEmpty())) {
+			// Sequential search :-(
+			for (Pair<String, String> instance : matched) {
+				String refId = extractReferenceId(instance.second);
+				if (isReference(instance.first)) {
+				    addFoundReference(refId);
+				} else if (isRequirement(instance.first)) {
+					// External requirement.
+					addFoundReqReference(refId);
+				}
+			}
+		}
+	}
+
+	private boolean isReference(String matchType) {
+		if (Utils.isTextEmpty(matchType)) return false;
+
+		return matchType.contains("REFERENCE");
+	}
+
+	private boolean isRequirement(String matchType) {
+		if (Utils.isTextEmpty(matchType)) return false;
+
+		return matchType.contains("REQUIREMENT");
+	}
+	
+	private String extractReferenceId(String refText) {
+		if (Utils.isTextEmpty(refText)) return null;
+
+		String[] tokens = refText.split(" ");
+		if ((tokens == null) || (tokens.length < 1)) return null;
+
+		// returns the last token.
+		return tokens[tokens.length -1];
+	}
+
+	private void addFoundReference(String refId) {
+		if (isInternalReference(refId)) {
+			mInternalReferences.add(refId);
+		} else {
+			// For the external case, some requirements/sections
+			// may be repeated.
+			if (!mExternalReqReferences.contains(refId)) {
+			    mExternalReferences.add(refId);
+			}
+		}
+	}
+
+	private void addFoundReqReference(String reqIdFound) {
+		if (isInternalReqReference(reqIdFound)) {
+			mInternalReqReferences.add(reqIdFound);
+		} else {
+			// For the external case, some requirements/sections
+			// may be repeated.
+			if (!mExternalReferences.contains(reqIdFound)) {
+			    mExternalReqReferences.add(reqIdFound);
+			}
+		}
+	}
+
+	private boolean isInternalReference(String ref) {
+		if (Utils.isTextEmpty(ref)) return false;
+		if ((mDocumentSections == null) || mDocumentSections.isEmpty()) {
+			return false;
+		}
+
+		return mDocumentSections.containsId(ref);
 	}
 
 	private boolean isInternalReqReference(String reqRef) {
@@ -217,36 +286,6 @@ public class Traceability extends AnalysisModule {
         }
 
         return false;
-	}
-
-	private void findReferences(String reqText) {
-		if (Utils.isTextEmpty(reqText)) return;
-
-		List<Pair<String, String>> matched = mReferencesExtractor.extract(reqText);
-		if ((matched != null) && (!matched.isEmpty())) {
-			// Sequential search :-(
-			for (Pair<String, String> instance : matched) {
-				String ref = instance.second;
-				if (isInternalReference(ref)) {
-					mInternalReferences.add(ref);
-				} else {
-					// For the external case, some requirements/sections
-					// may be repeated.
-					if (!mExternalReqReferences.contains(ref)) {
-					    mExternalReferences.add(ref);
-					}
-				}
-			}
-		}
-	}
-
-	private boolean isInternalReference(String ref) {
-		if (Utils.isTextEmpty(ref)) return false;
-		if ((mDocumentSections == null) || mDocumentSections.isEmpty()) {
-			return false;
-		}
-
-		return mDocumentSections.containsId(ref);
 	}
 	
 	private void handleRTMContains(Requirement requirement, Question question) {
