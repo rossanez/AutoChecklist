@@ -1,6 +1,5 @@
 $REFERENCE_ID_FORMAT = "/[0-9]+([\.\-][0-9]+)+[\:\;\-]?/"
 $PRE_REFERENCE_FORMAT = "/((sub|cros(s)?)?[\-]?)?(section(s)?|division(s)?|part(s)?|piece(s)?|segment(s)?|portion(s)?|chapter(s)?|passage(s)?|clause(s)?)/"
-$SQBRACKETS_REFERENCE_ID_FORMAT = "/([\[][a-zA-Z0-9]+[\]])/"
 $REQUIREMENT_ID_FORMAT = "/(R(e(q)?)?[\:\-]?)?([0-9]+[\.\-]?)+[\:\;\-]?/"
 $PRE_REQUIREMENT_FORMAT = "/(requirement(s)?|req(s)[\.]?)/"
 {
@@ -10,7 +9,7 @@ $PRE_REQUIREMENT_FORMAT = "/(requirement(s)?|req(s)[\.]?)/"
 }
 {
    ruleType: "tokens",
-   pattern: ( $SQBRACKETS_REFERENCE_ID_FORMAT ),
+   pattern: ( /([\[][a-zA-Z0-9]+[\]])/ ),
    result: "SQBRACKETS_REFERENCE_ID"
 }
 {

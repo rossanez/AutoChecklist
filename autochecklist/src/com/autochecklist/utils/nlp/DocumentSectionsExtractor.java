@@ -14,6 +14,9 @@ import com.autochecklist.utils.Utils;
 
 public class DocumentSectionsExtractor {
 
+	// The max. number of words allowed in a section title.
+	private static final int SECTION_TITLE_MAX_LENGTH = 10;
+
 	private String mPlainText;
     private IRequirementsInfoOutBuildable mOutputBuilder;
 	private ExpressionExtractor mSectionIdExtractor;
@@ -43,7 +46,9 @@ public class DocumentSectionsExtractor {
 
 				if (!Utils.isTextEmpty(line)) {
 					String[] titleCandidate = line.split(" ");
-					if ((titleCandidate == null) || (titleCandidate.length < 2)) continue;
+					if ((titleCandidate == null)
+							|| (titleCandidate.length < 2)
+							|| (titleCandidate.length > SECTION_TITLE_MAX_LENGTH)) continue;
 					List<Pair<String, String>> matched = mSectionIdExtractor.extract(titleCandidate[0]);
 					if ((matched == null) || matched.isEmpty()) continue;
 					if (Character.isDigit(titleCandidate[1].charAt(0))) continue;
