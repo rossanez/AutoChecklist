@@ -9,7 +9,7 @@ $PRE_REQUIREMENT_FORMAT = "/(requirement(s)?|req(s)[\.]?)/"
 }
 {
    ruleType: "tokens",
-   pattern: ( /([\[][a-zA-Z0-9]+[\]])/ ),
+   pattern: ( ([{word:"-LSB-"}]) [] ([{word:"-RSB-"}]) ),
    result: "SQBRACKETS_REFERENCE_ID"
 }
 {
