@@ -308,7 +308,7 @@ public class Traceability extends AnalysisModule {
 			question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Not found in the traceability matrix!", Question.ANSWER_NO);
+					"Not found in the traceability matrix!", Question.ANSWER_POSSIBLE_NO);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
 			question.setAnswerType(finding.getAnswerType());
@@ -332,7 +332,7 @@ public class Traceability extends AnalysisModule {
 			question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Not found in the traceability matrix!", Question.ANSWER_NO);
+					"Not found in the traceability matrix!", Question.ANSWER_POSSIBLE_NO);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
 			question.setAnswerType(finding.getAnswerType());
