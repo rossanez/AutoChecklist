@@ -53,6 +53,7 @@ public class ResultsUI extends BaseUI {
 		mStage.setTitle("Auto Checklist - Results");
 		mStage.setMinWidth(300);
 		mStage.setMinHeight(220);
+		mStage.setResizable(false);
 
 		mMenuRestart = new MenuItem("Restart from scratch");
 		mMenuRestart.setOnAction(this);

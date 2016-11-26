@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
+import javafx.stage.StageStyle;
 
 public class ChoiceDialog extends BaseWidget {
 	
@@ -33,6 +34,8 @@ public class ChoiceDialog extends BaseWidget {
 		mStage.initModality(Modality.APPLICATION_MODAL);
 		mStage.setTitle(mTitle);
 		mStage.setResizable(false);
+		mStage.setMaximized(false);
+		mStage.initStyle(StageStyle.UTILITY);
 
 		Label label = new Label();
 		label.setText(mMessage);
