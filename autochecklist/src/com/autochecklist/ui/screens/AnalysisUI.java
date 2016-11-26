@@ -137,7 +137,8 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 		mProgressBar.setProgress(1);
 
 		new AlertDialog("Success!",
-                "The analysis has finished!\nYou may proceed to the results.").show();
+                "The analysis has finished!\nYou may proceed to the results.",
+                mStage).show();
 	}
 
 	@Override
@@ -147,9 +148,9 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 		mProgressBar.setProgress(0);
 
 		if (cancelled) {
-		    new AlertDialog("Stopped!", "The analysis has been cancelled!").show();
+		    new AlertDialog("Stopped!", "The analysis has been cancelled!", mStage).show();
 		} else {
-			new AlertDialog("Error!", "The analysis has failed!").show();
+			new AlertDialog("Error!", "The analysis has failed!", mStage).show();
 		}
 	}
 
@@ -174,7 +175,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 					public void handle(ActionEvent event) {
 						doRestart();
 					}
-				}, null).show();
+				}, null, mStage).show();
 	}
 
 	private void doRestart() {

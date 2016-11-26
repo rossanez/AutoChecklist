@@ -147,9 +147,9 @@ public class ResultsUI extends BaseUI {
 		mGenerateButton.setDisable(false);
 
 		if (cancelled) {
-		    new AlertDialog("Stopped!", "The output generation has been cancelled!").show();
+		    new AlertDialog("Stopped!", "The output generation has been cancelled!", mStage).show();
 		} else {
-			new AlertDialog("Error!", "The output generation has failed!").show();
+			new AlertDialog("Error!", "The output generation has failed!", mStage).show();
 		}
 	}
 

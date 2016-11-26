@@ -8,22 +8,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class AlertDialog extends BaseWidget {
 
 	private String mTitle;
 	private String mMessage;
 	
-	public AlertDialog(String title, String message) {
-		super();
+	public AlertDialog(String title, String message, Stage ownerStage) {
+		super(ownerStage);
         mTitle = title;
         mMessage = message;
 	}
 
 	@Override
 	protected void initWidget() {
-		mStage.initModality(Modality.APPLICATION_MODAL);
 		mStage.setTitle(mTitle);
 
 		Label label = new Label();

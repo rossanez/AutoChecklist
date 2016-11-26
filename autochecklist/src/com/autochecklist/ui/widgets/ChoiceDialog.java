@@ -9,7 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class ChoiceDialog extends BaseWidget {
 	
@@ -20,8 +20,9 @@ public class ChoiceDialog extends BaseWidget {
 	
 	public ChoiceDialog(String title, String message,
 			EventHandler<ActionEvent> positiveHandler,
-			EventHandler<ActionEvent> negativeHandler) {
-		super();
+			EventHandler<ActionEvent> negativeHandler,
+			Stage ownerStage) {
+		super(ownerStage);
 		mTitle = title;
 		mMessage = message;
 		mPositiveHandler = positiveHandler;
@@ -30,7 +31,6 @@ public class ChoiceDialog extends BaseWidget {
 	
 	@Override
 	protected void initWidget() {
-		mStage.initModality(Modality.APPLICATION_MODAL);
 		mStage.setTitle(mTitle);
 
 		Label label = new Label();

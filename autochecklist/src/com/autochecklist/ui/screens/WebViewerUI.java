@@ -128,7 +128,7 @@ public class WebViewerUI extends BaseUI {
 				public void onClose() {
 					clearAllHighlights();
 				}
-			});
+			}, mStage);
 			mSearchDialog.show();
 		} else {
 			super.handle(event);
@@ -156,9 +156,9 @@ public class WebViewerUI extends BaseUI {
 		try {
 			int index = tabPane.getSelectionModel().getSelectedIndex();
 			FileUtils.writeStringToFile(file, HtmlBuilder.removeScriptsfromContent(mContents[index].second));
-			new AlertDialog("Success!", "File " + file.getPath() + " saved!").show();
+			new AlertDialog("Success!", "File " + file.getPath() + " saved!", mStage).show();
 		} catch (IOException e) {
-			new AlertDialog("Error!", "Unable to save file!").show();
+			new AlertDialog("Error!", "Unable to save file!", mStage).show();
 		}
 	}
 

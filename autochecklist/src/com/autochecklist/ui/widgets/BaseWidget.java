@@ -1,5 +1,6 @@
 package com.autochecklist.ui.widgets;
 
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -9,11 +10,13 @@ public abstract class BaseWidget {
 
 	private boolean mInitialized = false;
 
-	public BaseWidget() {
+	public BaseWidget(Stage ownerStage) {
 		mStage = new Stage();
+		mStage.initModality(Modality.APPLICATION_MODAL);
 		mStage.setResizable(false);
 		mStage.setMaximized(false);
 		mStage.initStyle(StageStyle.UTILITY);
+		mStage.initOwner(ownerStage);
 	}
 
 	protected abstract void initWidget();

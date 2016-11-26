@@ -97,7 +97,7 @@ public class InitialUI extends BaseUI {
 						public void handle(ActionEvent event) {
 							mStage.setScene(createScene(STATE_SRS));
 						}
-					}, null);
+					}, null, mStage);
 		} else {
 		    fileChooser.setTitle("Open a SRS document file...");
 		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PDF Files", "*.pdf"));
@@ -109,7 +109,7 @@ public class InitialUI extends BaseUI {
 						public void handle(ActionEvent event) {
 							mStage.setScene(createScene(STATE_PREPROC));
 						}
-					}, null);
+					}, null, mStage);
 		}
 
 		Button openButton = new Button("...");

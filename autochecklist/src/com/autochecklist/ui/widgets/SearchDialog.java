@@ -14,7 +14,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class SearchDialog extends BaseWidget {
@@ -23,14 +23,13 @@ public class SearchDialog extends BaseWidget {
 
 	private CheckBox mWrapAround;
 
-	public SearchDialog(ISearchCallable eventHandler) {
-		super();
+	public SearchDialog(ISearchCallable eventHandler, Stage ownerStage) {
+		super(ownerStage);
 		mEventHandler = eventHandler;
 	}
 
 	@Override
 	protected void initWidget() {
-		mStage.initModality(Modality.APPLICATION_MODAL);
 		mStage.setTitle("Search");
 
 		Label label = new Label();

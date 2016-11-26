@@ -159,7 +159,7 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		        "Please review the generated preprocessed file."
 				+ "\n(Actions -> Open preprocessed file's folder)"
 		        + "\nYou may also save it for a future analysis."
-		        + "\n(Actions -> Save preprocessed file as)").show();
+		        + "\n(Actions -> Save preprocessed file as)", mStage).show();
 	}
 
 	@Override
@@ -169,9 +169,9 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		mProgressBar.setProgress(0);
 
 		if (cancelled) {
-		    new AlertDialog("Stopped!", "The preprocessing has been cancelled!").show();
+		    new AlertDialog("Stopped!", "The preprocessing has been cancelled!", mStage).show();
 		} else {
-			new AlertDialog("Error!", "The preprocessing has failed!").show();
+			new AlertDialog("Error!", "The preprocessing has failed!", mStage).show();
 		}
 	}
 
@@ -220,7 +220,7 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 					public void handle(ActionEvent event) {
 						doRestart();
 					}
-				}, null).show();
+				}, null, mStage).show();
 	}
 
 	private void doRestart() {

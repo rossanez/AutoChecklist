@@ -146,7 +146,7 @@ public abstract class BaseUI implements PrintingService.IUIPrintable, EventHandl
 						mStage.close();
 						new InitialUI().show();
 					}
-				}, null).show();
+				}, null, mStage).show();
 	}
 
 	private void showExitDialog() {
@@ -158,7 +158,7 @@ public abstract class BaseUI implements PrintingService.IUIPrintable, EventHandl
 						stopWork();
 						Platform.exit();
 					}
-				}, null).show();
+				}, null, mStage).show();
 	}
 
 	protected void onExternalCloseRequest(WindowEvent windowEvent) {
