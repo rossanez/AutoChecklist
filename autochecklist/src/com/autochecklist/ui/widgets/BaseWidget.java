@@ -1,6 +1,7 @@
 package com.autochecklist.ui.widgets;
 
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public abstract class BaseWidget {
 
@@ -10,6 +11,9 @@ public abstract class BaseWidget {
 
 	public BaseWidget() {
 		mStage = new Stage();
+		mStage.setResizable(false);
+		mStage.setMaximized(false);
+		mStage.initStyle(StageStyle.UTILITY);
 	}
 
 	protected abstract void initWidget();

@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
-import javafx.stage.StageStyle;
 
 public class AlertDialog extends BaseWidget {
 
@@ -26,9 +25,6 @@ public class AlertDialog extends BaseWidget {
 	protected void initWidget() {
 		mStage.initModality(Modality.APPLICATION_MODAL);
 		mStage.setTitle(mTitle);
-		mStage.setResizable(false);
-		mStage.setMaximized(false);
-		mStage.initStyle(StageStyle.UTILITY);
 
 		Label label = new Label();
 		label.setText(mMessage);
