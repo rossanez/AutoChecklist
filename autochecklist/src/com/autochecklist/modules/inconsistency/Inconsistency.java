@@ -71,7 +71,7 @@ public class Inconsistency extends AnalysisModule {
 		    question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Unable to find frequency/period references. You may want to check it manually.",
+					"Unable to find frequency/period references. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
@@ -89,7 +89,7 @@ public class Inconsistency extends AnalysisModule {
 		    question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Unable to find watch dog references. You may want to check it manually.",
+					"Unable to find watch dog references. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);

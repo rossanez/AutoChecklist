@@ -1,0 +1,6 @@
+$FUNCTION_ID_FORMAT = "/(function(s|ality|alities)?|feature(s)?)/"
+{
+   ruleType: "tokens",
+   pattern: ( []{0,3} $FUNCTION_ID_FORMAT []{0,3} ),
+   result: "FUNCTION_EXCERPT"
+}

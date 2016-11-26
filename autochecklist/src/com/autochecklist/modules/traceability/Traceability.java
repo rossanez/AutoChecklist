@@ -25,6 +25,7 @@ public class Traceability extends AnalysisModule {
 
 	private ExpressionExtractor mInternalReqIdExtractor;
 	private ExpressionExtractor mReferencesExtractor;
+	private ExpressionExtractor mFunctionsExtractor;
 
 	private List<Requirement> mRequirementList;
 
@@ -34,18 +35,23 @@ public class Traceability extends AnalysisModule {
 	private List<String> mInternalReferences;
 	private List<String> mExternalReqReferences;
 	private List<String> mExternalReferences;
+	private List<String> mFunctionReferences;
 
 	public Traceability(QuestionCategory questions, DocumentSectionList sections, RequirementsTraceabilityMatrix rtmSection) {
 		super(questions);
 		mDocumentSections = sections;
 		mRTM = rtmSection;
+
 		mInternalReqIdExtractor = new ExpressionExtractor("RegexRules/requirementid.rules");
 		mReferencesExtractor = new ExpressionExtractor("RegexRules/references.rules");
+		mFunctionsExtractor = new ExpressionExtractor("RegexRules/functions.rules");
+
 		mRTMInstances = new HashMap<String, Integer>();
 		mInternalReqReferences = new ArrayList<String>();
 		mInternalReferences = new ArrayList<String>();
 		mExternalReqReferences = new ArrayList<String>();
 		mExternalReferences = new ArrayList<String>();
+		mFunctionReferences = new ArrayList<String>();
 	}
 	
 	@Override
@@ -60,6 +66,7 @@ public class Traceability extends AnalysisModule {
 
 		// New references for a new requirement.
 		evaluateReferences(requirement);
+		evaluateFunctions(requirement);
 	}
 
 	@Override
@@ -69,12 +76,6 @@ public class Traceability extends AnalysisModule {
 		}
 
 		super.processRequirements(requirements);
-	}
-	
-	@Override
-	protected void handleQuestionWithoutAction(Requirement requirement, Question question) {
-		// TODO delete this method and implement performQuestionAction below completely!
-		question.setAnswerType(Question.ANSWER_YES);
 	}
 
 	@Override
@@ -96,6 +97,8 @@ public class Traceability extends AnalysisModule {
 			handleInternalReferences(requirement, question);
 		} else if ("EXTERNAL".equals(type)) {
 			handleExternalReferences(requirement, question);
+		} else if ("FUNCTION".equals(type)) {
+			handleFunctionReferences(requirement, question);
 		}
 	}
 
@@ -123,7 +126,7 @@ public class Traceability extends AnalysisModule {
 		    question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Unable to find instances of internal requirements or references. You may want to check it manually.",
+					"Unable to find instances of internal requirements or references. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
@@ -155,7 +158,30 @@ public class Traceability extends AnalysisModule {
 		    question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Unable to find instances of external requirements or references. You may want to check it manually.",
+					"Unable to find instances of external requirements or references. You may want to confirm it manually.",
+					Question.ANSWER_POSSIBLE_YES);
+		    question.addFinding(finding);
+		    requirement.addFinding(finding);
+		    question.setAnswerType(finding.getAnswerType());
+		}
+	}
+
+	private void handleFunctionReferences(Requirement requirement, Question question) {
+		if (!mFunctionReferences.isEmpty()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append('\n').append("Possible function references:");
+			for (String functionRef : mFunctionReferences) {
+				sb.append('\n').append("- ").append(functionRef);
+			}
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Please check if the function references are correct." + sb.toString(),
+					Question.ANSWER_WARNING);
+		    question.addFinding(finding);
+		    requirement.addFinding(finding);
+		    question.setAnswerType(finding.getAnswerType());
+		} else {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Unable to find instances of functions. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
@@ -175,11 +201,19 @@ public class Traceability extends AnalysisModule {
 		findInternalRequirements(requirement.getText());
 	}
 
+	private void evaluateFunctions(Requirement requirement) {
+		// Clear the list.
+		mFunctionReferences.clear();
+
+		// Search for functions.
+		findFunctions(requirement.getText());
+	}
+
 	private void findInternalRequirements(String reqText) {
 		if (Utils.isTextEmpty(reqText)) return;
 
 		List<Pair<String, String>> matched = mInternalReqIdExtractor.extract(reqText);
-		if ((matched != null) && (!matched.isEmpty())) {
+		if ((matched != null) && !matched.isEmpty()) {
 			for (Pair<String, String> instance : matched) {
 				// Take the ID from the text, not the matched, because it may not be exactly as is.
 				String matchedReqReference = instance.second;
@@ -203,7 +237,7 @@ public class Traceability extends AnalysisModule {
 		if (Utils.isTextEmpty(reqText)) return;
 
 		List<Pair<String, String>> matched = mReferencesExtractor.extract(reqText);
-		if ((matched != null) && (!matched.isEmpty())) {
+		if ((matched != null) && !matched.isEmpty()) {
 			// Sequential search :-(
 			for (Pair<String, String> instance : matched) {
 				String refId = extractReferenceId(instance.second);
@@ -213,6 +247,17 @@ public class Traceability extends AnalysisModule {
 					// External requirement.
 					addFoundReqReference(refId);
 				}
+			}
+		}
+	}
+
+	private void findFunctions(String reqText) {
+		if (Utils.isTextEmpty(reqText)) return;
+
+		List<Pair<String, String>> matched = mFunctionsExtractor.extract(reqText);
+		if ((matched != null) && !matched.isEmpty()) {
+			for (Pair<String, String> instance : matched) {
+				mFunctionReferences.add(instance.second);
 			}
 		}
 	}
