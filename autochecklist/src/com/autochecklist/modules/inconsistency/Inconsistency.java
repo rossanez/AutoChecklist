@@ -63,7 +63,9 @@ public class Inconsistency extends AnalysisModule {
 			}
 		
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Contains possible frequency/period references.\nPossible indicatives:"
+					"Contains possible frequency/period references. Please check if there are other places "
+			        + "(such as other requirements, figures, tables or lists) containing the same references for consistency.\n"
+						+ "Possible frequency/period indicatives:"
 							+ sb.toString(),
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
@@ -82,7 +84,8 @@ public class Inconsistency extends AnalysisModule {
 	private void handleWatchDogReferences(Requirement requirement, Question question) {
 		if (mWatchDogReferences.contains(requirement.getId())) {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Contains watch dog references. Please check for consistency!",
+					"Contains watch dog references. Please check if there are other places "
+					+ "(such as other requirements, figures, tables or lists) containing the same watch dog references for consistency.",
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);

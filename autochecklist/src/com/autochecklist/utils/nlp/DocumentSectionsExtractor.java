@@ -39,12 +39,13 @@ public class DocumentSectionsExtractor {
 		String line = null;
 		try {
 			while ((line = bufReader.readLine()) != null) {
-				// Append RTM content if applicable.
-				if (mRTMSectionExtractor.isAcquiringSectionLines() && !Utils.isTextEmpty(line)) {
-					mRTMSectionExtractor.appendLine(line);
-				}
-
 				if (!Utils.isTextEmpty(line)) {
+					// Append RTM content if applicable.
+					if (mRTMSectionExtractor.isAcquiringSectionLines()) {
+						mRTMSectionExtractor.appendLine(line);
+					}
+
+					// Then start evaluating if we are dealing with a section title.
 					String[] titleCandidate = line.split(" ");
 					if ((titleCandidate == null)
 							|| (titleCandidate.length < 2)
