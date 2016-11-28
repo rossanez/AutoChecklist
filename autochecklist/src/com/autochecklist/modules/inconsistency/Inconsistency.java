@@ -107,7 +107,7 @@ public class Inconsistency extends AnalysisModule {
 				if (!Utils.isTextEmpty(match.first)) {
 					if (match.first.startsWith("WATCH")) {
 						mWatchDogReferences.add(requirement.getId());
-					} else if (match.first.equals("TIME_NUMBER_AND_UNIT")) {
+					} else if (match.first.startsWith("TIME")) {
 						Set<String> refs = mPeriodicReferences.get(requirement.getId());
 						if (refs == null) {
 							refs = new HashSet<String>();

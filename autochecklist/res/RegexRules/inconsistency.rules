@@ -12,6 +12,21 @@ $NUMBER_AND_UNIT_CAT = "/($INCLUDE_NUMBERS)(($INCLUDE_PREFIXES)?($INCLUDE_TIME_F
 }
 {
    ruleType: "tokens",
+   pattern: ( /[0-9]+/ /time(s)/ ),
+   result: "TIME_NUMBER"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /[0-9]+/ /x/ ),
+   result: "TIME_X"
+}
+{
+   ruleType: "tokens",
+   pattern: ( /[0-9]+(x)/ ),
+   result: "TIME_X_CAT"
+}
+{
+   ruleType: "tokens",
    pattern: ( /watch-dog/ ),
    result: "WATCH-DOG"
 }
