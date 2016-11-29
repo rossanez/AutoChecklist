@@ -5,9 +5,8 @@ import java.security.InvalidParameterException;
 
 import com.autochecklist.modules.Module;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.DocumentSectionsExtractor;
+import com.autochecklist.utils.nlp.CoreNLP;
 import com.autochecklist.utils.nlp.IRequirementsInfoOutBuildable;
-import com.autochecklist.utils.nlp.RequirementsInfoExtractor;
 import com.autochecklist.utils.text.PlainTextConverter;
 
 public class PreProcessor extends Module {
@@ -49,8 +48,7 @@ public class PreProcessor extends Module {
     	
     	IRequirementsInfoOutBuildable outputBuilder = new XMLOutPreProcBuilder();
 
-    	new DocumentSectionsExtractor(text, outputBuilder).extract();
-        new RequirementsInfoExtractor(text, outputBuilder).extract();
+    	CoreNLP.extractPreprocInfoAndWrite(text, outputBuilder);
 
         return outputBuilder.generateOutputFile(getOutputFileName());
     }

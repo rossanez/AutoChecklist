@@ -60,6 +60,13 @@ public class CoreNLP {
 		return mParser;
 	}
 
+	public static IRequirementsInfoOutBuildable extractPreprocInfoAndWrite(String text, IRequirementsInfoOutBuildable outputBuilder) {
+		new DocumentSectionsExtractor(text, outputBuilder).extract();
+        new RequirementsInfoExtractor(text, outputBuilder).extract();
+
+        return outputBuilder;
+	}
+	
 	public Set<String> getActions(String text) {
 		return mEventActionDetector.getActionsInText(text);
 	}

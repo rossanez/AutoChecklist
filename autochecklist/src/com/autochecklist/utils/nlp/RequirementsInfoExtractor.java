@@ -17,7 +17,7 @@ import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
 import edu.stanford.nlp.util.CoreMap;
 
-public class RequirementsInfoExtractor {
+/* package */ class RequirementsInfoExtractor {
 
 	private String mPlainText;
 	private IRequirementsInfoOutBuildable mOutputBuilder;

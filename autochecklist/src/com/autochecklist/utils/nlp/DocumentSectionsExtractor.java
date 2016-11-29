@@ -12,7 +12,7 @@ import com.autochecklist.base.documentsections.DocumentSection;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 
-public class DocumentSectionsExtractor {
+/* package */ class DocumentSectionsExtractor {
 
 	// The max. number of words allowed in a section title.
 	private static final int SECTION_TITLE_MAX_LENGTH = 10;

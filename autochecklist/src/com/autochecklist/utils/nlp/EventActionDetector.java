@@ -282,7 +282,7 @@ import edu.stanford.nlp.util.CoreMap;
 
             while (infinitiveVerbPhraseMatcher.find()) {
             	List<Word> verbs = infinitiveVerbPhraseMatcher.getNode("vb").yieldWords();
-            	if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
+            	if ((verbs.size() == 1) && !isWeakVerbForAction(lemmatizeSingleWord(verbs.get(0).toString()))) {
             		return true;
             	}
             }
@@ -291,7 +291,7 @@ import edu.stanford.nlp.util.CoreMap;
             
             while (presentVerb3rdPersonPhraseMatcher.find()) {
                 List<Word> verbs = presentVerb3rdPersonPhraseMatcher.getNode("vbz").yieldWords();
-                if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
+                if ((verbs.size() == 1) && !isWeakVerbForAction(lemmatizeSingleWord(verbs.get(0).toString()))) {
             		return true;
             	}
             }
@@ -300,7 +300,7 @@ import edu.stanford.nlp.util.CoreMap;
             
             while (presentVerbNon3rdPersonPhraseMatcher.find()) {
                 List<Word> verbs = presentVerbNon3rdPersonPhraseMatcher.getNode("vbp").yieldWords();
-                if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
+                if ((verbs.size() == 1) && !isWeakVerbForAction(lemmatizeSingleWord(verbs.get(0).toString()))) {
             		return true;
             	}
             }
@@ -322,8 +322,8 @@ import edu.stanford.nlp.util.CoreMap;
 
             while (infinitiveVerbPhraseMatcher.find()) {
             	List<Word> verbs = infinitiveVerbPhraseMatcher.getNode("vb").yieldWords();
-            	if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
-            		actions.add(formatEventText(verbs.get(0).toString()));
+            	if ((verbs.size() == 1) && !isWeakVerbForAction(lemmatizeSingleWord(verbs.get(0).toString()))) {
+            		actions.add(formatEventText(Sentence.listToString(verbs)));
             	}
             }
 
@@ -331,8 +331,8 @@ import edu.stanford.nlp.util.CoreMap;
             
             while (presentVerb3rdPersonPhraseMatcher.find()) {
                 List<Word> verbs = presentVerb3rdPersonPhraseMatcher.getNode("vbz").yieldWords();
-                if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
-            		actions.add(formatEventText(verbs.get(0).toString()));
+                if ((verbs.size() == 1) && !isWeakVerbForAction(lemmatizeSingleWord(verbs.get(0).toString()))) {
+            		actions.add(formatEventText(Sentence.listToString(verbs)));
             	}
             }
 
@@ -340,8 +340,8 @@ import edu.stanford.nlp.util.CoreMap;
             
             while (presentVerbNon3rdPersonPhraseMatcher.find()) {
                 List<Word> verbs = presentVerbNon3rdPersonPhraseMatcher.getNode("vbp").yieldWords();
-                if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
-            		actions.add(formatEventText(verbs.get(0).toString()));
+                if ((verbs.size() == 1) && !isWeakVerbForAction(lemmatizeSingleWord(verbs.get(0).toString()))) {
+            		actions.add(formatEventText(Sentence.listToString(verbs)));
             	}
             }
         }
@@ -349,14 +349,20 @@ import edu.stanford.nlp.util.CoreMap;
         return actions;
 	}
 
+	private String lemmatizeSingleWord(String word) {
+		if (Utils.isTextEmpty(word)) return null;
+
+		return new edu.stanford.nlp.simple.Sentence(word).lemma(0);
+	}
+	
 	private boolean isWeakVerbForAction(String word) {
-		if (Utils.isTextEmpty(word)) return false;
+		if (Utils.isTextEmpty(word)) return true;
 
 		return mWeakActionVerbs.contains(word.toLowerCase());
 	}
 
 	private boolean isWeakStativeVerb(String verb) {
-		if (Utils.isTextEmpty(verb)) return false;
+		if (Utils.isTextEmpty(verb)) return true;
 
 		return mWeakStativeVerbs.contains(verb.toLowerCase());
 	}

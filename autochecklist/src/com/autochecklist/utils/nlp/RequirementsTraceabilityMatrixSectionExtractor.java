@@ -5,7 +5,7 @@ import java.util.List;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 
-/*package*/ class RequirementsTraceabilityMatrixSectionExtractor {
+/* package */ class RequirementsTraceabilityMatrixSectionExtractor {
 
 	private StringBuilder mSectionContents;
 	private ExpressionExtractor mRTMIndicationExtractor;
