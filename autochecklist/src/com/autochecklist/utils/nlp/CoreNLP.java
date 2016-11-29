@@ -60,6 +60,10 @@ public class CoreNLP {
 		return mParser;
 	}
 
+	public Set<String> getActions(String text) {
+		return mEventActionDetector.getActionsInText(text);
+	}
+
 	public Set<String> checkIfHasActionsAndGetEvents(String text) {
 		return mEventActionDetector.checkIfHasActionsAndGetEvents(text);
 	}

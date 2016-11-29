@@ -93,6 +93,20 @@ import edu.stanford.nlp.util.CoreMap;
 		mAdjectiveEvents.add("unprompted");
 	}
 
+	public Set<String> getActionsInText(String text) {
+		Set<String> actions = new HashSet<String>();
+		Annotation document = CoreNLP.getInstance().annotate(text);
+
+		for (CoreMap sentence : document.get(SentencesAnnotation.class)) {
+			Set<String> sentenceActions = getActionsFromTree(mParser.parse(sentence.toString()));
+			if ((sentenceActions != null) && !sentenceActions.isEmpty()) {
+				actions.addAll(sentenceActions);
+			}
+		}
+
+		return actions;
+	}
+	
 	public Set<String> checkIfHasActionsAndGetEvents(String text) {
 		Set<String> eventsFound = new HashSet<String>();
 		Annotation document = CoreNLP.getInstance().annotate(text);
@@ -256,7 +270,8 @@ import edu.stanford.nlp.util.CoreMap;
 
 		return ret;
 	}
-	
+
+	// Same as getActionsFromTree, but with better performance.
 	private boolean sentenceContainsActions(Tree parseTree) {
 		TregexMatcher sentenceMatcher = TregexPattern.compile("ROOT << S=s").matcher(parseTree);
 
@@ -292,6 +307,46 @@ import edu.stanford.nlp.util.CoreMap;
         }
 
 		return false;
+	}
+
+	// If needed to check the existence only, use sentenceContainsActions above.
+	private Set<String> getActionsFromTree(Tree parseTree) {
+		Set<String> actions = new HashSet<String>();
+
+		TregexMatcher sentenceMatcher = TregexPattern.compile("ROOT << S=s").matcher(parseTree);
+
+        while (sentenceMatcher.find()) {
+        	Tree sentencePhraseTree = sentenceMatcher.getNode("s");
+
+            TregexMatcher infinitiveVerbPhraseMatcher = TregexPattern.compile("S << VB=vb").matcher(sentencePhraseTree);
+
+            while (infinitiveVerbPhraseMatcher.find()) {
+            	List<Word> verbs = infinitiveVerbPhraseMatcher.getNode("vb").yieldWords();
+            	if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
+            		actions.add(formatEventText(verbs.get(0).toString()));
+            	}
+            }
+
+            TregexMatcher presentVerb3rdPersonPhraseMatcher = TregexPattern.compile("S << VBZ=vbz").matcher(sentencePhraseTree);
+            
+            while (presentVerb3rdPersonPhraseMatcher.find()) {
+                List<Word> verbs = presentVerb3rdPersonPhraseMatcher.getNode("vbz").yieldWords();
+                if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
+            		actions.add(formatEventText(verbs.get(0).toString()));
+            	}
+            }
+
+            TregexMatcher presentVerbNon3rdPersonPhraseMatcher = TregexPattern.compile("S << VBP=vbp").matcher(sentencePhraseTree);
+            
+            while (presentVerbNon3rdPersonPhraseMatcher.find()) {
+                List<Word> verbs = presentVerbNon3rdPersonPhraseMatcher.getNode("vbp").yieldWords();
+                if ((verbs.size() == 1) && !isWeakVerbForAction(verbs.get(0).toString())) {
+            		actions.add(formatEventText(verbs.get(0).toString()));
+            	}
+            }
+        }
+
+        return actions;
 	}
 
 	private boolean isWeakVerbForAction(String word) {

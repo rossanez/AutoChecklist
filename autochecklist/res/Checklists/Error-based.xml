@@ -26,7 +26,7 @@
         <question id="19" action="extract, in more than">Are all the requirements without the expression "in more than" near a numeric value causing an imprecise idea?</question>
     </category>
     <category type="inconsistency">
-        <question id="20">Are all the actions/functions of the software of a specific operation mode consistent with the description of these actions/functions in other places of the same document (such as other requirement, table or figure)?</question>
+        <question id="20" action="contains, actions functions">Are all the actions/functions of the software of a specific operation mode consistent with the description of these actions/functions in other places of the same document (such as other requirement, table or figure)?</question>
         <question id="21" action="contains, periodic">If there is more than one place (requirement, figure, table or list) in the same document defining the frequency or period of some action/function of the software, are they consistent with each other?</question>
         <question id="22" action="contains, watchdog">If there is more than one place (requirement, figure, table or list) in the same document describing the functioning of the watch dog, is the behaviour of it consistent in these different places? (Its execution timing base, for example)</question>
     </category>
