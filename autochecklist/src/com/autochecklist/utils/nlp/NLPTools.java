@@ -1,18 +1,10 @@
 package com.autochecklist.utils.nlp;
 
-import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import com.autochecklist.utils.Utils;
 
-import edu.stanford.nlp.ling.tokensregex.CoreMapExpressionExtractor;
-import edu.stanford.nlp.ling.tokensregex.Env;
-import edu.stanford.nlp.ling.tokensregex.MatchedExpression;
-import edu.stanford.nlp.ling.tokensregex.TokenSequencePattern;
-import edu.stanford.nlp.ling.tokensregex.parser.ParseException;
-import edu.stanford.nlp.ling.tokensregex.parser.TokenSequenceParseException;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
@@ -56,16 +48,25 @@ public class NLPTools {
 		return mPipelineInstance;
 	}
 
-	public LexicalizedParser getParser() {
-		return mParser;
-	}
-
 	public static IRequirementsInfoOutBuildable extractPreprocInfoAndWrite(String text, IRequirementsInfoOutBuildable outputBuilder) {
 		new DocumentSectionsExtractor(text, outputBuilder).extract();
         new RequirementsInfoExtractor(text, outputBuilder).extract();
 
         return outputBuilder;
 	}
+
+	public static IExpressionExtractable createExpressionExtractor(String extractorRulesResource) {
+		return new ExpressionExtractor(extractorRulesResource);
+	}
+
+	public static IExpressionExtractable createExpressionExtractor(String extractorRulesMainResorce, String... composingResources) {
+		return new ExpressionExtractor(extractorRulesMainResorce, composingResources);
+	}
+
+	public LexicalizedParser getParser() {
+		return mParser;
+	}
+
 	
 	public Set<String> getActions(String text) {
 		return mEventActionDetector.getActionsInText(text);
@@ -84,18 +85,5 @@ public class NLPTools {
 		mPipeline.annotate(document);
 
 		return document;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static CoreMapExpressionExtractor<MatchedExpression> createExpressionExtractor(String extractionRules) {
-		try {
-			Env env = TokenSequencePattern.getNewEnv();
-			env.setDefaultStringPatternFlags(Pattern.CASE_INSENSITIVE);
-
-			return CoreMapExpressionExtractor.createExtractorFromString(env, extractionRules);
-		} catch (IOException | ParseException | TokenSequenceParseException e) {
-			Utils.printError("Error when creating expression extractor!");
-			throw new RuntimeException("Unable to create extractor from the passed rules! - " + e.getMessage());
-		}
 	}
 }

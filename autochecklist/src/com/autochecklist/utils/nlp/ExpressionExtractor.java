@@ -1,27 +1,33 @@
 package com.autochecklist.utils.nlp;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.tokensregex.CoreMapExpressionExtractor;
+import edu.stanford.nlp.ling.tokensregex.Env;
 import edu.stanford.nlp.ling.tokensregex.MatchedExpression;
+import edu.stanford.nlp.ling.tokensregex.TokenSequencePattern;
+import edu.stanford.nlp.ling.tokensregex.parser.ParseException;
+import edu.stanford.nlp.ling.tokensregex.parser.TokenSequenceParseException;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.util.CoreMap;
 
-public class ExpressionExtractor {
+/* package */ class ExpressionExtractor implements IExpressionExtractable {
 
 	private CoreMapExpressionExtractor<MatchedExpression> mExpressionExtractor;
 
 	public ExpressionExtractor(String extractorRulesResource) {
-		mExpressionExtractor = NLPTools.createExpressionExtractor(Utils.getResourceAsString(extractorRulesResource));
+		mExpressionExtractor = createExpressionExtractor(Utils.getResourceAsString(extractorRulesResource));
 	}
 
 	public ExpressionExtractor(String extractorRulesMainResorce, String... composingResources) {
-		mExpressionExtractor = NLPTools.createExpressionExtractor(
+		mExpressionExtractor = createExpressionExtractor(
 				Utils.getCompositeResourceAsString(extractorRulesMainResorce, composingResources));
 	}
 
@@ -72,5 +78,18 @@ public class ExpressionExtractor {
 		}
 
 		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static CoreMapExpressionExtractor<MatchedExpression> createExpressionExtractor(String extractionRules) {
+		try {
+			Env env = TokenSequencePattern.getNewEnv();
+			env.setDefaultStringPatternFlags(Pattern.CASE_INSENSITIVE);
+
+			return CoreMapExpressionExtractor.createExtractorFromString(env, extractionRules);
+		} catch (IOException | ParseException | TokenSequenceParseException e) {
+			Utils.printError("Error when creating expression extractor!");
+			throw new RuntimeException("Unable to create extractor from the passed rules! - " + e.getMessage());
+		}
 	}
 }

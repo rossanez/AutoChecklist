@@ -14,13 +14,13 @@ import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
+import com.autochecklist.utils.nlp.IExpressionExtractable;
 import com.autochecklist.utils.nlp.NLPTools;
-import com.autochecklist.utils.nlp.ExpressionExtractor;
 
 public class Inconsistency extends AnalysisModule {
 
-	private ExpressionExtractor mExpressionExtractor;
-	private ExpressionExtractor mFunctionsExtractor;
+	private IExpressionExtractable mExpressionExtractor;
+	private IExpressionExtractable mFunctionsExtractor;
 	private Set<String> mActionReferences;
 	private Set<String> mFunctionReferences;
 	private Set<String> mWatchDogReferences;
@@ -29,8 +29,8 @@ public class Inconsistency extends AnalysisModule {
 	public Inconsistency(QuestionCategory questions) {
 		super(questions);
 
-		mExpressionExtractor = new ExpressionExtractor("RegexRules/inconsistency.rules",  "RegexRules/numbers.compose", "RegexRules/prefixes.compose", "RegexRules/time_frequency.compose");
-		mFunctionsExtractor = new ExpressionExtractor("RegexRules/functions.rules");
+		mExpressionExtractor = NLPTools.createExpressionExtractor("RegexRules/inconsistency.rules",  "RegexRules/numbers.compose", "RegexRules/prefixes.compose", "RegexRules/time_frequency.compose");
+		mFunctionsExtractor = NLPTools.createExpressionExtractor("RegexRules/functions.rules");
 		mActionReferences = new HashSet<String>();
 		mFunctionReferences = new HashSet<String>();
 		mWatchDogReferences = new HashSet<String>();

@@ -5,7 +5,7 @@ import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.base.requirements.RequirementList;
-import com.autochecklist.utils.nlp.ExpressionExtractor;
+import com.autochecklist.utils.nlp.IExpressionExtractable;
 
 /**
  * This class represents a generic analysis module.
@@ -15,7 +15,7 @@ public abstract class AnalysisModule extends Module {
 
 	protected QuestionCategory mQuestions;
 
-	protected ExpressionExtractor mExpressionExtractor;
+	protected IExpressionExtractable mExpressionExtractor;
 
 	public AnalysisModule(QuestionCategory questions) {
 		mQuestions = questions;

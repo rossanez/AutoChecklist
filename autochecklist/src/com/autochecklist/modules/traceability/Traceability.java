@@ -16,16 +16,17 @@ import com.autochecklist.base.requirements.RequirementList;
 import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.ExpressionExtractor;
+import com.autochecklist.utils.nlp.IExpressionExtractable;
+import com.autochecklist.utils.nlp.NLPTools;
 
 public class Traceability extends AnalysisModule {
 
 	private DocumentSectionList mDocumentSections;
 	private RequirementsTraceabilityMatrix mRTM;
 
-	private ExpressionExtractor mInternalReqIdExtractor;
-	private ExpressionExtractor mReferencesExtractor;
-	private ExpressionExtractor mFunctionsExtractor;
+	private IExpressionExtractable mInternalReqIdExtractor;
+	private IExpressionExtractable mReferencesExtractor;
+	private IExpressionExtractable mFunctionsExtractor;
 
 	private List<Requirement> mRequirementList;
 
@@ -42,9 +43,9 @@ public class Traceability extends AnalysisModule {
 		mDocumentSections = sections;
 		mRTM = rtmSection;
 
-		mInternalReqIdExtractor = new ExpressionExtractor("RegexRules/requirementid.rules");
-		mReferencesExtractor = new ExpressionExtractor("RegexRules/references.rules");
-		mFunctionsExtractor = new ExpressionExtractor("RegexRules/functions.rules");
+		mInternalReqIdExtractor = NLPTools.createExpressionExtractor("RegexRules/requirementid.rules");
+		mReferencesExtractor = NLPTools.createExpressionExtractor("RegexRules/references.rules");
+		mFunctionsExtractor = NLPTools.createExpressionExtractor("RegexRules/functions.rules");
 
 		mRTMInstances = new HashMap<String, Integer>();
 		mInternalReqReferences = new ArrayList<String>();

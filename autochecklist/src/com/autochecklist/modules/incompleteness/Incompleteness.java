@@ -12,7 +12,6 @@ import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 import com.autochecklist.utils.nlp.NLPTools;
-import com.autochecklist.utils.nlp.ExpressionExtractor;
 
 public class Incompleteness extends AnalysisModule {
 
@@ -20,7 +19,7 @@ public class Incompleteness extends AnalysisModule {
 	
 	public Incompleteness(QuestionCategory questions) {
 		super(questions);
-		mExpressionExtractor = new ExpressionExtractor("RegexRules/incompleteness.rules");
+		mExpressionExtractor = NLPTools.createExpressionExtractor("RegexRules/incompleteness.rules");
 	}
 
 	@Override

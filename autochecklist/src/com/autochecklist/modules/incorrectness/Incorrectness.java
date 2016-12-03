@@ -11,7 +11,7 @@ import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.ExpressionExtractor;
+import com.autochecklist.utils.nlp.NLPTools;
 
 public class Incorrectness extends AnalysisModule {
 
@@ -21,7 +21,7 @@ public class Incorrectness extends AnalysisModule {
 	
 	public Incorrectness(QuestionCategory question) {
 		super(question);
-        mExpressionExtractor = new ExpressionExtractor("RegexRules/incorrectness.rules", "RegexRules/numbers.compose", "RegexRules/prefixes.compose", "RegexRules/units.compose");
+        mExpressionExtractor = NLPTools.createExpressionExtractor("RegexRules/incorrectness.rules", "RegexRules/numbers.compose", "RegexRules/prefixes.compose", "RegexRules/units.compose");
         mNumUnitOcc = new NumberAndUnitOccurrences();
 	}
 
