@@ -14,7 +14,7 @@ import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.CoreNLP;
+import com.autochecklist.utils.nlp.NLPTools;
 import com.autochecklist.utils.nlp.ExpressionExtractor;
 
 public class Inconsistency extends AnalysisModule {
@@ -164,7 +164,7 @@ public class Inconsistency extends AnalysisModule {
 		mActionReferences.clear();
 		mFunctionReferences.clear();
 
-		mActionReferences = CoreNLP.getInstance().getActions(requirement.getText());
+		mActionReferences = NLPTools.getInstance().getActions(requirement.getText());
 		findFunctions(requirement.getText());
 	}
 

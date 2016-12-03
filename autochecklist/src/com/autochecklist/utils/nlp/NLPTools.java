@@ -22,16 +22,16 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
  * 
  * @author Anderson Rossanez
  */
-public class CoreNLP {
+public class NLPTools {
 
-	private static CoreNLP mPipelineInstance;
+	private static NLPTools mPipelineInstance;
 	
 	private StanfordCoreNLP mPipeline;
 	private LexicalizedParser mParser;
 	private EventActionDetector mEventActionDetector;
 	private MissingNumericValueIndicativesDetector mMissingNumericValueDetector;
 	
-	private CoreNLP() {
+	private NLPTools() {
 		Properties props = new Properties();
 		props.put("annotators", "tokenize, ssplit, pos, lemma");
 		props.put("ssplit.newlineIsSentenceBreak", "two_consecutive");
@@ -46,10 +46,10 @@ public class CoreNLP {
 		mMissingNumericValueDetector = new MissingNumericValueIndicativesDetector();
 	}
 
-	public static CoreNLP getInstance() {
+	public static NLPTools getInstance() {
 		if (mPipelineInstance == null) {
 			Utils.println("Initializing NLP tools...");
-			mPipelineInstance = new CoreNLP();
+			mPipelineInstance = new NLPTools();
 			Utils.print("done!");
 		}
 

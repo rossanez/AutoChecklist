@@ -11,7 +11,7 @@ import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.CoreNLP;
+import com.autochecklist.utils.nlp.NLPTools;
 import com.autochecklist.utils.nlp.ExpressionExtractor;
 
 public class Incompleteness extends AnalysisModule {
@@ -63,7 +63,7 @@ public class Incompleteness extends AnalysisModule {
 	}
 
 	private void handleMissingNumericValues(Requirement requirement, Question question) {
-		Set<String> missingNumericValueIndicators = CoreNLP.getInstance().getMissingNumericValueIndicators(requirement.getText());
+		Set<String> missingNumericValueIndicators = NLPTools.getInstance().getMissingNumericValueIndicators(requirement.getText());
 		if (!missingNumericValueIndicators.isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (String indicator : missingNumericValueIndicators) {
@@ -88,7 +88,7 @@ public class Incompleteness extends AnalysisModule {
 	}
 
 	private void handleActionsAndEvents(Requirement requirement, Question question) {
-		Set<String> detectedEvents = CoreNLP.getInstance().checkIfHasActionsAndGetEvents(requirement.getText());
+		Set<String> detectedEvents = NLPTools.getInstance().checkIfHasActionsAndGetEvents(requirement.getText());
 		if (!detectedEvents.isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (String event : detectedEvents) {

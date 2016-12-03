@@ -17,18 +17,18 @@ public class ExpressionExtractor {
 	private CoreMapExpressionExtractor<MatchedExpression> mExpressionExtractor;
 
 	public ExpressionExtractor(String extractorRulesResource) {
-		mExpressionExtractor = CoreNLP.createExpressionExtractor(Utils.getResourceAsString(extractorRulesResource));
+		mExpressionExtractor = NLPTools.createExpressionExtractor(Utils.getResourceAsString(extractorRulesResource));
 	}
 
 	public ExpressionExtractor(String extractorRulesMainResorce, String... composingResources) {
-		mExpressionExtractor = CoreNLP.createExpressionExtractor(
+		mExpressionExtractor = NLPTools.createExpressionExtractor(
 				Utils.getCompositeResourceAsString(extractorRulesMainResorce, composingResources));
 	}
 
 	public List<Pair<String, String>> extract(String text) {
 		List<Pair<String, String>> retList = new ArrayList<Pair<String, String>>();
 		
-		Annotation annotated = CoreNLP.getInstance().annotate(text);
+		Annotation annotated = NLPTools.getInstance().annotate(text);
 		List<CoreMap> sentences = annotated.get(SentencesAnnotation.class);
 		for (CoreMap sentence : sentences) {
 			for (MatchedExpression match : mExpressionExtractor.extractExpressions(sentence)) {

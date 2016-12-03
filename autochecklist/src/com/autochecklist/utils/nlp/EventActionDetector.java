@@ -95,7 +95,7 @@ import edu.stanford.nlp.util.CoreMap;
 
 	public Set<String> getActionsInText(String text) {
 		Set<String> actions = new HashSet<String>();
-		Annotation document = CoreNLP.getInstance().annotate(text);
+		Annotation document = NLPTools.getInstance().annotate(text);
 
 		for (CoreMap sentence : document.get(SentencesAnnotation.class)) {
 			Set<String> sentenceActions = getActionsFromTree(mParser.parse(sentence.toString()));
@@ -109,7 +109,7 @@ import edu.stanford.nlp.util.CoreMap;
 	
 	public Set<String> checkIfHasActionsAndGetEvents(String text) {
 		Set<String> eventsFound = new HashSet<String>();
-		Annotation document = CoreNLP.getInstance().annotate(text);
+		Annotation document = NLPTools.getInstance().annotate(text);
 
 		for (CoreMap sentence : document.get(SentencesAnnotation.class)) {
 			Tree parseTree = mParser.parse(sentence.toString());

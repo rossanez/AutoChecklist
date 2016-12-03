@@ -30,7 +30,7 @@ import edu.stanford.nlp.util.CoreMap;
 	}
 	
 	public void extract() {
-    	Annotation document = CoreNLP.getInstance().annotate(mPlainText);
+    	Annotation document = NLPTools.getInstance().annotate(mPlainText);
 
     	Utils.println("Extracting requirements...");
 
@@ -88,7 +88,7 @@ import edu.stanford.nlp.util.CoreMap;
 	 * @return true if the sentence tokens have a requirement structure, false otherwise.
 	 */
 	private boolean hasRequirementStructure(String sentence) {
-		Tree parseTree = CoreNLP.getInstance().getParser().parse(sentence);
+		Tree parseTree = NLPTools.getInstance().getParser().parse(sentence);
 
 		// http://tides.umiacs.umd.edu/webtrec/stanfordParser/javadoc/index.html?edu/stanford/nlp/trees/tregex/TregexPattern.html
         TregexMatcher sentenceMatcher = TregexPattern.compile("ROOT << (NP=np $++ VP=vp)").matcher(parseTree);

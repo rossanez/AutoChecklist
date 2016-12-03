@@ -138,7 +138,7 @@ import edu.stanford.nlp.util.CoreMap;
 
 	public Set<String> detect(String text) {
 		Set<String> indicativesFound = new HashSet<String>();
-		Annotation annotatedText = CoreNLP.getInstance().annotate(text);
+		Annotation annotatedText = NLPTools.getInstance().annotate(text);
 
 		for (CoreMap sentence : annotatedText.get(SentencesAnnotation.class)) {
 			for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
