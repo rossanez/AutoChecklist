@@ -20,6 +20,7 @@ public class Question {
 	private List<Finding> mNoFindings;
 	private List<Finding> mPossibleNoFindings;
 	private List<Finding> mPossibleYesFindings;
+	private List<Finding> mYesFindings;
 
 	private String mText;
 	private int mId;
@@ -33,6 +34,7 @@ public class Question {
 		mNoFindings = new ArrayList<Finding>();
 		mPossibleNoFindings = new ArrayList<Finding>();
 		mPossibleYesFindings = new ArrayList<Finding>();
+		mYesFindings = new ArrayList<Finding>();
 	}
 
 	public void setAction(QuestionAction action) {
@@ -95,7 +97,13 @@ public class Question {
 			mWarningFindings.add(finding);
 		} else if (finding.getAnswerType() == Question.ANSWER_POSSIBLE_YES) {
 			mPossibleYesFindings.add(finding);
+		} else if (finding.getAnswerType() == Question.ANSWER_YES) {
+			mYesFindings.add(finding);
 		}
+	}
+
+	public List<Finding> getYesFindings() {
+		return mYesFindings;
 	}
 
 	public List<Finding> getPossibleYesFindings() {

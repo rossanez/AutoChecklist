@@ -12,6 +12,7 @@ public class Requirement {
 	private List<Finding> mNoFindings;
 	private List<Finding> mPossibleNoFindings;
 	private List<Finding> mPossibleYesFindings;
+	private List<Finding> mYesFindings;
 	
 	private String mId;
 	private String mText;
@@ -24,6 +25,7 @@ public class Requirement {
 		mNoFindings = new ArrayList<Finding>();
 		mPossibleNoFindings = new ArrayList<Finding>();
 		mPossibleYesFindings = new ArrayList<Finding>();
+		mYesFindings = new ArrayList<Finding>();
 	}
 
 	public String getId() {
@@ -43,9 +45,15 @@ public class Requirement {
 			mWarningFindings.add(finding);
 		} else if (finding.getAnswerType() == Question.ANSWER_POSSIBLE_YES) {
 			mPossibleYesFindings.add(finding);
+		} else if (finding.getAnswerType() == Question.ANSWER_YES) {
+			mYesFindings.add(finding);
 		}
 	}
 
+	public List<Finding> getYesFindings() {
+		return mYesFindings;
+	}
+	
 	public List<Finding> getPossibleYesFindings() {
 		return mPossibleYesFindings;
 	}

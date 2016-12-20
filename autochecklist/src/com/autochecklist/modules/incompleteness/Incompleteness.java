@@ -1,5 +1,6 @@
 package com.autochecklist.modules.incompleteness;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -15,18 +16,21 @@ import com.autochecklist.utils.nlp.NLPTools;
 
 public class Incompleteness extends AnalysisModule {
 
-	private Pair<String, List<Pair<String, String>>> mMatchedExpressionsForReq;
+	private List<Pair<String, String>> mMatchedExpressionsForReq;
 	
 	public Incompleteness(QuestionCategory questions) {
 		super(questions);
+		
 		mExpressionExtractor = NLPTools.createExpressionExtractor("RegexRules/incompleteness.rules");
+		mMatchedExpressionsForReq = new ArrayList<Pair<String, String>>();
 	}
 
 	@Override
 	public void preProcessRequirement(Requirement requirement) {
 		Utils.println("Incompleteness: Requirement " + requirement.getId());
-		List<Pair<String, String>> matchedExpressions = mExpressionExtractor.extract(requirement.getText());
-		mMatchedExpressionsForReq = new Pair<String, List<Pair<String, String>>> (requirement.getId(), matchedExpressions);
+
+		mMatchedExpressionsForReq.clear();
+		mMatchedExpressionsForReq = mExpressionExtractor.extract(requirement.getText());
 	}
 
 	@Override
@@ -38,26 +42,8 @@ public class Incompleteness extends AnalysisModule {
 			} else if ("MISSING_NUMERIC_VALUE".equals(actionSubType)) {
                 handleMissingNumericValues(requirement, question);
 			}
-		} else {
-			// Terms and expressions extraction.
-			if ((mMatchedExpressionsForReq == null)
-					|| (!requirement.getId().equals(mMatchedExpressionsForReq.first))) {
-				// These are not for this requirement.
-				return;
-			}
-
-			List<Pair<String, String>> matchedList = mMatchedExpressionsForReq.second;
-			for (Pair<String, String> matched : matchedList) {
-				if ((actionType == QuestionAction.ACTION_TYPE_EXTRACT_TERM_OR_EXPRESSION)
-						&& matched.first.equals(actionSubType)) {
-					// Found a forbidden term or expression.
-					Finding finding = new Finding(question.getId(), requirement.getId(),
-							"Contains \"" + matched.second + "\".", Question.ANSWER_NO);
-					requirement.addFinding(finding);
-					question.addFinding(finding);
-					question.setAnswerType(finding.getAnswerType());
-				}
-			}
+		} else if (actionType == QuestionAction.ACTION_TYPE_EXTRACT_TERM_OR_EXPRESSION) {
+			handleForbiddenTermsOrExpressions(requirement, question, actionSubType);
 		}
 	}
 
@@ -109,5 +95,35 @@ public class Incompleteness extends AnalysisModule {
 			question.addFinding(finding);
 			question.setAnswerType(finding.getAnswerType());
 		}
+	}
+
+	private void handleForbiddenTermsOrExpressions(Requirement requirement, Question question, String termOrExpression) {
+		if ((mMatchedExpressionsForReq == null) || mMatchedExpressionsForReq.isEmpty()) {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Does not contains \"" + termOrExpression + "\".", Question.ANSWER_YES);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+			return;
+		}
+			
+		for (Pair<String, String> matched : mMatchedExpressionsForReq) {
+			if (matched.first.equals(termOrExpression)) {
+				// Found a forbidden term or expression.
+				Finding finding = new Finding(question.getId(), requirement.getId(),
+						"Contains \"" + matched.second + "\".", Question.ANSWER_NO);
+				requirement.addFinding(finding);
+				question.addFinding(finding);
+				question.setAnswerType(finding.getAnswerType());
+				return;
+			}
+		}
+
+		// Ran all the list and found nothing.
+		Finding finding = new Finding(question.getId(), requirement.getId(),
+				"Does not contains \"" + termOrExpression + "\".", Question.ANSWER_YES);
+		requirement.addFinding(finding);
+		question.addFinding(finding);
+		question.setAnswerType(finding.getAnswerType());
 	}
 }

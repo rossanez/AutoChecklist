@@ -62,11 +62,10 @@ public class OutputFormatter extends Module {
 
 				// Following this precedence order:
 	        	// No > Possible No > Warning > Possible Yes > Yes
-	        	boolean hasFindings = false;
 	        	List<Finding> noFindings = question.getNoFindings();
 	        	if (!noFindings.isEmpty()) {
-	        		hasFindings = true;
 	        		outBuilder.append(" - Answer: No").append('\n');
+
 	        		outBuilder.append(" -init-list- ");
 	        		for (Finding finding : noFindings) {
 	        			outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
@@ -76,7 +75,6 @@ public class OutputFormatter extends Module {
 
 	        	List<Finding> possibleNoFindings = question.getPossibleNoFindings();
 	        	if (!possibleNoFindings.isEmpty()) {
-	                hasFindings = true;
 	        		outBuilder.append(" - Answer: Possible No").append('\n');
 
 	                outBuilder.append(" -init-list- ");
@@ -88,7 +86,6 @@ public class OutputFormatter extends Module {
 
 	        	List<Finding> warningFindings = question.getWarningFindings();
 	        	if (!warningFindings.isEmpty()) {
-	                hasFindings = true;
 	        		outBuilder.append(" - Answer: Warning").append('\n');
 
 	                outBuilder.append(" -init-list- ");
@@ -101,7 +98,6 @@ public class OutputFormatter extends Module {
 	        	List<Finding> possibleYesFindings = question.getPossibleYesFindings();
 	        	if (!possibleYesFindings.isEmpty()) {
 	        		outBuilder.append(" - Answer: Possible Yes").append('\n');
-	        		hasFindings = true;
 
 	                outBuilder.append(" -init-list- ");
 	                outBuilder.append(" -- ").append("Please check the requirements view for further information.").append(" /-- ");
@@ -112,8 +108,19 @@ public class OutputFormatter extends Module {
 	        		outBuilder.append(" -end-list- ");
 	        	}
 
-	        	if (!hasFindings) {
+	        	List<Finding> yesFindings = question.getYesFindings();
+	        	if (!yesFindings.isEmpty()) {
 	        		outBuilder.append(" - Answer: Yes").append('\n');
+
+	        		// In this case, there is no need to list the finding contents, only printing the IDs.
+	                outBuilder.append(" -init-list- ");
+	                outBuilder.append(" -- ");
+	                outBuilder.append("Requirements: ");
+	        		for (Finding finding : yesFindings) {
+	        			outBuilder.append(finding.getRequirementId()).append(", ");
+	        		}
+	        		outBuilder.append(" /-- ");
+	        		outBuilder.append(" -end-list- ");
 	        	}
 
 	        	outBuilder.append('\n');
@@ -143,11 +150,10 @@ public class OutputFormatter extends Module {
 
         	// Following this precedence order:
         	// No > Possible No > Warning > Possible Yes > Yes
-        	boolean hasFindings = false;
         	List<Finding> noFindings = requirement.getNoFindings();
         	if (!noFindings.isEmpty()) {
-        		hasFindings = true;
         		outBuilder.append(" - Answer: No").append('\n');
+
         		outBuilder.append(" -init-list- ");
         		for (Finding finding : noFindings) {
         			outBuilder.append(" -- ").append(formatRequirementFinding(finding)).append('\n').append(" /-- ");
@@ -157,7 +163,6 @@ public class OutputFormatter extends Module {
 
         	List<Finding> possibleNoFindings = requirement.getPossibleNoFindings();
         	if (!possibleNoFindings.isEmpty()) {
-                hasFindings = true;
         		outBuilder.append(" - Answer: Possible No").append('\n');
 
                 outBuilder.append(" -init-list- ");
@@ -169,7 +174,6 @@ public class OutputFormatter extends Module {
 
         	List<Finding> warningFindings = requirement.getWarningFindings();
         	if (!warningFindings.isEmpty()) {
-                hasFindings = true;
         		outBuilder.append(" - Answer: Warning").append('\n');
 
                 outBuilder.append(" -init-list- ");
@@ -181,7 +185,6 @@ public class OutputFormatter extends Module {
 
         	List<Finding> possibleYesFindings = requirement.getPossibleYesFindings();
         	if (!possibleYesFindings.isEmpty()) {
-                hasFindings = true;
         		outBuilder.append(" - Answer: Possible Yes").append('\n');
 
                 outBuilder.append(" -init-list- ");
@@ -191,8 +194,19 @@ public class OutputFormatter extends Module {
         		outBuilder.append(" -end-list- ");
         	}
 
-        	if (!hasFindings) {
+        	List<Finding> yesFindings = requirement.getYesFindings();
+        	if (!yesFindings.isEmpty()) {
         		outBuilder.append(" - Answer: Yes").append('\n');
+
+        		// In this case, there is no need to list the finding contents, only printing the IDs.
+                outBuilder.append(" -init-list- ");
+                outBuilder.append(" -- ");
+                outBuilder.append("Questions: ");
+        		for (Finding finding : yesFindings) {
+        			outBuilder.append(finding.getQuestionId()).append(", ");
+        		}
+        		outBuilder.append(" /-- ");
+        		outBuilder.append(" -end-list- ");
         	}
 
         	outBuilder.append('\n');
