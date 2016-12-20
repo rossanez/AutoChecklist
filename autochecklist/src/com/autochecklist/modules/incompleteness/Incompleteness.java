@@ -106,7 +106,8 @@ public class Incompleteness extends AnalysisModule {
 			question.setAnswerType(finding.getAnswerType());
 			return;
 		}
-			
+
+		boolean found = false;
 		for (Pair<String, String> matched : mMatchedExpressionsForReq) {
 			if (matched.first.equals(termOrExpression)) {
 				// Found a forbidden term or expression.
@@ -115,15 +116,18 @@ public class Incompleteness extends AnalysisModule {
 				requirement.addFinding(finding);
 				question.addFinding(finding);
 				question.setAnswerType(finding.getAnswerType());
-				return;
+
+				found = true;
 			}
 		}
 
-		// Ran all the list and found nothing.
-		Finding finding = new Finding(question.getId(), requirement.getId(),
-				"Does not contains \"" + termOrExpression + "\".", Question.ANSWER_YES);
-		requirement.addFinding(finding);
-		question.addFinding(finding);
-		question.setAnswerType(finding.getAnswerType());
+		if (!found) {
+			// Ran all the list and found nothing.
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Does not contains \"" + termOrExpression + "\".", Question.ANSWER_YES);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		}
 	}
 }

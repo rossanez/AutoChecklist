@@ -114,12 +114,13 @@ public class OutputFormatter extends Module {
 
 	        		// In this case, there is no need to list the finding contents, only printing the IDs.
 	                outBuilder.append(" -init-list- ");
-	                outBuilder.append(" -- ");
-	                outBuilder.append("Requirements: ");
-	        		for (Finding finding : yesFindings) {
-	        			outBuilder.append(finding.getRequirementId()).append(", ");
-	        		}
-	        		outBuilder.append(" /-- ");
+	                outBuilder.append(" -- ").append("Please check the requirements view for further information.").append(" /-- ");
+//	                outBuilder.append(" -- ");
+//	                outBuilder.append("Requirements: ");
+//	        		for (Finding finding : yesFindings) {
+//	        			outBuilder.append(finding.getRequirementId()).append(", ");
+//	        		}
+//	        		outBuilder.append(" /-- ");
 	        		outBuilder.append(" -end-list- ");
 	        	}
 

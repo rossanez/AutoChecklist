@@ -55,7 +55,8 @@ public class Incorrectness extends AnalysisModule {
 			question.setAnswerType(finding.getAnswerType());
 			return;
 		}
-			
+
+		boolean found = false;
 		for (Pair<String, String> matched : mMatchedExpressionsForReq) {
 			if (matched.first.equals(termOrExpression)) {
 				// Found a forbidden term or expression.
@@ -64,16 +65,19 @@ public class Incorrectness extends AnalysisModule {
 				requirement.addFinding(finding);
 				question.addFinding(finding);
 				question.setAnswerType(finding.getAnswerType());
-				return;
+
+				found = true;
 			}
 		}
 
-		// Ran all the list and found nothing.
-		Finding finding = new Finding(question.getId(), requirement.getId(),
-				"Does not contains \"" + termOrExpression + "\".", Question.ANSWER_YES);
-		requirement.addFinding(finding);
-		question.addFinding(finding);
-		question.setAnswerType(finding.getAnswerType());
+		if (!found) {
+			// Ran all the list and found nothing.
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Does not contains \"" + termOrExpression + "\".", Question.ANSWER_YES);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		}
 	}
 
 	private void handleNumbersAndUnits(Requirement requirement, Question question, String typeToCheck) {
@@ -85,7 +89,8 @@ public class Incorrectness extends AnalysisModule {
 			question.setAnswerType(finding.getAnswerType());
 			return;
 		}
-			
+
+		boolean found = false;
 		for (Pair<String, String> matched : mMatchedExpressionsForReq) {
 			if ("NUMBER_AND_UNIT".equals(matched.first)) {
 				// Found a numeric value.
@@ -105,16 +110,19 @@ public class Incorrectness extends AnalysisModule {
 
 				// Add it to the numeric occurrences.
 				mNumUnitOcc.put(matched.second, requirement.getId());
-				return;
+
+				found = true;
 			}
 		}
 
-		// Ran all the list and found nothing.
-		Finding finding = new Finding(question.getId(), requirement.getId(),
-				"Does not contains \"" + typeToCheck + "\".", Question.ANSWER_YES);
-		requirement.addFinding(finding);
-		question.addFinding(finding);
-		question.setAnswerType(finding.getAnswerType());
+		if (!found) {
+			// Ran all the list and found nothing.
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Does not contains \"" + typeToCheck + "\".", Question.ANSWER_YES);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		}
 	}
 
 	public NumberAndUnitOccurrences getNumericOccurrences() {
