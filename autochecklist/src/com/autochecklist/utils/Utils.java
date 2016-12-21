@@ -238,7 +238,7 @@ public class Utils {
 		}
 	}
 
-	public static String[][] isCommaSeparatedValueString(String contents) {
+	public static String[][] getMatrixFromCommaSeparatedValueString(String contents) {
 		if (isTextEmpty(contents)) return null;
 
 		BufferedReader bufReader = new BufferedReader(new StringReader(contents));

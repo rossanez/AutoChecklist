@@ -25,7 +25,7 @@ public class RequirementsTraceabilityMatrix {
 
 	public RequirementsTraceabilityMatrix(String preprocFileName) {
 		obtainRTM(preprocFileName);
-		mMatrix = Utils.isCommaSeparatedValueString(mContents);
+		mMatrix = Utils.getMatrixFromCommaSeparatedValueString(mContents);
 		if (mMatrix != null) {
 			Utils.println("Traceability matrix detected in CSV format.");
 			requirementIdRow = findRequirementIdRow();
