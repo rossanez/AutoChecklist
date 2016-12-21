@@ -18,10 +18,21 @@ import com.autochecklist.utils.Utils;
 
 public class RequirementsTraceabilityMatrix {
 
+	private final String[][] mMatrix;
+	private final int requirementIdRow;
+	
 	private String mContents;
 
 	public RequirementsTraceabilityMatrix(String preprocFileName) {
 		obtainRTM(preprocFileName);
+		mMatrix = Utils.isCommaSeparatedValueString(mContents);
+		if (mMatrix != null) {
+			Utils.println("Traceability matrix detected in CSV format.");
+			requirementIdRow = findRequirementIdRow();
+		} else {
+			Utils.println("Traceability matrix is NOT in CSV format!");
+			requirementIdRow = -1;
+		}
 	}
 
 	public boolean hasContents() {
@@ -30,6 +41,14 @@ public class RequirementsTraceabilityMatrix {
 
 	public String getContents() {
 		return mContents;
+	}
+
+	public boolean hasMatrix() {
+		return mMatrix != null;
+	}
+
+	public String[][] getMatrix() {
+		return mMatrix;
 	}
 
 	public int countInstances(String instance) {
@@ -78,5 +97,18 @@ public class RequirementsTraceabilityMatrix {
 			Element eElement = (Element) nRTMSection;
 			mContents = eElement.getTextContent();
 		}
+	}
+
+	private int findRequirementIdRow() {
+		if (!hasMatrix()) return -1;
+
+		String[] firstRow = mMatrix[0];
+		for (int i = 0; i < firstRow.length; i++) {
+			if (firstRow[i].equalsIgnoreCase("Requirement")) {
+				return i;
+			}
+		}
+
+		return -1;
 	}
 }

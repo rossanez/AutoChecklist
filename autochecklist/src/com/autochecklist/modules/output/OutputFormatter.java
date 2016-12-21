@@ -203,8 +203,13 @@ public class OutputFormatter extends Module {
                 outBuilder.append(" -init-list- ");
                 outBuilder.append(" -- ");
                 outBuilder.append("Questions: ");
-        		for (Finding finding : yesFindings) {
-        			outBuilder.append(finding.getQuestionId()).append(", ");
+        		for (int i = 0; i < yesFindings.size(); i++) {
+        			outBuilder.append(yesFindings.get(i).getQuestionId());
+        			if (i == yesFindings.size() -1) {
+        				outBuilder.append('.');
+        			} else {
+        				outBuilder.append(", ");
+        			}
         		}
         		outBuilder.append(" /-- ");
         		outBuilder.append(" -end-list- ");

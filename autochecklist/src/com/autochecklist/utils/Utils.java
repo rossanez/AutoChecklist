@@ -1,14 +1,18 @@
 package com.autochecklist.utils;
 
 import java.awt.Desktop;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -232,5 +236,33 @@ public class Utils {
 				}
 			}
 		}
+	}
+
+	public static String[][] isCommaSeparatedValueString(String contents) {
+		if (isTextEmpty(contents)) return null;
+
+		BufferedReader bufReader = new BufferedReader(new StringReader(contents));
+
+		List<String[]> matrix = new ArrayList<String[]>();
+		try {
+			String line = null;
+			int numRows = -1;
+			while ((line = bufReader.readLine()) != null) {
+				String[] rows = line.split(",");
+				if (numRows < 0) {
+					numRows = rows.length;
+				} else {
+					if (numRows != rows.length) return null;
+				}
+				matrix.add(rows);
+			}
+		} catch (IOException e) {
+			Utils.printError("Error when trying to check for CSV content!");
+			return null;
+		}
+
+		
+		String[][] array = matrix.toArray(new String[matrix.size()][]);
+		return array;
 	}
 }
