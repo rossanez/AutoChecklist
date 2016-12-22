@@ -244,6 +244,7 @@ public class Utils {
 		BufferedReader bufReader = new BufferedReader(new StringReader(contents));
 
 		List<String[]> matrix = new ArrayList<String[]>();
+		int numLines = 0;
 		try {
 			String line = null;
 			int numRows = -1;
@@ -255,12 +256,14 @@ public class Utils {
 					if (numRows != rows.length) return null;
 				}
 				matrix.add(rows);
+				numLines++;
 			}
 		} catch (IOException e) {
 			Utils.printError("Error when trying to check for CSV content!");
 			return null;
 		}
 
+		if (numLines < 2) return null;
 		
 		String[][] array = matrix.toArray(new String[matrix.size()][]);
 		return array;
