@@ -1,9 +1,7 @@
 package com.autochecklist.modules.traceability;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.autochecklist.base.Finding;
 import com.autochecklist.base.documentsections.DocumentSectionList;
@@ -30,7 +28,8 @@ public class Traceability extends AnalysisModule {
 
 	private List<Requirement> mRequirementList;
 
-	private Map<String, Integer> mRTMInstances;
+	private int mRTMNumInstances;
+	private boolean mRTMContainsRequirementPrecisely;
 
 	private List<String> mInternalReqReferences;
 	private List<String> mInternalReferences;
@@ -47,7 +46,6 @@ public class Traceability extends AnalysisModule {
 		mReferencesExtractor = NLPTools.createExpressionExtractor("RegexRules/references.rules");
 		mFunctionsExtractor = NLPTools.createExpressionExtractor("RegexRules/functions.rules");
 
-		mRTMInstances = new HashMap<String, Integer>();
 		mInternalReqReferences = new ArrayList<String>();
 		mInternalReferences = new ArrayList<String>();
 		mExternalReqReferences = new ArrayList<String>();
@@ -59,10 +57,15 @@ public class Traceability extends AnalysisModule {
 	public void preProcessRequirement(Requirement requirement) {
 		Utils.println("Traceability: Requirement " + requirement.getId());
 
-		// Get the number of occurrences of the requirement in the traceability matrix.
-		int numRTMInstances = mRTM.countInstances(requirement.getId());
-		if (numRTMInstances > 0) {
-			mRTMInstances.put(requirement.getId(), numRTMInstances);
+		// Reset the RTM variables and reevaluate them.
+		mRTMContainsRequirementPrecisely = false;
+		mRTMNumInstances = 0;
+		if (mRTM.isInPreciseMode()) {
+			// Checks if the traceability matrix contains this requirement mapped.
+			mRTMContainsRequirementPrecisely = mRTM.hasRequirementPrecisely(requirement.getId());
+		} else {
+			// Get the number of occurrences of the requirement in the traceability matrix text chunk.
+			mRTMNumInstances = mRTM.countInstances(requirement.getId());
 		}
 
 		// New references for a new requirement.
@@ -342,11 +345,17 @@ public class Traceability extends AnalysisModule {
 			requirement.addFinding(finding);
 			question.addFinding(finding);
 			question.setAnswerType(finding.getAnswerType());
-		} else if (mRTMInstances.containsKey(requirement.getId())) {
-			int numInstances = mRTMInstances.get(requirement.getId());
+		} else if (mRTM.isInPreciseMode() && mRTMContainsRequirementPrecisely) {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Found " + numInstances
-			        + ((numInstances > 1) ? " instances" : " instance") 
+					"Found in the traceability matrix.",
+					Question.ANSWER_YES);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+			question.setAnswerType(finding.getAnswerType());
+		} else if (!mRTM.isInPreciseMode() && (mRTMNumInstances > 0)) {
+			Finding finding = new Finding(question.getId(), requirement.getId(),
+					"Found " + mRTMNumInstances
+			        + ((mRTMNumInstances > 1) ? " instances" : " instance") 
 					+ " of \"" + requirement.getId() + "\" in the traceability matrix.",
 					Question.ANSWER_POSSIBLE_YES);
 			requirement.addFinding(finding);
@@ -354,7 +363,8 @@ public class Traceability extends AnalysisModule {
 			question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Not found in the traceability matrix!", Question.ANSWER_POSSIBLE_NO);
+					"Not found in the traceability matrix!",
+					mRTM.isInPreciseMode() ? Question.ANSWER_NO : Question.ANSWER_POSSIBLE_NO);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
 			question.setAnswerType(finding.getAnswerType());
@@ -369,7 +379,7 @@ public class Traceability extends AnalysisModule {
 			requirement.addFinding(finding);
 			question.addFinding(finding);
 			question.setAnswerType(finding.getAnswerType());
-		} else if (mRTMInstances.containsKey(requirement.getId())) {
+		} else if (mRTMContainsRequirementPrecisely || (mRTMNumInstances > 0)) {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Please check if the traceability is correct.",
 					Question.ANSWER_WARNING);
@@ -378,7 +388,8 @@ public class Traceability extends AnalysisModule {
 			question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Not found in the traceability matrix!", Question.ANSWER_POSSIBLE_NO);
+					"Not found in the traceability matrix!",
+					mRTM.isInPreciseMode() ? Question.ANSWER_NO : Question.ANSWER_POSSIBLE_NO);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
 			question.setAnswerType(finding.getAnswerType());

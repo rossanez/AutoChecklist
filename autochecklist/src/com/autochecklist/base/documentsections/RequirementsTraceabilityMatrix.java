@@ -19,7 +19,7 @@ import com.autochecklist.utils.Utils;
 public class RequirementsTraceabilityMatrix {
 
 	private final String[][] mMatrix;
-	private final int requirementIdRow;
+	private final int requirementIdColumn;
 	
 	private String mContents;
 
@@ -28,10 +28,10 @@ public class RequirementsTraceabilityMatrix {
 		mMatrix = Utils.getMatrixFromCommaSeparatedValueString(mContents);
 		if (mMatrix != null) {
 			Utils.println("Traceability matrix detected in CSV format.");
-			requirementIdRow = findRequirementIdRow();
+			requirementIdColumn = findRequirementIdColumn();
 		} else {
 			Utils.println("Traceability matrix is NOT in CSV format!");
-			requirementIdRow = -1;
+			requirementIdColumn = -1;
 		}
 	}
 
@@ -43,7 +43,11 @@ public class RequirementsTraceabilityMatrix {
 		return mContents;
 	}
 
-	public boolean hasMatrix() {
+	public boolean isInPreciseMode() {
+		return requirementIdColumn >= 0;
+	}
+
+	private boolean hasMatrix() {
 		return mMatrix != null;
 	}
 
@@ -61,7 +65,19 @@ public class RequirementsTraceabilityMatrix {
 	public boolean containInstances(String instance) {
 		return countInstances(instance) > 0;
 	}
-	
+
+    public boolean hasRequirementPrecisely(String reqId) {
+    	if (!isInPreciseMode()) return false;
+
+    	for (String[] row : mMatrix) {
+    		if (StringUtils.contains(row[requirementIdColumn], reqId)) {
+    			return true;
+    		}
+    	}
+
+    	return false;
+    }
+
 	private void obtainRTM(String fileName) {
 		try {
 			obtainRTM_internal(fileName);
@@ -99,12 +115,12 @@ public class RequirementsTraceabilityMatrix {
 		}
 	}
 
-	private int findRequirementIdRow() {
+	private int findRequirementIdColumn() {
 		if (!hasMatrix()) return -1;
 
 		String[] firstRow = mMatrix[0];
 		for (int i = 0; i < firstRow.length; i++) {
-			if (firstRow[i].equalsIgnoreCase("Requirement")) {
+			if (StringUtils.containsIgnoreCase(firstRow[i], "requirement")) {
 				return i;
 			}
 		}
