@@ -76,8 +76,8 @@ public class Inconsistency extends AnalysisModule {
 			}
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Contains possible action/function references. Please check if there are other places "
-			        + "(such as other requirements, figures, tables or lists) containing the same references for consistency."
-					+ sb.toString(),
+			        + "(such as other requirements, figures, tables or lists) containing the same references for consistency.",
+					sb.toString(),
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
@@ -99,9 +99,8 @@ public class Inconsistency extends AnalysisModule {
 		
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Contains possible frequency/period references. Please check if there are other places "
-			        + "(such as other requirements, figures, tables or lists) containing the same references for consistency.\n"
-						+ "Possible frequency/period indicatives:"
-							+ sb.toString(),
+			        + "(such as other requirements, figures, tables or lists) containing the same references for consistency.",
+					"Possible frequency/period indicatives:" + sb.toString(),
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);

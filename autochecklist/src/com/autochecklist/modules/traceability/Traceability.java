@@ -123,7 +123,7 @@ public class Traceability extends AnalysisModule {
 
 		if (sb.length() > 0) {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Please check if the internal references are correct." + sb.toString(),
+					"Please check if the internal references are correct.", sb.toString(),
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
@@ -153,7 +153,7 @@ public class Traceability extends AnalysisModule {
 
 		if (sb.length() > 0) {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Please check if the external references are correct." + sb.toString(),
+					"Please check if the external references are correct.", sb.toString(),
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
@@ -174,7 +174,7 @@ public class Traceability extends AnalysisModule {
 				sb.append('\n').append("- ").append(functionRef);
 			}
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Please check if the function references are correct." + sb.toString(),
+					"Please check if the function references are correct.", sb.toString(),
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
@@ -369,10 +369,17 @@ public class Traceability extends AnalysisModule {
 			requirement.addFinding(finding);
 			question.addFinding(finding);
 		} else if (!Utils.isTextEmpty(mRTMRequirementRow) || (mRTMNumInstances > 0)) {
-			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Please check if the traceability is correct"
-					+ (mRTM.isInPreciseMode() ? ":\n" + mRTMRequirementRow : '.' ),
+			Finding finding;
+			if (mRTM.isInPreciseMode()) {
+				finding = new Finding(question.getId(), requirement.getId(),
+					"Please check if the traceability is correct:",
+					mRTMRequirementRow,
 					Question.ANSWER_WARNING);
+			} else {
+				finding = new Finding(question.getId(), requirement.getId(),
+						"Please check if the traceability is correct.",
+						Question.ANSWER_WARNING);
+			}
 			requirement.addFinding(finding);
 			question.addFinding(finding);
 		} else {

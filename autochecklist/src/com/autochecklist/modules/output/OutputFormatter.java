@@ -2,6 +2,7 @@ package com.autochecklist.modules.output;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import com.autochecklist.base.Finding;
 import com.autochecklist.base.NumberAndUnitOccurrences;
@@ -62,49 +63,47 @@ public class OutputFormatter extends Module {
 
 				// Following this precedence order:
 	        	// No > Possible No > Warning > Possible Yes > Yes
-	        	List<Finding> noFindings = question.getNoFindings();
+	        	Map<String, List<Finding>> noFindings = question.getNoFindingsMap();
 	        	if (!noFindings.isEmpty()) {
 	        		outBuilder.append(" - Answer: No").append('\n');
 
 	        		outBuilder.append(" -init-list- ");
-	        		for (Finding finding : noFindings) {
-	        			outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
+	        		for (String genericPart : noFindings.keySet()) {
+	        			outBuilder.append(" -- ").append(formatQuestionFinding(genericPart, noFindings.get(genericPart))).append(" /-- ");
 	        		}
 	        		outBuilder.append(" -end-list- ");
 	        	}
 
-	        	List<Finding> possibleNoFindings = question.getPossibleNoFindings();
+	        	Map<String, List<Finding>>  possibleNoFindings = question.getPossibleNoFindingsMap();
 	        	if (!possibleNoFindings.isEmpty()) {
 	        		outBuilder.append(" - Answer: Possible No").append('\n');
 
 	                outBuilder.append(" -init-list- ");
-	        		for (Finding finding : possibleNoFindings) {
-	        			outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
-	        		}
+					for (String genericPart : possibleNoFindings.keySet()) {
+						outBuilder.append(" -- ").append(formatQuestionFinding(genericPart, possibleNoFindings.get(genericPart))).append(" /-- ");
+					}
 	        		outBuilder.append(" -end-list- ");
 	        	}
 
-	        	List<Finding> warningFindings = question.getWarningFindings();
+	        	Map<String, List<Finding>>  warningFindings = question.getWarningFindingsMap();
 	        	if (!warningFindings.isEmpty()) {
 	        		outBuilder.append(" - Answer: Warning").append('\n');
 
 	                outBuilder.append(" -init-list- ");
-	        		for (Finding finding : warningFindings) {
-	        			outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
+	                for (String genericPart : warningFindings.keySet()) {
+	        			outBuilder.append(" -- ").append(formatQuestionFinding(genericPart, warningFindings.get(genericPart))).append(" /-- ");
 	        		}
 	        		outBuilder.append(" -end-list- ");
 	        	}
 
-	        	List<Finding> possibleYesFindings = question.getPossibleYesFindings();
+	        	Map<String, List<Finding>>  possibleYesFindings = question.getPossibleYesFindingsMap();
 	        	if (!possibleYesFindings.isEmpty()) {
 	        		outBuilder.append(" - Answer: Possible Yes").append('\n');
 
 	                outBuilder.append(" -init-list- ");
-	                outBuilder.append(" -- ").append("Please check the requirements view for further information.").append(" /-- ");
-	                // Considering only findings more severe than "Possible Yes" in this view.
-//	        		for (Finding finding : possibleYesFindings) {
-//	        			outBuilder.append(" -- ").append(formatQuestionFinding(finding)).append('\n').append(" /-- ");
-//	        		}
+	                for (String genericPart : possibleYesFindings.keySet()) {
+	        			outBuilder.append(" -- ").append(formatQuestionFinding(genericPart, possibleYesFindings.get(genericPart))).append(" /-- ");
+	        		}
 	        		outBuilder.append(" -end-list- ");
 	        	}
 
@@ -114,13 +113,19 @@ public class OutputFormatter extends Module {
 
 	        		// In this case, there is no need to list the finding contents, only printing the IDs.
 	                outBuilder.append(" -init-list- ");
-	                outBuilder.append(" -- ").append("Please check the requirements view for further information.").append(" /-- ");
-//	                outBuilder.append(" -- ");
-//	                outBuilder.append("Requirements: ");
-//	        		for (Finding finding : yesFindings) {
-//	        			outBuilder.append(finding.getRequirementId()).append(", ");
-//	        		}
-//	        		outBuilder.append(" /-- ");
+	                outBuilder.append(" -- ");
+	                outBuilder.append("Requirements: ");
+	        		for (int i = 0; i < yesFindings.size(); i++) {
+	        			outBuilder.append(yesFindings.get(i).getRequirementId());
+	        			if (i == yesFindings.size() -1) {
+	        				outBuilder.append('.');
+	        			} else if (i == yesFindings.size() -2) {
+	        				outBuilder.append(", and ");
+	        			} else {
+	        				outBuilder.append(", ");
+	        			}
+	        		}
+	        		outBuilder.append(" /-- ");
 	        		outBuilder.append(" -end-list- ");
 	        	}
 
@@ -207,6 +212,8 @@ public class OutputFormatter extends Module {
         			outBuilder.append(yesFindings.get(i).getQuestionId());
         			if (i == yesFindings.size() -1) {
         				outBuilder.append('.');
+        			} else if(i == yesFindings.size() -2) {
+        				outBuilder.append(", and ");
         			} else {
         				outBuilder.append(", ");
         			}
@@ -225,8 +232,37 @@ public class OutputFormatter extends Module {
 		return new HtmlBuilder(mOutputDir + "requirements_view_default.html").build(generateDefaultRequirementsViewContent(false));
 	}
 
-	private String formatQuestionFinding(Finding finding) {
-		return "Requirement " + finding.getRequirementId() + ": " + finding.getDetail();
+	private String formatQuestionFinding(String genericPart, List<Finding> findings) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(genericPart).append('\n');
+		sb.append(" -init-list- ");
+		for (int i = 0; i < findings.size(); i++) {
+			String specificPart = findings.get(i).getSpecificPart();
+			if (!Utils.isTextEmpty(specificPart)) {
+				sb.append(" -init-list- ");
+				sb.append(" -- ");
+				sb.append(findings.get(i).getRequirementId());
+			    sb.append(": ").append(specificPart);
+			} else {
+				sb.append(findings.get(i).getRequirementId());
+				if (i == findings.size() - 1) {
+					sb.append('.');
+				} else if (i == findings.size() - 2) {
+					sb.append(", and ");
+				} else {
+					sb.append(", ");
+				}
+			}
+
+			if (!Utils.isTextEmpty(specificPart)) {
+			    sb.append('\n');
+			    sb.append(" /-- ");
+			    sb.append(" -end-list- ");
+			}
+		}
+		sb.append(" -end-list- ");
+
+		return sb.toString();
 	}
 
 	private String formatRequirementFinding(Finding finding) {

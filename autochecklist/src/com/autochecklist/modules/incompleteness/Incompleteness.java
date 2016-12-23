@@ -56,8 +56,8 @@ public class Incompleteness extends AnalysisModule {
 			}
 
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Please check if there are missing numeric values.\nPossible indicatives:"
-							+ sb.toString(),
+					"Please check if there are missing numeric values.",
+					"Possible indicatives:" + sb.toString(),
 					Question.ANSWER_WARNING);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
@@ -79,8 +79,8 @@ public class Incompleteness extends AnalysisModule {
 			}
 
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Please check if all the possible events are considered.\nPossible event indicatives:"
-							+ sb.toString(),
+					"Please check if all the possible events are considered.",
+					"Possible event indicatives:" + sb.toString(),
 					Question.ANSWER_WARNING);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
