@@ -67,44 +67,36 @@ public class OutputFormatter extends Module {
 	        	if (!noFindings.isEmpty()) {
 	        		outBuilder.append(" - Answer: No").append('\n');
 
-	        		outBuilder.append(" -init-list- ");
 	        		for (String genericPart : noFindings.keySet()) {
 	        			outBuilder.append(" -- ").append(formatQuestionFinding(genericPart, noFindings.get(genericPart))).append(" /-- ");
 	        		}
-	        		outBuilder.append(" -end-list- ");
 	        	}
 
 	        	Map<String, List<Finding>>  possibleNoFindings = question.getPossibleNoFindingsMap();
 	        	if (!possibleNoFindings.isEmpty()) {
 	        		outBuilder.append(" - Answer: Possible No").append('\n');
 
-	                outBuilder.append(" -init-list- ");
 					for (String genericPart : possibleNoFindings.keySet()) {
 						outBuilder.append(" -- ").append(formatQuestionFinding(genericPart, possibleNoFindings.get(genericPart))).append(" /-- ");
 					}
-	        		outBuilder.append(" -end-list- ");
 	        	}
 
 	        	Map<String, List<Finding>>  warningFindings = question.getWarningFindingsMap();
 	        	if (!warningFindings.isEmpty()) {
 	        		outBuilder.append(" - Answer: Warning").append('\n');
 
-	                outBuilder.append(" -init-list- ");
 	                for (String genericPart : warningFindings.keySet()) {
 	        			outBuilder.append(" -- ").append(formatQuestionFinding(genericPart, warningFindings.get(genericPart))).append(" /-- ");
 	        		}
-	        		outBuilder.append(" -end-list- ");
 	        	}
 
 	        	Map<String, List<Finding>>  possibleYesFindings = question.getPossibleYesFindingsMap();
 	        	if (!possibleYesFindings.isEmpty()) {
 	        		outBuilder.append(" - Answer: Possible Yes").append('\n');
 
-	                outBuilder.append(" -init-list- ");
 	                for (String genericPart : possibleYesFindings.keySet()) {
 	        			outBuilder.append(" -- ").append(formatQuestionFinding(genericPart, possibleYesFindings.get(genericPart))).append(" /-- ");
 	        		}
-	        		outBuilder.append(" -end-list- ");
 	        	}
 
 	        	List<Finding> yesFindings = question.getYesFindings();

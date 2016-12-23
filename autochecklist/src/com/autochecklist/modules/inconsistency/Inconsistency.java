@@ -63,13 +63,16 @@ public class Inconsistency extends AnalysisModule {
 		if (!mActionReferences.isEmpty() || !mFunctionReferences.isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			if (!mActionReferences.isEmpty()) {
-				sb.append("\nPossible actions:");
+				sb.append("Possible actions:");
 				for (String indicator : mActionReferences) {
 					sb.append('\n').append("- ").append(indicator);
 				}
 			}
 			if (!mFunctionReferences.isEmpty()) {
-				sb.append("\nPossible functions:");
+				if (!Utils.isTextEmpty(sb.toString())) {
+					sb.append('\n');
+				}
+				sb.append("Possible functions:");
 				for (String indicator : mFunctionReferences) {
 					sb.append('\n').append("- ").append(indicator);
 				}
