@@ -2,6 +2,7 @@ package com.autochecklist.base.documentsections;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -66,16 +67,16 @@ public class RequirementsTraceabilityMatrix {
 		return countInstances(instance) > 0;
 	}
 
-    public boolean hasRequirementPrecisely(String reqId) {
-    	if (!isInPreciseMode()) return false;
+    public String getRequirementRow(String reqId) {
+    	if (!isInPreciseMode()) return null;
 
     	for (String[] row : mMatrix) {
     		if (StringUtils.contains(row[requirementIdColumn], reqId)) {
-    			return true;
+    			return Arrays.toString(row);
     		}
     	}
 
-    	return false;
+    	return null;
     }
 
 	private void obtainRTM(String fileName) {

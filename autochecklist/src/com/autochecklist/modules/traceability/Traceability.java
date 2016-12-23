@@ -29,7 +29,7 @@ public class Traceability extends AnalysisModule {
 	private List<Requirement> mRequirementList;
 
 	private int mRTMNumInstances;
-	private boolean mRTMContainsRequirementPrecisely;
+	private String mRTMRequirementRow;
 
 	private List<String> mInternalReqReferences;
 	private List<String> mInternalReferences;
@@ -58,11 +58,11 @@ public class Traceability extends AnalysisModule {
 		Utils.println("Traceability: Requirement " + requirement.getId());
 
 		// Reset the RTM variables and reevaluate them.
-		mRTMContainsRequirementPrecisely = false;
+		mRTMRequirementRow = null;
 		mRTMNumInstances = 0;
 		if (mRTM.isInPreciseMode()) {
 			// Checks if the traceability matrix contains this requirement mapped.
-			mRTMContainsRequirementPrecisely = mRTM.hasRequirementPrecisely(requirement.getId());
+			mRTMRequirementRow = mRTM.getRequirementRow(requirement.getId());
 		} else {
 			// Get the number of occurrences of the requirement in the traceability matrix text chunk.
 			mRTMNumInstances = mRTM.countInstances(requirement.getId());
@@ -345,9 +345,9 @@ public class Traceability extends AnalysisModule {
 			requirement.addFinding(finding);
 			question.addFinding(finding);
 			question.setAnswerType(finding.getAnswerType());
-		} else if (mRTM.isInPreciseMode() && mRTMContainsRequirementPrecisely) {
+		} else if (mRTM.isInPreciseMode() && !Utils.isTextEmpty(mRTMRequirementRow)) {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Found in the traceability matrix.",
+					"Found: " + mRTMRequirementRow,
 					Question.ANSWER_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
@@ -379,9 +379,10 @@ public class Traceability extends AnalysisModule {
 			requirement.addFinding(finding);
 			question.addFinding(finding);
 			question.setAnswerType(finding.getAnswerType());
-		} else if (mRTMContainsRequirementPrecisely || (mRTMNumInstances > 0)) {
+		} else if (!Utils.isTextEmpty(mRTMRequirementRow) || (mRTMNumInstances > 0)) {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Please check if the traceability is correct.",
+					"Please check if the traceability is correct"
+					+ (mRTM.isInPreciseMode() ? ":\n" + mRTMRequirementRow : '.' ),
 					Question.ANSWER_WARNING);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
