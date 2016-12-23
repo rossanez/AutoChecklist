@@ -14,8 +14,6 @@ public class Question {
 	public static final int ANSWER_POSSIBLE_NO = 3;
 	public static final int ANSWER_NO = 4;
 
-	private int mAnswerType = ANSWER_YES;
-
 	private List<Finding> mWarningFindings;
 	private List<Finding> mNoFindings;
 	private List<Finding> mPossibleNoFindings;
@@ -55,37 +53,6 @@ public class Question {
 
 	public String getText() {
 		return mText;
-	}
-
-	public void setAnswerType(int answer) {
-		// Considering the following precedence order:
-		// No > Possible No > Warning > Possible Yes > Yes
-		if (mAnswerType >= answer) {
-			return;
-		}
-
-		mAnswerType = answer;
-	}
-
-	public int getAnswerType() {
-		return mAnswerType;
-	}
-
-	public String getAnswerAsString() {
-		switch (mAnswerType) {
-		    case ANSWER_YES:
-			    return "Yes";
-		    case ANSWER_NO:
-			    return "No";
-            case ANSWER_WARNING:
-			    return "Warning";
-            case ANSWER_POSSIBLE_YES:
-            	return "Possible Yes";
-            case ANSWER_POSSIBLE_NO:
-            	return "Possible No";
-			default:
-				return null;
-		}
 	}
 
 	public void addFinding(Finding finding) {

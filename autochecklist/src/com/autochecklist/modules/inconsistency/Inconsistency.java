@@ -81,14 +81,12 @@ public class Inconsistency extends AnalysisModule {
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Unable to find action/function references. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		}
 	}
 	
@@ -107,14 +105,12 @@ public class Inconsistency extends AnalysisModule {
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Unable to find frequency/period references. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		}
 	}
 	
@@ -126,14 +122,12 @@ public class Inconsistency extends AnalysisModule {
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Unable to find watch dog references. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		}
 	}
 	

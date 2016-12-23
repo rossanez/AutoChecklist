@@ -61,14 +61,12 @@ public class Incompleteness extends AnalysisModule {
 					Question.ANSWER_WARNING);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Unable to find missing numeric values indicatives automatically. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		}
 	}
 
@@ -86,14 +84,12 @@ public class Incompleteness extends AnalysisModule {
 					Question.ANSWER_WARNING);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Unable to find event indicatives automatically. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		}
 	}
 
@@ -103,7 +99,6 @@ public class Incompleteness extends AnalysisModule {
 					"Does not contains \"" + termOrExpression + "\".", Question.ANSWER_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 			return;
 		}
 
@@ -115,7 +110,6 @@ public class Incompleteness extends AnalysisModule {
 						"Contains \"" + matched.second + "\".", Question.ANSWER_NO);
 				requirement.addFinding(finding);
 				question.addFinding(finding);
-				question.setAnswerType(finding.getAnswerType());
 
 				found = true;
 			}
@@ -127,7 +121,6 @@ public class Incompleteness extends AnalysisModule {
 					"Does not contains \"" + termOrExpression + "\".", Question.ANSWER_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		}
 	}
 }

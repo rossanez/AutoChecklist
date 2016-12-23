@@ -127,14 +127,12 @@ public class Traceability extends AnalysisModule {
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Unable to find instances of internal requirements or references. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		}
 	}
 
@@ -159,14 +157,12 @@ public class Traceability extends AnalysisModule {
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Unable to find instances of external requirements or references. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		}
 	}
 
@@ -182,14 +178,12 @@ public class Traceability extends AnalysisModule {
 					Question.ANSWER_WARNING);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Unable to find instances of functions. You may want to confirm it manually.",
 					Question.ANSWER_POSSIBLE_YES);
 		    question.addFinding(finding);
 		    requirement.addFinding(finding);
-		    question.setAnswerType(finding.getAnswerType());
 		}
 	}
 
@@ -344,14 +338,12 @@ public class Traceability extends AnalysisModule {
 					Question.ANSWER_WARNING);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		} else if (mRTM.isInPreciseMode() && !Utils.isTextEmpty(mRTMRequirementRow)) {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Found: " + mRTMRequirementRow,
 					Question.ANSWER_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		} else if (!mRTM.isInPreciseMode() && (mRTMNumInstances > 0)) {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Found " + mRTMNumInstances
@@ -360,14 +352,12 @@ public class Traceability extends AnalysisModule {
 					Question.ANSWER_POSSIBLE_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Not found in the traceability matrix!",
 					mRTM.isInPreciseMode() ? Question.ANSWER_NO : Question.ANSWER_POSSIBLE_NO);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		}
 	}
 
@@ -378,7 +368,6 @@ public class Traceability extends AnalysisModule {
 					Question.ANSWER_WARNING);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		} else if (!Utils.isTextEmpty(mRTMRequirementRow) || (mRTMNumInstances > 0)) {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Please check if the traceability is correct"
@@ -386,14 +375,12 @@ public class Traceability extends AnalysisModule {
 					Question.ANSWER_WARNING);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		} else {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
 					"Not found in the traceability matrix!",
 					mRTM.isInPreciseMode() ? Question.ANSWER_NO : Question.ANSWER_POSSIBLE_NO);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		}
 	}
 }

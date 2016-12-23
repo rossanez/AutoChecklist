@@ -107,6 +107,5 @@ public abstract class AnalysisModule extends Module {
 				"Please check it manually.", Question.ANSWER_WARNING);
 		requirement.addFinding(finding);
 		question.addFinding(finding);
-		question.setAnswerType(finding.getAnswerType());
 	}
 }

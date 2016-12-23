@@ -52,7 +52,6 @@ public class Incorrectness extends AnalysisModule {
 					"Does not contains \"" + termOrExpression + "\".", Question.ANSWER_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 			return;
 		}
 
@@ -64,7 +63,6 @@ public class Incorrectness extends AnalysisModule {
 						"Contains \"" + matched.second + "\".", Question.ANSWER_NO);
 				requirement.addFinding(finding);
 				question.addFinding(finding);
-				question.setAnswerType(finding.getAnswerType());
 
 				found = true;
 			}
@@ -76,7 +74,6 @@ public class Incorrectness extends AnalysisModule {
 					"Does not contains \"" + termOrExpression + "\".", Question.ANSWER_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		}
 	}
 
@@ -86,7 +83,6 @@ public class Incorrectness extends AnalysisModule {
 					"Does not contains \"" + typeToCheck + "\".", Question.ANSWER_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 			return;
 		}
 
@@ -106,7 +102,6 @@ public class Incorrectness extends AnalysisModule {
 						findingDescription + matched.second, Question.ANSWER_WARNING);
 				requirement.addFinding(finding);
 				question.addFinding(finding);
-				question.setAnswerType(finding.getAnswerType());
 
 				// Add it to the numeric occurrences.
 				mNumUnitOcc.put(matched.second, requirement.getId());
@@ -121,7 +116,6 @@ public class Incorrectness extends AnalysisModule {
 					"Does not contains \"" + typeToCheck + "\".", Question.ANSWER_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
-			question.setAnswerType(finding.getAnswerType());
 		}
 	}
 
