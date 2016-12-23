@@ -249,6 +249,8 @@ public class Utils {
 			String line = null;
 			int numRows = -1;
 			while ((line = bufReader.readLine()) != null) {
+				if (isTextEmpty(line)) continue;
+
 				String[] rows = line.split(",");
 				if (numRows < 0) {
 					numRows = rows.length;
