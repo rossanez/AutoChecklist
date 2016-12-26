@@ -144,8 +144,10 @@ public class WebViewerUI extends BaseUI {
 
 	private void save() {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Save output file...");
+		int index = tabPane.getSelectionModel().getSelectedIndex();
+		fileChooser.setTitle("Save \"" + mContents[index].first + "\" output...");
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("HTML Files", "*.html"));
+		fileChooser.setInitialFileName(mContents[index].first.trim().replace(" ", "_"));
 		File file = fileChooser.showSaveDialog(mStage);
 		if (file == null) return; // User may have cancelled the dialog.
 
@@ -154,9 +156,8 @@ public class WebViewerUI extends BaseUI {
 		}
 
 		try {
-			int index = tabPane.getSelectionModel().getSelectedIndex();
 			FileUtils.writeStringToFile(file, HtmlBuilder.removeScriptsfromContent(mContents[index].second));
-			new AlertDialog("Success!", "File " + file.getPath() + " saved!", mStage).show();
+			new AlertDialog("Success!", "File has been saved!\n" + file.getPath(), mStage).show();
 		} catch (IOException e) {
 			new AlertDialog("Error!", "Unable to save file!", mStage).show();
 		}

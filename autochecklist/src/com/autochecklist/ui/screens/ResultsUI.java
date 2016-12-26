@@ -128,7 +128,7 @@ public class ResultsUI extends BaseUI {
 			mViewerContents.add(new Pair<String, String>("Requirements View", mOutputFormatter.generateRequirementsViewContent(true)));
 		}
 		if (mNumOccView.isSelected()) {
-			mViewerContents.add(new Pair<String, String>("Numeric Occurrences", mOutputFormatter.generateNumericOccurrencesContent(true)));
+			mViewerContents.add(new Pair<String, String>("Numeric Occurrences View", mOutputFormatter.generateNumericOccurrencesContent(true)));
 		}
 	}
 
