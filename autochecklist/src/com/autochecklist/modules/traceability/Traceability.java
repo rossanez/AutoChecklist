@@ -352,9 +352,10 @@ public class Traceability extends AnalysisModule {
 			question.addFinding(finding);
 		} else if (!mRTM.isInPreciseMode() && (mRTMNumInstances > 0)) {
 			Finding finding = new Finding(question.getId(), requirement.getId(),
-					"Found " + mRTMNumInstances
+					"The traceability matrix contains",
+					mRTMNumInstances
 			        + ((mRTMNumInstances > 1) ? " instances" : " instance") 
-					+ " of \"" + requirement.getId() + "\" in the traceability matrix.",
+					+ " of \"" + requirement.getId() + "\".",
 					Question.ANSWER_POSSIBLE_YES);
 			requirement.addFinding(finding);
 			question.addFinding(finding);

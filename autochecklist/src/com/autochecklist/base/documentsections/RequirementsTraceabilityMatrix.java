@@ -30,6 +30,11 @@ public class RequirementsTraceabilityMatrix {
 		if (mMatrix != null) {
 			Utils.println("Traceability matrix detected in CSV format.");
 			requirementIdColumn = findRequirementIdColumn();
+			if (requirementIdColumn >= 0) {
+				Utils.println("Found the requirement ID column in the matrix.");
+			} else {
+				Utils.println("Unable to find the requirement ID column in the matrix!");
+			}
 		} else {
 			Utils.println("Traceability matrix is NOT in CSV format!");
 			requirementIdColumn = -1;
@@ -45,7 +50,7 @@ public class RequirementsTraceabilityMatrix {
 	}
 
 	public boolean isInPreciseMode() {
-		return requirementIdColumn >= 0;
+		return (mMatrix != null) && (requirementIdColumn >= 0);
 	}
 
 	private boolean hasMatrix() {
