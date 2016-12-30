@@ -2,6 +2,9 @@ package com.autochecklist.ui.screens;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 
@@ -48,10 +51,14 @@ public class WebViewerUI extends BaseUI {
 	private SearchDialog mSearchDialog;
 
 	private String mPreviousSearchTerm = null;
+	private final String mDateTimeCatString;
 
 	public WebViewerUI(Pair<String, String>[] contents) {
 		super();
 		mContents = contents;
+
+		DateFormat df = new SimpleDateFormat("_yyyyMMdd_hhmmss");
+		mDateTimeCatString = df.format(new Date());
 	}
 
 	@Override
@@ -147,7 +154,7 @@ public class WebViewerUI extends BaseUI {
 		int index = tabPane.getSelectionModel().getSelectedIndex();
 		fileChooser.setTitle("Save \"" + mContents[index].first + "\" output...");
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("HTML Files", "*.html"));
-		fileChooser.setInitialFileName(mContents[index].first.trim().replace(" ", "_"));
+		fileChooser.setInitialFileName(mContents[index].first.trim().replace(" ", "_") + mDateTimeCatString);
 		File file = fileChooser.showSaveDialog(mStage);
 		if (file == null) return; // User may have cancelled the dialog.
 
