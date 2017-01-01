@@ -25,6 +25,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -107,14 +108,8 @@ public class ReviewUI extends BaseUI {
 
 	private Node buildContents() {
 		VBox contents = new VBox(10);
-		for (Requirement requirement : mOutputFormatter.getRequirements()) {
-			Label label = new Label(requirement.getId() + " - " + requirement.getText());
 
-			VBox tableRequirement = new VBox(10);
-			tableRequirement.getChildren().addAll(label, createTable(requirement));
-			contents.getChildren().add(tableRequirement);
-		}
-
+		contents.getChildren().add(createTable());
 		contents.prefHeightProperty().bind(mStage.heightProperty());
 		contents.prefWidthProperty().bind(mStage.widthProperty());
 
@@ -128,9 +123,18 @@ public class ReviewUI extends BaseUI {
 		return findings;
 	}
 
-	private TableView<Finding> createTable(Requirement requirement) {
+	private TableView<Finding> createTable() {
 		TableView<Finding> table = new TableView<Finding>();
 		table.setEditable(true);
+
+		TableColumn<Finding, String> requirementId = new TableColumn<Finding, String>("Requirement");
+		requirementId.setCellValueFactory(new Callback<CellDataFeatures<Finding, String>, ObservableValue<String>>() {
+
+			@Override
+			public ObservableValue<String> call(CellDataFeatures<Finding, String> finding) {
+				return new ReadOnlyObjectWrapper<String>(finding.getValue().getRequirementId());
+			}
+		});
 
 		TableColumn<Finding, Integer> questionId = new TableColumn<Finding, Integer>("Question");
 		questionId.setCellValueFactory(new Callback<CellDataFeatures<Finding, Integer>, ObservableValue<Integer>>() {
@@ -208,11 +212,16 @@ public class ReviewUI extends BaseUI {
 		manual.getColumns().add(manAnswer);
 		manual.getColumns().add(comments);
 
+		table.getColumns().add(requirementId);
 		table.getColumns().add(questionId);
 		table.getColumns().add(automatic);
 		table.getColumns().add(manual);
 
-		table.setItems(getFindings(requirement));
+		ObservableList<Finding> allFindings = FXCollections.observableArrayList();
+		for (Requirement requirement : mOutputFormatter.getRequirements()) {
+			allFindings.addAll(getFindings(requirement));
+		}
+		table.setItems(allFindings);
 
 		table.setFixedCellSize(30);
 		table.prefHeightProperty().bind(Bindings.size(table.getItems()).multiply(table.getFixedCellSize()).add(30));
