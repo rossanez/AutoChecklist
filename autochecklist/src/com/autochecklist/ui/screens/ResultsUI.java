@@ -28,6 +28,7 @@ public class ResultsUI extends BaseUI {
 	private OutputFormatter mOutputFormatter;
 
 	private WebViewerUI mResultsViewer;
+	private ReviewUI mFindingsReview;
 
 	private List<Pair<String, String>> mViewerContents;
 
@@ -35,6 +36,8 @@ public class ResultsUI extends BaseUI {
 	private CheckBox mCheckView;
 	private CheckBox mReqView;
 	private CheckBox mNumOccView;
+
+	private MenuItem mMenuReview;
 
 	private Button mGenerateButton;
 
@@ -59,13 +62,17 @@ public class ResultsUI extends BaseUI {
 		mMenuRestart.setOnAction(this);
 		mMenuExit = new MenuItem("Exit");
 		mMenuExit.setOnAction(this);
+		mMenuReview = new MenuItem("Review findings");
+		mMenuReview.setOnAction(this);
 
 		MenuBar menuBar = new MenuBar();
-		Menu menu = new Menu("Actions");
-		menu.getItems().add(mMenuRestart);
-		menu.getItems().add(new SeparatorMenuItem());
-		menu.getItems().add(mMenuExit);
-		menuBar.getMenus().add(menu);
+		Menu actionsMenu = new Menu("Actions");
+		actionsMenu.getItems().add(mMenuReview);
+		actionsMenu.getItems().add(new SeparatorMenuItem());
+		actionsMenu.getItems().add(mMenuRestart);
+		actionsMenu.getItems().add(new SeparatorMenuItem());
+		actionsMenu.getItems().add(mMenuExit);
+		menuBar.getMenus().add(actionsMenu);
 		menuBar.prefWidthProperty().bind(mStage.widthProperty());
 
 		Label subTitle = new Label();
@@ -115,6 +122,7 @@ public class ResultsUI extends BaseUI {
 		}
 
 		mMenuRestart.setDisable(true);
+		mMenuReview.setDisable(true);
 		mGenerateButton.setDisable(true);
 	}
 
@@ -135,6 +143,7 @@ public class ResultsUI extends BaseUI {
 	@Override
 	protected void workSucceeded() {
 		mMenuRestart.setDisable(false);
+		mMenuReview.setDisable(false);
 		mGenerateButton.setDisable(false);
 
 		mResultsViewer = new WebViewerUI(mViewerContents.toArray(new Pair[mViewerContents.size()]));
@@ -144,6 +153,7 @@ public class ResultsUI extends BaseUI {
 	@Override
 	protected void workFailed(boolean cancelled) {
 		mMenuRestart.setDisable(false);
+		mMenuReview.setDisable(false);
 		mGenerateButton.setDisable(false);
 
 		if (cancelled) {
@@ -167,7 +177,18 @@ public class ResultsUI extends BaseUI {
 			if (mResultsViewer != null) {
 				mResultsViewer.close();
 			}
+			if (mFindingsReview != null) {
+				mFindingsReview.close();
+			}
 			super.handle(event);
+		} else if (event.getSource() == mMenuReview) {
+			if (mResultsViewer != null) {
+				mResultsViewer.close();
+			}
+			if (mFindingsReview != null) {
+				mFindingsReview.close();
+			}
+			performReview();
 		} else {
 			super.handle(event);
 		}
@@ -186,5 +207,10 @@ public class ResultsUI extends BaseUI {
 		}
 
 		return false;
+	}
+
+	private void performReview() {
+		mFindingsReview = new ReviewUI(mOutputFormatter);
+		mFindingsReview.show();
 	}
 }

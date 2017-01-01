@@ -1,6 +1,7 @@
 package com.autochecklist.modules.output;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,19 @@ public class OutputFormatter extends Module {
 
 	private String setOutputDirectory(String dir) {
 		return dir + "AnalysisOutput" + File.separatorChar;
+	}
+
+	public List<Requirement> getRequirements() {
+		return mRequirements.getRequirements();
+	}
+
+	public List<Question> getQuestions() {
+		List<Question> result = new ArrayList<Question>();
+		for (QuestionCategory cat : mQuestions) {
+			result.addAll(cat.getAllQuestions());
+		}
+
+		return result;
 	}
 
 	@Override

@@ -69,4 +69,15 @@ public class Requirement {
 	public List<Finding> getPossibleNoFindings() {
 		return mPossibleNoFindings;
 	}
+
+	public List<Finding> getAllFindings() {
+		List<Finding> all = new ArrayList<Finding>();
+		all.addAll(mYesFindings);
+		all.addAll(mPossibleYesFindings);
+		all.addAll(mWarningFindings);
+		all.addAll(mPossibleNoFindings);
+		all.addAll(mNoFindings);
+
+		return all;
+	}
 }

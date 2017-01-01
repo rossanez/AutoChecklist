@@ -129,4 +129,21 @@ public class Question {
 
 		return findings;
 	}
+
+	public static String getAnswerStringValue(int answerType) {
+		switch (answerType) {
+		case ANSWER_NO:
+			return "No";
+		case ANSWER_POSSIBLE_NO:
+			return "Possible No";
+		case ANSWER_WARNING:
+			return "Warning";
+		case ANSWER_POSSIBLE_YES:
+			return "Possible Yes";
+		case ANSWER_YES:
+			return "Yes";
+		default:
+			return "";
+		}
+	}
 }

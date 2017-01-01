@@ -10,8 +10,10 @@ public class Finding {
 	private String mGenericPart;
 	private String mSpecificPart;
 	private String mRequirementId;
+	private String mReviewerComments;
 
 	private int mAnswerType; // Question.ANSWER_YES / ANSWER_NO / ANSWER_WARNING / ...
+	private int mReviewedAnswerType = -1;
 
 	public Finding(int questionId, String requirementId, String detail, int type) {
 		this(questionId, requirementId, detail, null, type);
@@ -55,5 +57,25 @@ public class Finding {
 		}
 
 		return mGenericPart + ' ' + mSpecificPart;
+	}
+
+	public int getReviewedAnswerType() {
+		return mReviewedAnswerType;
+	}
+
+	public void setReviewedAnswerType(int answerType) {
+		mReviewedAnswerType = answerType;
+	}
+
+	public String getReviewerComments() {
+		return mReviewerComments;
+	}
+
+	public void setReviewerComments(String revComments) {
+		mReviewerComments = revComments;
+	}
+
+	public boolean hasBeenReviewed() {
+		return (mReviewedAnswerType > 0) || (!Utils.isTextEmpty(mReviewerComments));
 	}
 }
