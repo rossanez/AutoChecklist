@@ -143,7 +143,7 @@ public class Question {
 		case ANSWER_YES:
 			return "Yes";
 		default:
-			return "";
+			return "No answer";
 		}
 	}
 }

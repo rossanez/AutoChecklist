@@ -8,7 +8,6 @@ import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.utils.Utils;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -19,14 +18,14 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
@@ -37,7 +36,7 @@ public class ReviewUI extends BaseUI {
 	private OutputFormatter mOutputFormatter;
 
 	private BorderPane mContent;
-	private ScrollPane mFinalContents;
+	private Node mFinalContents;
 	private ProgressIndicator mProgressIndicator;
 
 	public ReviewUI(OutputFormatter outputFormatter) {
@@ -80,10 +79,7 @@ public class ReviewUI extends BaseUI {
 
 	@Override
 	protected void doWork() {
-		mFinalContents = new ScrollPane();
-		mFinalContents.setContent(buildContents());
-		mFinalContents.setHbarPolicy(ScrollBarPolicy.NEVER);
-		mFinalContents.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		mFinalContents = buildContents();
 	}
 
 	@Override
@@ -127,7 +123,7 @@ public class ReviewUI extends BaseUI {
 		TableView<Finding> table = new TableView<Finding>();
 		table.setEditable(true);
 
-		TableColumn<Finding, String> requirementId = new TableColumn<Finding, String>("Requirement");
+		TableColumn<Finding, String> requirementId = new TableColumn<Finding, String>("Req. ID");
 		requirementId.setCellValueFactory(new Callback<CellDataFeatures<Finding, String>, ObservableValue<String>>() {
 
 			@Override
@@ -144,6 +140,7 @@ public class ReviewUI extends BaseUI {
 				return new ReadOnlyObjectWrapper<Integer>(finding.getValue().getQuestionId());
 			}
 		});
+
 		TableColumn<Finding, String> automatic = new TableColumn<Finding, String>("Automated");
 		TableColumn<Finding, String> finding = new TableColumn<Finding, String>("Finding");
 		finding.setCellValueFactory(new Callback<CellDataFeatures<Finding, String>, ObservableValue<String>>() {
@@ -162,6 +159,26 @@ public class ReviewUI extends BaseUI {
 						Question.getAnswerStringValue(finding.getValue().getAnswerType()));
 			}
 		});
+		autAnswer.setCellFactory(new Callback<TableColumn<Finding, String>, TableCell<Finding, String>>() {
+            public TableCell<Finding, String> call(TableColumn<Finding, String> p) {
+                TableCell<Finding, String> cell = new TableCell<Finding, String>() {
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(empty ? null : getString());
+                        setStyle("-fx-background-color:" + getBackgroundColor(getString()));
+                        setAlignment(Pos.CENTER);
+                    }
+
+                    private String getString() {
+                        return getItem() == null ? "" : getItem().toString();
+                    }
+                };
+
+
+                return cell;
+            }
+        });
 		automatic.getColumns().add(finding);
 		automatic.getColumns().add(autAnswer);
 
@@ -175,7 +192,26 @@ public class ReviewUI extends BaseUI {
 						Question.getAnswerStringValue(finding.getValue().getReviewedAnswerType()));
 			}
 		});
-		manAnswer.setCellFactory(ComboBoxTableCell.<Finding, String>forTableColumn("N/A", "Yes", "No"));
+		manAnswer.setCellFactory(new Callback<TableColumn<Finding, String>, TableCell<Finding, String>>() {
+			public TableCell<Finding, String> call(TableColumn<Finding, String> p) {
+				ComboBoxTableCell<Finding, String> cell = new ComboBoxTableCell<Finding, String>("No answer", "Yes", "No") {
+					@Override
+					public void updateItem(String item, boolean empty) {
+						super.updateItem(item, empty);
+						setText(empty ? null : getString());
+						setStyle("-fx-background-color:" + getBackgroundColor(getString()));
+						setAlignment(Pos.CENTER);
+						setTooltip(new Tooltip("'No answer' -> uses automatic answer!"));
+					}
+
+					private String getString() {
+						return getItem() == null ? "" : getItem().toString();
+					}
+				};
+
+				return cell;
+			}
+		});
 		manAnswer.setOnEditCommit(new EventHandler<CellEditEvent<Finding, String>>() {
 
 			@Override
@@ -193,7 +229,7 @@ public class ReviewUI extends BaseUI {
 						.setReviewedAnswerType(answerType);
 			}
 		});
-		TableColumn<Finding, String> comments = new TableColumn<Finding, String>("Comments");
+		TableColumn<Finding, String> comments = new TableColumn<Finding, String>("Reviewer Comments (optional)");
 		comments.setCellValueFactory(new Callback<CellDataFeatures<Finding, String>, ObservableValue<String>>() {
 
 			@Override
@@ -201,6 +237,7 @@ public class ReviewUI extends BaseUI {
 				return new ReadOnlyObjectWrapper<String>(finding.getValue().getReviewerComments());
 			}
 		});
+		comments.setCellFactory(TextFieldTableCell.<Finding>forTableColumn());
 		comments.setOnEditCommit(new EventHandler<CellEditEvent<Finding, String>>() {
 
 			@Override
@@ -223,12 +260,25 @@ public class ReviewUI extends BaseUI {
 		}
 		table.setItems(allFindings);
 
-		table.setFixedCellSize(30);
-		table.prefHeightProperty().bind(Bindings.size(table.getItems()).multiply(table.getFixedCellSize()).add(30));
-		table.minHeightProperty().bind(table.prefHeightProperty());
-		table.maxHeightProperty().bind(table.prefHeightProperty());
+		table.prefHeightProperty().bind(mStage.heightProperty());
 		table.prefWidthProperty().bind(mStage.widthProperty());
 
 		return table;
+	}
+
+	private String getBackgroundColor(String answer) {
+		if ("No".equals(answer)) {
+			return "#FF0000"; // Red
+		} else if ("Possible No".equals(answer)) {
+			return "#FF3333"; // Light red
+		} else if ("Warning".equals(answer)) {
+			return "#FFFF00"; // Yellow
+		} else if ("Possible Yes".equals(answer)) {
+			return "#33FF33"; // Light green
+		} else if ("Yes".equals(answer)) {
+			return "#00FF00"; // Green
+		} else {
+			return "#FFFFFF"; // White
+		}
 	}
 }
