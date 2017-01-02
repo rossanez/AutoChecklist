@@ -120,6 +120,9 @@ public class ResultsUI extends BaseUI {
 		if (mResultsViewer != null) {
 			mResultsViewer.close();
 		}
+		if (mFindingsReview != null) {
+			mFindingsReview.close();
+		}
 
 		mMenuRestart.setDisable(true);
 		mMenuReview.setDisable(true);
