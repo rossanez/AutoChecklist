@@ -30,7 +30,7 @@ public class ResultsUI extends BaseUI {
 	private WebViewerUI mResultsViewer;
 	private ReviewUI mFindingsReview;
 
-	private List<Pair<String, String>> mViewerContents;
+	private List<Pair<String, WebViewerUI.IReportGenerator>> mViewerContents;
 
 	private List<CheckBox> mCheckboxes;
 	private CheckBox mCheckView;
@@ -129,15 +129,36 @@ public class ResultsUI extends BaseUI {
 	@Override
 	protected void doWork() {
 		mOutputFormatter.runConsistencyCheck();
-		mViewerContents = new ArrayList<Pair<String, String>>();
+		mViewerContents = new ArrayList<Pair<String, WebViewerUI.IReportGenerator>>();
 		if (mCheckView.isSelected()) {
-			mViewerContents.add(new Pair<String, String>("Checklist View",mOutputFormatter.generateQuestionsViewContent(true)));
+			mViewerContents.add(new Pair<String, WebViewerUI.IReportGenerator>("Checklist View",
+					            new WebViewerUI.IReportGenerator() {
+				
+				@Override
+				public String generateContent() {
+					return mOutputFormatter.generateQuestionsViewContent(true);
+				}
+			}));
 		}
 		if (mReqView.isSelected()) {
-			mViewerContents.add(new Pair<String, String>("Requirements View", mOutputFormatter.generateRequirementsViewContent(true)));
+			mViewerContents.add(new Pair<String, WebViewerUI.IReportGenerator>("Requirements View",
+                                new WebViewerUI.IReportGenerator() {
+
+				@Override
+				public String generateContent() {
+					return mOutputFormatter.generateRequirementsViewContent(true);
+				}
+			}));
 		}
 		if (mNumOccView.isSelected()) {
-			mViewerContents.add(new Pair<String, String>("Numeric Occurrences View", mOutputFormatter.generateNumericOccurrencesContent(true)));
+			mViewerContents.add(new Pair<String, WebViewerUI.IReportGenerator>("Numeric Occurrences View",
+					new WebViewerUI.IReportGenerator() {
+
+				@Override
+				public String generateContent() {
+					return mOutputFormatter.generateNumericOccurrencesContent(true);
+				}
+			}));
 		}
 	}
 

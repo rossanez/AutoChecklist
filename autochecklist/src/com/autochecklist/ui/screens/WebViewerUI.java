@@ -17,10 +17,13 @@ import com.autochecklist.utils.Utils;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -37,14 +40,19 @@ import javafx.stage.WindowEvent;
 
 public class WebViewerUI extends BaseUI {
 
-	private Pair<String, String>[] mContents;
+	private Pair<String, IReportGenerator>[] mContents;
+	private String[] mHtmlContents;
 	
 	private MenuBar mMenuBar;
 	private MenuItem mMenuSave;
 	private MenuItem mMenuClose;
 	private MenuItem mMenuFind;
 
-	private TabPane tabPane;
+	private ProgressIndicator mProgressIndicator;
+
+	BorderPane mBorderPane;
+
+	private TabPane mTabPane;
 
 	private WebView[] mWebViews;
 
@@ -53,12 +61,15 @@ public class WebViewerUI extends BaseUI {
 	private String mPreviousSearchTerm = null;
 	private final String mDateTimeCatString;
 
-	public WebViewerUI(Pair<String, String>[] contents) {
+	public WebViewerUI(Pair<String, IReportGenerator>[] contents) {
 		super();
 		mContents = contents;
+		mHtmlContents = new String[contents.length];
 
 		DateFormat df = new SimpleDateFormat("_yyyyMMdd_hhmmss");
 		mDateTimeCatString = df.format(new Date());
+
+		setDoWorkUponShowing(true);
 	}
 
 	@Override
@@ -86,33 +97,82 @@ public class WebViewerUI extends BaseUI {
 		mMenuBar.getMenus().add(searchMenu);
 		mMenuBar.prefWidthProperty().bind(mStage.widthProperty());
 
-		tabPane = new TabPane();
+		mTabPane = new TabPane();
 
-        BorderPane borderPane = new BorderPane();
-        mWebViews = new WebView[mContents.length];
-        int webViewsIndex = 0;
-        for (Pair<String, String> content : mContents) {
-            Tab tab = new Tab();
-            tab.setText(content.first);
-            mWebViews[webViewsIndex] = getWebViewContent(content.second);
-            tab.setContent(mWebViews[webViewsIndex]);
-            tab.setClosable(false);
-            tabPane.getTabs().add(tab);
-            webViewsIndex++;
-        }
-        borderPane.prefHeightProperty().bind(mStage.heightProperty());
-        borderPane.prefWidthProperty().bind(mStage.widthProperty());
-        borderPane.setCenter(tabPane);
+		VBox progressContent = new VBox(10);
+		progressContent.setAlignment(Pos.CENTER);
+		mProgressIndicator = new ProgressIndicator();
+		mProgressIndicator.setProgress(0);
+		progressContent.prefWidthProperty().bind(mStage.widthProperty());
+		progressContent.prefHeightProperty().bind(mStage.heightProperty());
+		Label loadingLabel = new Label("Loading...");
+		progressContent.getChildren().addAll(mProgressIndicator, loadingLabel);
+
+        mBorderPane = new BorderPane();
+        mBorderPane.setCenter(progressContent);
 
 		VBox content = new VBox();
 		content.setPadding(new Insets(0, 1, 1, 1));
-        content.getChildren().addAll(borderPane);
+        content.getChildren().addAll(mBorderPane);
 		
 		VBox rootGroup = new VBox();
 		rootGroup.getChildren().addAll(mMenuBar, content);
 
 		Scene scene = new Scene(rootGroup, 800, 600);
 		mStage.setScene(scene);
+	}
+
+	@Override
+	protected void beforeWork() {
+		mMenuSave.setDisable(true);
+		mMenuFind.setDisable(true);
+
+		mProgressIndicator.setProgress(-1); // Indeterminate.
+
+		// This code must run on UI thread.
+		mWebViews = new WebView[mContents.length];
+		for (int i = 0; i < mWebViews.length; i++){
+			mWebViews[i] = new WebView();
+			mWebViews[i].prefHeightProperty().bind(mStage.heightProperty());
+            mWebViews[i].prefWidthProperty().bind(mStage.widthProperty());
+		}
+	}
+
+	@Override
+	protected void doWork() {
+        int webViewsIndex = 0;
+        for (Pair<String, IReportGenerator> content : mContents) {
+            Tab tab = new Tab();
+            tab.setText(content.first);
+            mHtmlContents[webViewsIndex] = content.second.generateContent();
+            tab.setContent(mWebViews[webViewsIndex]);
+            tab.setClosable(false);
+            mTabPane.getTabs().add(tab);
+            webViewsIndex++;
+        }
+        mBorderPane.prefHeightProperty().bind(mStage.heightProperty());
+        mBorderPane.prefWidthProperty().bind(mStage.widthProperty());
+	}
+
+	@Override
+	protected void workSucceeded() {
+		mProgressIndicator.setProgress(1);
+		mMenuFind.setDisable(false);
+		mMenuSave.setDisable(false);
+
+		// This loop must run on UI thread.
+		for (int i = 0; i < mWebViews.length; i++) {
+		    loadWebViewContent(mHtmlContents[i], mWebViews[i]);
+		}
+
+		mBorderPane.setCenter(mTabPane);
+	}
+
+	@Override
+	protected void workFailed(boolean cancelled) {
+		mProgressIndicator.setProgress(0);
+
+		new AlertDialog("Error!", "The output generation has failed!", mStage).show();
 	}
 
 	@Override
@@ -127,7 +187,7 @@ public class WebViewerUI extends BaseUI {
 
 				@Override
 				public void onSearch(String text, boolean wrapAround) {
-					int index = tabPane.getSelectionModel().getSelectedIndex();
+					int index = mTabPane.getSelectionModel().getSelectedIndex();
 					findAndHighlight(mWebViews[index].getEngine(), text, wrapAround);
 				}
 				
@@ -151,7 +211,7 @@ public class WebViewerUI extends BaseUI {
 
 	private void save() {
 		FileChooser fileChooser = new FileChooser();
-		int index = tabPane.getSelectionModel().getSelectedIndex();
+		int index = mTabPane.getSelectionModel().getSelectedIndex();
 		fileChooser.setTitle("Save \"" + mContents[index].first + "\" output...");
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("HTML Files", "*.html"));
 		fileChooser.setInitialFileName(mContents[index].first.trim().replace(" ", "_") + mDateTimeCatString);
@@ -163,21 +223,16 @@ public class WebViewerUI extends BaseUI {
 		}
 
 		try {
-			FileUtils.writeStringToFile(file, HtmlBuilder.removeScriptsfromContent(mContents[index].second));
+			FileUtils.writeStringToFile(file, HtmlBuilder.removeScriptsfromContent(mHtmlContents[index]));
 			new AlertDialog("Success!", "File has been saved!\n" + file.getPath(), mStage).show();
 		} catch (IOException e) {
 			new AlertDialog("Error!", "Unable to save file!", mStage).show();
 		}
 	}
 
-	public WebView getWebViewContent(String content) {
-		final WebView browser = new WebView();
-        browser.prefHeightProperty().bind(mStage.heightProperty());
-        browser.prefWidthProperty().bind(mStage.widthProperty());
+	private void loadWebViewContent(String content, WebView browser) {
         WebEngine webEngine = browser.getEngine();
         webEngine.loadContent(content);
-
-        return browser;
 	}
 
 	private void findAndHighlight(WebEngine engine, String text, boolean wrapAround) {
@@ -201,5 +256,9 @@ public class WebViewerUI extends BaseUI {
     	for (WebView webview : mWebViews) {
     		clearHighlight(webview.getEngine());
     	}
+    }
+
+    interface IReportGenerator {
+    	String generateContent();
     }
 }
