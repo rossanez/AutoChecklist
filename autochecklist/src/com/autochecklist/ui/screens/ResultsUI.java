@@ -67,12 +67,12 @@ public class ResultsUI extends BaseUI {
 
 		MenuBar menuBar = new MenuBar();
 		Menu actionsMenu = new Menu("Actions");
-		actionsMenu.getItems().add(mMenuReview);
-		actionsMenu.getItems().add(new SeparatorMenuItem());
 		actionsMenu.getItems().add(mMenuRestart);
 		actionsMenu.getItems().add(new SeparatorMenuItem());
 		actionsMenu.getItems().add(mMenuExit);
-		menuBar.getMenus().add(actionsMenu);
+		Menu findingsMenu = new Menu("Findings");
+		findingsMenu.getItems().add(mMenuReview);
+		menuBar.getMenus().addAll(actionsMenu, findingsMenu);
 		menuBar.prefWidthProperty().bind(mStage.widthProperty());
 
 		Label subTitle = new Label();

@@ -12,12 +12,17 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -34,6 +39,9 @@ import javafx.util.Callback;
 public class ReviewUI extends BaseUI {
 
 	private OutputFormatter mOutputFormatter;
+
+	private MenuBar mMenuBar;
+	private MenuItem mMenuClose;
 
 	private BorderPane mContent;
 	private Node mFinalContents;
@@ -56,6 +64,16 @@ public class ReviewUI extends BaseUI {
 		mStage.setMinWidth(400);
 		mStage.setMinHeight(500);
 
+		mMenuClose = new MenuItem("Close");
+		mMenuClose.setOnAction(this);
+
+		mMenuBar = new MenuBar();
+		Menu menu = new Menu("Actions");
+		menu.getItems().add(new SeparatorMenuItem());
+		menu.getItems().add(mMenuClose);
+		mMenuBar.getMenus().add(menu);
+		mMenuBar.prefWidthProperty().bind(mStage.widthProperty());
+
 		VBox progressContent = new VBox(10);
 		progressContent.setAlignment(Pos.CENTER);
 		mProgressIndicator = new ProgressIndicator();
@@ -68,7 +86,10 @@ public class ReviewUI extends BaseUI {
 		mContent = new BorderPane();
         mContent.setCenter(progressContent);
 
-		Scene scene = new Scene(mContent, 800, 600);
+        VBox rootGroup = new VBox();
+		rootGroup.getChildren().addAll(mMenuBar, mContent);
+
+		Scene scene = new Scene(rootGroup, 800, 600);
 		mStage.setScene(scene);
 	}
 
@@ -96,16 +117,21 @@ public class ReviewUI extends BaseUI {
 	}
 
 	@Override
+	public void handle(ActionEvent event) {
+		if (event.getSource() == mMenuClose) {
+			close();
+		}
+	}
+
+	@Override
 	protected void onExternalCloseRequest(WindowEvent windowEvent) {
 		// We don't want a confirmation dialog.
 		// Calling close() for cleaning up unlikely running background works!
 		close();
 	}
 
-	private Node buildContents() {
-		VBox contents = new VBox(10);
-
-		contents.getChildren().add(createTable());
+	private TableView<Finding> buildContents() {
+		TableView<Finding> contents = createTable();
 		contents.prefHeightProperty().bind(mStage.heightProperty());
 		contents.prefWidthProperty().bind(mStage.widthProperty());
 
@@ -194,14 +220,14 @@ public class ReviewUI extends BaseUI {
 		});
 		manAnswer.setCellFactory(new Callback<TableColumn<Finding, String>, TableCell<Finding, String>>() {
 			public TableCell<Finding, String> call(TableColumn<Finding, String> p) {
-				ComboBoxTableCell<Finding, String> cell = new ComboBoxTableCell<Finding, String>("No answer", "Yes", "No") {
+				ComboBoxTableCell<Finding, String> cell = new ComboBoxTableCell<Finding, String>("None", "Yes", "No") {
 					@Override
 					public void updateItem(String item, boolean empty) {
 						super.updateItem(item, empty);
 						setText(empty ? null : getString());
 						setStyle("-fx-background-color:" + getBackgroundColor(getString()));
 						setAlignment(Pos.CENTER);
-						setTooltip(new Tooltip("'No answer' -> uses automatic answer!"));
+						setTooltip(new Tooltip("'None' -> keeps automatic answer"));
 					}
 
 					private String getString() {
@@ -270,15 +296,15 @@ public class ReviewUI extends BaseUI {
 		if ("No".equals(answer)) {
 			return "#FF0000"; // Red
 		} else if ("Possible No".equals(answer)) {
-			return "#FF3333"; // Light red
+			return "#FF4500"; // Orange red
 		} else if ("Warning".equals(answer)) {
 			return "#FFFF00"; // Yellow
 		} else if ("Possible Yes".equals(answer)) {
-			return "#33FF33"; // Light green
+			return "#00FF00"; // Light green
 		} else if ("Yes".equals(answer)) {
-			return "#00FF00"; // Green
+			return "#008000"; // Green
 		} else {
-			return "#FFFFFF"; // White
+			return "#E0E0E0"; // Light gray
 		}
 	}
 }
