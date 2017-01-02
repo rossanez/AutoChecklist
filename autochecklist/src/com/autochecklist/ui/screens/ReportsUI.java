@@ -38,7 +38,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.WindowEvent;
 
-public class WebViewerUI extends BaseUI {
+public class ReportsUI extends BaseUI {
 
 	private Pair<String, IReportGenerator>[] mContents;
 	private String[] mHtmlContents;
@@ -61,7 +61,7 @@ public class WebViewerUI extends BaseUI {
 	private String mPreviousSearchTerm = null;
 	private final String mDateTimeCatString;
 
-	public WebViewerUI(Pair<String, IReportGenerator>[] contents) {
+	public ReportsUI(Pair<String, IReportGenerator>[] contents) {
 		super();
 		mContents = contents;
 		mHtmlContents = new String[contents.length];

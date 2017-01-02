@@ -27,10 +27,10 @@ public class ResultsUI extends BaseUI {
 
 	private OutputFormatter mOutputFormatter;
 
-	private WebViewerUI mResultsViewer;
+	private ReportsUI mResultsViewer;
 	private ReviewUI mFindingsReview;
 
-	private List<Pair<String, WebViewerUI.IReportGenerator>> mViewerContents;
+	private List<Pair<String, ReportsUI.IReportGenerator>> mViewerContents;
 
 	private List<CheckBox> mCheckboxes;
 	private CheckBox mCheckView;
@@ -129,10 +129,10 @@ public class ResultsUI extends BaseUI {
 	@Override
 	protected void doWork() {
 		mOutputFormatter.runConsistencyCheck();
-		mViewerContents = new ArrayList<Pair<String, WebViewerUI.IReportGenerator>>();
+		mViewerContents = new ArrayList<Pair<String, ReportsUI.IReportGenerator>>();
 		if (mCheckView.isSelected()) {
-			mViewerContents.add(new Pair<String, WebViewerUI.IReportGenerator>("Checklist View",
-					            new WebViewerUI.IReportGenerator() {
+			mViewerContents.add(new Pair<String, ReportsUI.IReportGenerator>("Checklist View",
+					            new ReportsUI.IReportGenerator() {
 				
 				@Override
 				public String generateContent() {
@@ -141,8 +141,8 @@ public class ResultsUI extends BaseUI {
 			}));
 		}
 		if (mReqView.isSelected()) {
-			mViewerContents.add(new Pair<String, WebViewerUI.IReportGenerator>("Requirements View",
-                                new WebViewerUI.IReportGenerator() {
+			mViewerContents.add(new Pair<String, ReportsUI.IReportGenerator>("Requirements View",
+                                new ReportsUI.IReportGenerator() {
 
 				@Override
 				public String generateContent() {
@@ -151,8 +151,8 @@ public class ResultsUI extends BaseUI {
 			}));
 		}
 		if (mNumOccView.isSelected()) {
-			mViewerContents.add(new Pair<String, WebViewerUI.IReportGenerator>("Numeric Occurrences View",
-					new WebViewerUI.IReportGenerator() {
+			mViewerContents.add(new Pair<String, ReportsUI.IReportGenerator>("Numeric Occurrences View",
+					new ReportsUI.IReportGenerator() {
 
 				@Override
 				public String generateContent() {
@@ -168,7 +168,7 @@ public class ResultsUI extends BaseUI {
 		mMenuReview.setDisable(false);
 		mGenerateButton.setDisable(false);
 
-		mResultsViewer = new WebViewerUI(mViewerContents.toArray(new Pair[mViewerContents.size()]));
+		mResultsViewer = new ReportsUI(mViewerContents.toArray(new Pair[mViewerContents.size()]));
         mResultsViewer.show();
 	}
 
