@@ -128,6 +128,7 @@ public class ResultsUI extends BaseUI {
 
 	@Override
 	protected void doWork() {
+		mOutputFormatter.runConsistencyCheck();
 		mViewerContents = new ArrayList<Pair<String, String>>();
 		if (mCheckView.isSelected()) {
 			mViewerContents.add(new Pair<String, String>("Checklist View",mOutputFormatter.generateQuestionsViewContent(true)));

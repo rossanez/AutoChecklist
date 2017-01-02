@@ -51,6 +51,9 @@ public class HtmlBuilder {
 
 		body = body.replace(" -init-list- ", " <ul data-role='listview'> ");
 		body = body.replace(" -end-list- ", " </ul> ");
+
+		body = body.replace(" -init-reviewer- ", " <b><i> ");
+		body = body.replace(" -end-reviewer- ", " </b></i>");
 		
 		body = body.replace(" -- ", " <li> ");
 		body = body.replace(" /-- ", " </li> ");

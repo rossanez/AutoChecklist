@@ -130,6 +130,24 @@ public class Question {
 		return findings;
 	}
 
+	private List<Finding> getAllFindings() {
+		List<Finding> all = new ArrayList<Finding>();
+		all.addAll(getNoFindings());
+		all.addAll(getPossibleNoFindings());
+		all.addAll(getWarningFindings());
+		all.addAll(getPossibleYesFindings());
+		all.addAll(getYesFindings());
+		return all;
+	}
+
+	private void clearAllMaps() {
+		mNoFindings.clear();
+		mPossibleNoFindings.clear();
+		mWarningFindings.clear();
+		mPossibleYesFindings.clear();
+		mYesFindings.clear();
+	}
+
 	public static String getAnswerStringValue(int answerType) {
 		switch (answerType) {
 		case ANSWER_NO:
@@ -144,6 +162,15 @@ public class Question {
 			return "Yes";
 		default:
 			return "None";
+		}
+	}
+
+	public void rebuildForConsistency() {
+		List<Finding> allFindings = getAllFindings();
+		clearAllMaps();
+
+		for (Finding finding : allFindings) {
+			addFinding(finding);
 		}
 	}
 }

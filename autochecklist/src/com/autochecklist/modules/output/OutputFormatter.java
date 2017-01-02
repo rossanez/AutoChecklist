@@ -123,6 +123,12 @@ public class OutputFormatter extends Module {
 	                outBuilder.append("Requirements: ");
 	        		for (int i = 0; i < yesFindings.size(); i++) {
 	        			outBuilder.append(yesFindings.get(i).getRequirementId());
+	        			if (yesFindings.get(i).hasBeenReviewed()) {
+	    					outBuilder.append('*');
+	    				}
+	        			if (yesFindings.get(i).hasReviewerComments()) {
+	    			    	outBuilder.append(" (").append(formatReviewerComments(yesFindings.get(i))).append(')');
+	    			    }
 	        			if (i == yesFindings.size() -1) {
 	        				outBuilder.append('.');
 	        			} else if (i == yesFindings.size() -2) {
@@ -216,6 +222,12 @@ public class OutputFormatter extends Module {
                 outBuilder.append("Questions: ");
         		for (int i = 0; i < yesFindings.size(); i++) {
         			outBuilder.append(yesFindings.get(i).getQuestionId());
+        			if (yesFindings.get(i).hasBeenReviewed()) {
+    					outBuilder.append('*');
+    				}
+        			if (yesFindings.get(i).hasReviewerComments()) {
+    			    	outBuilder.append(" (").append(formatReviewerComments(yesFindings.get(i))).append(')');
+    			    }
         			if (i == yesFindings.size() -1) {
         				outBuilder.append('.');
         			} else if(i == yesFindings.size() -2) {
@@ -248,9 +260,21 @@ public class OutputFormatter extends Module {
 				sb.append(" -init-list- ");
 				sb.append(" -- ");
 				sb.append(findings.get(i).getRequirementId());
+				if (findings.get(i).hasBeenReviewed()) {
+					sb.append('*');
+				}
 			    sb.append(": ").append(specificPart);
+			    if (findings.get(i).hasReviewerComments()) {
+			    	sb.append('\n').append(formatReviewerComments(findings.get(i)));
+			    }
 			} else {
 				sb.append(findings.get(i).getRequirementId());
+				if (findings.get(i).hasBeenReviewed()) {
+					sb.append('*');
+				}
+				if (findings.get(i).hasReviewerComments()) {
+			    	sb.append(" (").append(formatReviewerComments(findings.get(i))).append(')');
+			    }
 				if (i == findings.size() - 1) {
 					sb.append('.');
 				} else if (i == findings.size() - 2) {
@@ -272,7 +296,19 @@ public class OutputFormatter extends Module {
 	}
 
 	private String formatRequirementFinding(Finding finding) {
-		return "Question " + finding.getQuestionId() + ": " + finding.getDetail();
+		String formatted = "Question " + finding.getQuestionId()
+		    + (finding.hasBeenReviewed() ? "*: " : ": ") + finding.getDetail();
+		if (finding.hasReviewerComments()) {
+			return formatted + '\n' + formatReviewerComments(finding);
+		}
+
+		return formatted;
+	}
+
+	private String formatReviewerComments(Finding finding) {
+		if (!finding.hasReviewerComments()) return null;
+
+		return " -init-reviewer- [Reviewer] " + finding.getReviewerComments() + " -end-reviewer- ";
 	}
 
 	public String generateNumericOccurrencesContent(boolean forUI) {
@@ -303,5 +339,16 @@ public class OutputFormatter extends Module {
 
 	private String generateNumericOccurrencesViewFile() {
 		return new HtmlBuilder(mOutputDir + "numeric_occurrences_view.html").build(generateNumericOccurrencesContent(false));
+	}
+
+	public void runConsistencyCheck() {
+		for (QuestionCategory cat : mQuestions) {
+			for (Question question : cat.getAllQuestions()) {
+			    question.rebuildForConsistency();
+			}
+		}
+		for (Requirement requirement : mRequirements.getRequirements()) {
+			requirement.rebuildForConsistency();
+		}
 	}
 }

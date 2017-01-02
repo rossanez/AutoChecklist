@@ -182,7 +182,7 @@ public class ReviewUI extends BaseUI {
 			@Override
 			public ObservableValue<String> call(CellDataFeatures<Finding, String> finding) {
 				return new ReadOnlyObjectWrapper<String>(
-						Question.getAnswerStringValue(finding.getValue().getAnswerType()));
+						Question.getAnswerStringValue(finding.getValue().getAutomatedAnswerType()));
 			}
 		});
 		autAnswer.setCellFactory(new Callback<TableColumn<Finding, String>, TableCell<Finding, String>>() {

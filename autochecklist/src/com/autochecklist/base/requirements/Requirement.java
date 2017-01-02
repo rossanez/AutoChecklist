@@ -1,6 +1,7 @@
 package com.autochecklist.base.requirements;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.autochecklist.base.Finding;
@@ -79,5 +80,31 @@ public class Requirement {
 		all.addAll(mNoFindings);
 
 		return all;
+	}
+
+	private void clearAllLists() {
+		mNoFindings.clear();
+		mPossibleNoFindings.clear();
+		mWarningFindings.clear();
+		mPossibleYesFindings.clear();
+		mYesFindings.clear();
+	}
+
+	public void rebuildForConsistency() {
+		List<Finding> allFindings = getAllFindings();
+		allFindings.sort(new Comparator<Finding>() {
+
+			@Override
+			public int compare(Finding o1, Finding o2) {
+				return (o1.getQuestionId() < o2.getQuestionId() ? -1
+						: (o1.getQuestionId() == o2.getQuestionId() ? 0 : 1));
+			}
+			
+		});
+		clearAllLists();
+
+		for (Finding finding : allFindings) {
+			addFinding(finding);
+		}
 	}
 }

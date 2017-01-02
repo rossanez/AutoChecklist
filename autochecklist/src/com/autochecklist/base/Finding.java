@@ -13,7 +13,7 @@ public class Finding {
 	private String mReviewerComments;
 
 	private int mAnswerType; // Question.ANSWER_YES / ANSWER_NO / ANSWER_WARNING / ...
-	private int mReviewedAnswerType = -1;
+	private int mReviewedAnswerType = -1; // Question.ANSWER_YES or ANSWER_NO, when reviewed.
 
 	public Finding(int questionId, String requirementId, String detail, int type) {
 		this(questionId, requirementId, detail, null, type);
@@ -31,7 +31,15 @@ public class Finding {
 		mAnswerType = type;
 	}
 
+	public int getAutomatedAnswerType() {
+		return mAnswerType;
+	}
+
 	public int getAnswerType() {
+		if (mReviewedAnswerType >= 0) {
+			return mReviewedAnswerType;
+		}
+
 		return mAnswerType;
 	}
 
@@ -75,7 +83,11 @@ public class Finding {
 		mReviewerComments = revComments;
 	}
 
+	public boolean hasReviewerComments() {
+		return !Utils.isTextEmpty(mReviewerComments);
+	}
+
 	public boolean hasBeenReviewed() {
-		return (mReviewedAnswerType > 0) || (!Utils.isTextEmpty(mReviewerComments));
+		return (mReviewedAnswerType >= 0);
 	}
 }
