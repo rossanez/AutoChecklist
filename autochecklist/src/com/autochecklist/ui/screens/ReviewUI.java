@@ -1,5 +1,7 @@
 package com.autochecklist.ui.screens;
 
+import java.util.Comparator;
+
 import com.autochecklist.base.Finding;
 import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.requirements.Requirement;
@@ -141,6 +143,14 @@ public class ReviewUI extends BaseUI {
 	private ObservableList<Finding> getFindings(Requirement requirement) {
 		ObservableList<Finding> findings = FXCollections.observableArrayList();
 		findings.addAll(requirement.getAllFindings());
+		findings.sort(new Comparator<Finding>() {
+
+			@Override
+			public int compare(Finding o1, Finding o2) {
+			    return (o1.getQuestionId() < o2.getQuestionId() ? -1
+						: (o1.getQuestionId() == o2.getQuestionId() ? 0 : 1));
+			}
+		});
 
 		return findings;
 	}
@@ -285,6 +295,9 @@ public class ReviewUI extends BaseUI {
 			allFindings.addAll(getFindings(requirement));
 		}
 		table.setItems(allFindings);
+
+		requirementId.setSortType(TableColumn.SortType.ASCENDING);
+		requirementId.setSortable(true);
 
 		table.prefHeightProperty().bind(mStage.heightProperty());
 		table.prefWidthProperty().bind(mStage.widthProperty());
