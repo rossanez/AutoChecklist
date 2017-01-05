@@ -1,7 +1,8 @@
 package com.autochecklist.modules;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import com.autochecklist.base.ErrorBasedChecklist;
 import com.autochecklist.base.NumberAndUnitOccurrences;
@@ -45,14 +46,14 @@ public class ModuleFactory {
 		return new OutputFormatter(analyzedRequirements, answeredQuestions, numericOcc, workingDir);
 	}
 
-	public static List<AnalysisModule> createAllAnalysisModules(ErrorBasedChecklist check,
+	public static Queue<AnalysisModule> createAllAnalysisModules(ErrorBasedChecklist check,
 			                                                    DocumentSectionList sections,
 			                                                    RequirementsTraceabilityMatrix rtmSection) {
-		List<AnalysisModule> list = new ArrayList<AnalysisModule>();
-		list.add(createTraceability(check, sections, rtmSection));
-		list.add(createIncompleteness(check));
-		list.add(createIncorrectness(check));
-		list.add(createInconsistency(check));
-		return list;
+		Queue<AnalysisModule> queue = new LinkedList<AnalysisModule>();
+		queue.add(createTraceability(check, sections, rtmSection));
+		queue.add(createIncompleteness(check));
+		queue.add(createIncorrectness(check));
+		queue.add(createInconsistency(check));
+		return queue;
 	}
 }

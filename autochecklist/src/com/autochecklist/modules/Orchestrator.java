@@ -3,6 +3,7 @@ package com.autochecklist.modules;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 import com.autochecklist.base.ErrorBasedChecklist;
 import com.autochecklist.base.NumberAndUnitOccurrences;
@@ -109,8 +110,10 @@ public class Orchestrator {
 
 	private List<QuestionCategory> doAnalyze() {
 		List<QuestionCategory> processedQuestions = new ArrayList<QuestionCategory>();
-		for (AnalysisModule module : getAllAnalysisModules()) {
-			processedQuestions.add(module.analyze(mRequirements));
+		Queue<AnalysisModule> queue = getAllAnalysisModules();
+		while (!queue.isEmpty()) {
+			AnalysisModule module = queue.poll();
+            processedQuestions.add(module.analyze(mRequirements));
 			if (module instanceof Incorrectness) {
 				mNumericOcc = ((Incorrectness) module).getNumericOccurrences();
 			}
@@ -119,7 +122,7 @@ public class Orchestrator {
 		return processedQuestions;
 	}
 
-	private List<AnalysisModule> getAllAnalysisModules() {
+	private Queue<AnalysisModule> getAllAnalysisModules() {
 		return ModuleFactory.createAllAnalysisModules(new ErrorBasedChecklist(), mDocumentSections, mRTMSection);
 	}
 
