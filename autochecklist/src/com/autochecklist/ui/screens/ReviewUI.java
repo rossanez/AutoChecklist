@@ -167,6 +167,27 @@ public class ReviewUI extends BaseUI {
 				return new ReadOnlyObjectWrapper<String>(finding.getValue().getRequirementId());
 			}
 		});
+		requirementId.setCellFactory(new Callback<TableColumn<Finding, String>, TableCell<Finding, String>>() {
+			public TableCell<Finding, String> call(TableColumn<Finding, String> p) {
+				TableCell<Finding, String> cell = new TableCell<Finding, String>() {
+
+					@Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(empty ? null : item);
+                        setAlignment(Pos.CENTER);
+                        if (!empty) {
+                            Requirement req = mOutputFormatter.getRequirement(item);
+						    if (req != null) {
+						        setTooltip(new Tooltip(req.getId() + ": " + req.getText()));
+						    }
+                        }
+                    }
+				};
+
+				return cell;
+			}
+		});
 
 		TableColumn<Finding, Integer> questionId = new TableColumn<Finding, Integer>("Question");
 		questionId.setCellValueFactory(new Callback<CellDataFeatures<Finding, Integer>, ObservableValue<Integer>>() {
@@ -174,6 +195,27 @@ public class ReviewUI extends BaseUI {
 			@Override
 			public ObservableValue<Integer> call(CellDataFeatures<Finding, Integer> finding) {
 				return new ReadOnlyObjectWrapper<Integer>(finding.getValue().getQuestionId());
+			}
+		});
+		questionId.setCellFactory(new Callback<TableColumn<Finding, Integer>, TableCell<Finding, Integer>>() {
+			public TableCell<Finding, Integer> call(TableColumn<Finding, Integer> param) {
+				TableCell<Finding, Integer> cell = new TableCell<Finding, Integer>() {
+
+					@Override
+					protected void updateItem(Integer item, boolean empty) {
+						super.updateItem(item, empty);
+						setText(empty ? null : item.toString());
+						setAlignment(Pos.CENTER);
+						if (!empty) {
+						    Question question = mOutputFormatter.getQuestion(item);
+						    if (question != null) {
+							    setTooltip(new Tooltip(question.getId() + ": " + question.getText()));
+						    }
+						}
+					}
+				};
+
+				return cell;
 			}
 		});
 
@@ -198,16 +240,13 @@ public class ReviewUI extends BaseUI {
 		autAnswer.setCellFactory(new Callback<TableColumn<Finding, String>, TableCell<Finding, String>>() {
             public TableCell<Finding, String> call(TableColumn<Finding, String> p) {
                 TableCell<Finding, String> cell = new TableCell<Finding, String>() {
-                    @Override
-                    public void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setText(empty ? null : getString());
-                        setStyle("-fx-background-color:" + getBackgroundColor(getString()));
-                        setAlignment(Pos.CENTER);
-                    }
 
-                    private String getString() {
-                        return getItem() == null ? "" : getItem().toString();
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(empty ? null : item);
+                        setStyle("-fx-background-color:" + getBackgroundColor(item));
+                        setAlignment(Pos.CENTER);
                     }
                 };
 
@@ -231,17 +270,14 @@ public class ReviewUI extends BaseUI {
 		manAnswer.setCellFactory(new Callback<TableColumn<Finding, String>, TableCell<Finding, String>>() {
 			public TableCell<Finding, String> call(TableColumn<Finding, String> p) {
 				ComboBoxTableCell<Finding, String> cell = new ComboBoxTableCell<Finding, String>("None", "Yes", "No") {
+
 					@Override
 					public void updateItem(String item, boolean empty) {
 						super.updateItem(item, empty);
-						setText(empty ? null : getString());
-						setStyle("-fx-background-color:" + getBackgroundColor(getString()));
+						setText(empty ? null : item);
+						setStyle("-fx-background-color:" + getBackgroundColor(item));
 						setAlignment(Pos.CENTER);
 						setTooltip(new Tooltip("'None' -> keeps automatic answer"));
-					}
-
-					private String getString() {
-						return getItem() == null ? "" : getItem().toString();
 					}
 				};
 

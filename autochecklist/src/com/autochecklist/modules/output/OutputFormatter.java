@@ -34,8 +34,20 @@ public class OutputFormatter extends Module {
 		return dir + "AnalysisOutput" + File.separatorChar;
 	}
 
+	public Requirement getRequirement(String reqId) {
+		return mRequirements.getRequirement(reqId);
+	}
 	public List<Requirement> getRequirements() {
 		return mRequirements.getRequirements();
+	}
+
+	public Question getQuestion(int id) {
+		for (QuestionCategory cat : mQuestions) {
+			Question question = cat.getQuestionById(id);
+			if (question != null) return question;
+		}
+
+		return null;
 	}
 
 	public List<Question> getQuestions() {

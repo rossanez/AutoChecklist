@@ -3,7 +3,9 @@ package com.autochecklist.base.requirements;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,6 +22,7 @@ import com.autochecklist.utils.Utils;
 public class RequirementList {
 
 	private List<Requirement> mRequirements;
+	private Map<String, Requirement> mReqIdMap;
 
 	public RequirementList() {
 		mRequirements = new ArrayList<Requirement>();
@@ -32,6 +35,18 @@ public class RequirementList {
 
 	public List<Requirement> getRequirements() {
 		return mRequirements;
+	}
+
+	public Requirement getRequirement(String reqId) {
+		// If not initialized, do it once.
+		if (mReqIdMap == null) {
+			mReqIdMap = new HashMap<String, Requirement>();
+			for (Requirement req : mRequirements) {
+				mReqIdMap.put(req.getId(), req);
+			}
+		}
+
+		return mReqIdMap.get(reqId);
 	}
 
 	public void addRequirements(List<Requirement> reqs) {
