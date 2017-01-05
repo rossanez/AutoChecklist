@@ -74,7 +74,7 @@ public class ReportsUI extends BaseUI {
 
 	@Override
 	protected void initUI() {
-		mStage.setTitle("Auto Checklist - Results Viewer");
+		mStage.setTitle("Auto Checklist - Reports Viewer");
 		mStage.setMinWidth(400);
 		mStage.setMinHeight(500);
 

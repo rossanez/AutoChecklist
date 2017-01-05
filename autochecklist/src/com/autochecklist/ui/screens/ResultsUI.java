@@ -76,7 +76,7 @@ public class ResultsUI extends BaseUI {
 		menuBar.prefWidthProperty().bind(mStage.widthProperty());
 
 		Label subTitle = new Label();
-		subTitle.setText("Please select the types of outputs to be generated:");
+		subTitle.setText("Please select the types of reports to be generated:");
 
 		HBox subTitleGroup = new HBox(10);
 		subTitleGroup.setAlignment(Pos.TOP_CENTER);

@@ -58,11 +58,11 @@ public class ReviewUI extends BaseUI {
 	@Override
 	protected void initUI() {
 		if (mOutputFormatter == null) {
-			Utils.printError("No requirements available to review!");
-			throw new RuntimeException("Need requirements to review their findings!");
+			Utils.printError("No findings available to review!");
+			throw new RuntimeException("Unable to review findings!");
 		}
 
-		mStage.setTitle("Auto Checklist - Review");
+		mStage.setTitle("Auto Checklist - Review findings");
 		mStage.setMinWidth(400);
 		mStage.setMinHeight(500);
 
