@@ -12,6 +12,7 @@ import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.base.requirements.RequirementList;
 import com.autochecklist.modules.Module;
+import com.autochecklist.utils.CSVBuilder;
 import com.autochecklist.utils.HtmlBuilder;
 import com.autochecklist.utils.Utils;
 
@@ -362,5 +363,27 @@ public class OutputFormatter extends Module {
 		for (Requirement requirement : mRequirements.getRequirements()) {
 			requirement.rebuildForConsistency();
 		}
+	}
+
+	public void saveToFile(String fileName) {
+		List<String[]> arrayList = new ArrayList<String[]>();
+		for (Requirement requirement : mRequirements.getRequirements()) {
+			for (Finding finding : requirement.getAllFindings()) {
+				String[] row = new String[CSVBuilder.HEADER.length];
+				int index = 0;
+				row[index++] = finding.getRequirementId();
+				row[index++] = requirement.getText();
+				row[index++] = Integer.toString(finding.getQuestionId());
+				row[index++] = finding.getGenericPart();
+				row[index++] = finding.getSpecificPart();
+				row[index++] = Question.getAnswerStringValue(finding.getAutomatedAnswerType());
+				row[index++] = Question.getAnswerStringValue(finding.getReviewedAnswerType());
+				row[index++] = finding.getReviewerComments();
+
+				arrayList.add(row);
+			}
+		}
+
+		CSVBuilder.saveFile(fileName, arrayList);
 	}
 }

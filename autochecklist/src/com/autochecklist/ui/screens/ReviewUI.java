@@ -154,6 +154,7 @@ public class ReviewUI extends BaseUI {
 			  file = new File(file.getPath() + ".csv");
 		}
 
+		final String fileName = file.getPath();
 		new TimeConsumingTaskDialog("Saving file...", new TimeConsumingTaskDialog.ITimeConsumingTask() {
 
 			@Override
@@ -163,20 +164,20 @@ public class ReviewUI extends BaseUI {
 			
 			@Override
 			public void doInBackground() {
-				// TODO implement saving mechanism.
+				mOutputFormatter.saveToFile(fileName);
 			}
 
 			@Override
 			public void onSuccess() {
-				new AlertDialog("Success!", "The file has been saved!", mStage).show();
+				new AlertDialog("Success!", "The file\n" + fileName + "\nhas been saved!", mStage).show();
 			}
 			
 			@Override
 			public void onFailure(boolean cancelled) {
 				if (cancelled) {
-				    new AlertDialog("Stopped!", "The preprocessing has been cancelled!", mStage).show();
+				    new AlertDialog("Stopped!", "Save file operation has been cancelled!", mStage).show();
 				} else {
-					new AlertDialog("Error!", "The preprocessing has failed!", mStage).show();
+					new AlertDialog("Error!", "Save file operation has failed!", mStage).show();
 				}
 			}
 		},
@@ -339,15 +340,7 @@ public class ReviewUI extends BaseUI {
 
 			@Override
 			public void handle(CellEditEvent<Finding, String> event) {
-				String str = event.getNewValue();
-				int answerType;
-				if ("No".equals(str)) {
-					answerType = Question.ANSWER_NO;
-				} else if ("Yes".equals(str)) {
-					answerType = Question.ANSWER_YES;
-				} else {
-					answerType = -1;
-				}
+				int answerType = Question.getAnswerIntValue(event.getNewValue());
 				((Finding) event.getTableView().getItems().get(event.getTablePosition().getRow()))
 						.setReviewedAnswerType(answerType);
 			}

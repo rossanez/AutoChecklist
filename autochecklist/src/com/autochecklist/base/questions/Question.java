@@ -165,6 +165,22 @@ public class Question {
 		}
 	}
 
+	public static int getAnswerIntValue(String answer) {
+		if ("No".equals(answer)) {
+			return Question.ANSWER_NO;
+		} else if ("Possible No".equals(answer)) {
+			return Question.ANSWER_POSSIBLE_NO;
+		} else if ("Warning".equals(answer)) {
+			return Question.ANSWER_WARNING;
+		} else if ("Possible Yes".equals(answer)) {
+			return Question.ANSWER_POSSIBLE_YES;
+		} else if ("Yes".equals(answer)) {
+			return Question.ANSWER_YES;
+		} else {
+			return -1;
+		}
+	}
+
 	public void rebuildForConsistency() {
 		List<Finding> allFindings = getAllFindings();
 		clearAllMaps();
