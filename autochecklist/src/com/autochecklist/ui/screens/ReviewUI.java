@@ -1,5 +1,6 @@
 package com.autochecklist.ui.screens;
 
+import java.io.File;
 import java.util.Comparator;
 
 import com.autochecklist.base.Finding;
@@ -8,6 +9,7 @@ import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.output.OutputFormatter;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
+import com.autochecklist.ui.widgets.TimeConsumingTaskDialog;
 import com.autochecklist.utils.Utils;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -35,7 +37,9 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
 
 public class ReviewUI extends BaseUI {
@@ -44,6 +48,7 @@ public class ReviewUI extends BaseUI {
 
 	private MenuBar mMenuBar;
 	private MenuItem mMenuClose;
+	private MenuItem mMenuSave;
 
 	private BorderPane mContent;
 	private Node mFinalContents;
@@ -68,9 +73,12 @@ public class ReviewUI extends BaseUI {
 
 		mMenuClose = new MenuItem("Close");
 		mMenuClose.setOnAction(this);
+		mMenuSave = new MenuItem("Save as...");
+		mMenuSave.setOnAction(this);
 
 		mMenuBar = new MenuBar();
 		Menu menu = new Menu("Actions");
+		menu.getItems().add(mMenuSave);
 		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(mMenuClose);
 		mMenuBar.getMenus().add(menu);
@@ -122,6 +130,8 @@ public class ReviewUI extends BaseUI {
 	public void handle(ActionEvent event) {
 		if (event.getSource() == mMenuClose) {
 			close();
+		} else if (event.getSource() == mMenuSave) {
+			save();
 		}
 	}
 
@@ -130,6 +140,47 @@ public class ReviewUI extends BaseUI {
 		// We don't want a confirmation dialog.
 		// Calling close() for cleaning up unlikely running background works!
 		close();
+	}
+
+	private void save() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Save reviewed analysis results...");
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV Files", "*.csv"));
+		fileChooser.setInitialFileName("reviewed_analysis" + Utils.getDateAndTimeApdStr());
+		File file = fileChooser.showSaveDialog(mStage);
+		if (file == null) return; // User may have cancelled the dialog.
+
+		if(!file.getPath().endsWith(".csv")) {
+			  file = new File(file.getPath() + ".csv");
+		}
+
+		new TimeConsumingTaskDialog("Saving file...", new TimeConsumingTaskDialog.ITimeConsumingTask() {
+
+			@Override
+			public void doBefore() {
+				// NOP
+			}
+			
+			@Override
+			public void doInBackground() {
+				// TODO implement saving mechanism.
+			}
+
+			@Override
+			public void onSuccess() {
+				new AlertDialog("Success!", "The file has been saved!", mStage).show();
+			}
+			
+			@Override
+			public void onFailure(boolean cancelled) {
+				if (cancelled) {
+				    new AlertDialog("Stopped!", "The preprocessing has been cancelled!", mStage).show();
+				} else {
+					new AlertDialog("Error!", "The preprocessing has failed!", mStage).show();
+				}
+			}
+		},
+		mStage).show();
 	}
 
 	private TableView<Finding> buildContents() {

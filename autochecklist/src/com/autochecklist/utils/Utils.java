@@ -10,7 +10,10 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -269,5 +272,10 @@ public class Utils {
 		
 		String[][] array = matrix.toArray(new String[matrix.size()][]);
 		return array;
+	}
+
+	public static String getDateAndTimeApdStr() {
+		DateFormat df = new SimpleDateFormat("_yyyyMMdd_hhmmss");
+		return df.format(new Date());
 	}
 }

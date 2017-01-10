@@ -2,9 +2,6 @@ package com.autochecklist.ui.screens;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 
@@ -66,8 +63,7 @@ public class ReportsUI extends BaseUI {
 		mContents = contents;
 		mHtmlContents = new String[contents.length];
 
-		DateFormat df = new SimpleDateFormat("_yyyyMMdd_hhmmss");
-		mDateTimeCatString = df.format(new Date());
+		mDateTimeCatString = Utils.getDateAndTimeApdStr();
 
 		setDoWorkUponShowing(true);
 	}
