@@ -2,9 +2,11 @@ package com.autochecklist.modules.output;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.autochecklist.base.ErrorBasedChecklist;
 import com.autochecklist.base.Finding;
 import com.autochecklist.base.NumberAndUnitOccurrences;
 import com.autochecklist.base.questions.Question;
@@ -43,7 +45,11 @@ public class OutputFormatter extends Module {
 	}
 
 	public Question getQuestion(int id) {
-		for (QuestionCategory cat : mQuestions) {
+		return getQuestion(id, mQuestions);
+	}
+
+	private static Question getQuestion(int id, List<QuestionCategory> questions) {
+		for (QuestionCategory cat : questions) {
 			Question question = cat.getQuestionById(id);
 			if (question != null) return question;
 		}
@@ -385,5 +391,47 @@ public class OutputFormatter extends Module {
 		}
 
 		CSVBuilder.saveFile(fileName, arrayList);
+	}
+
+	public static OutputFormatter createFromFile(String[][] contents, String fileName) {
+		ErrorBasedChecklist ebs = new ErrorBasedChecklist();
+		List<QuestionCategory> questions = new ArrayList<QuestionCategory>();
+		questions.add(ebs.getTraceabilityQuestions());
+		questions.add(ebs.getIncompletenessQuestions());
+		questions.add(ebs.getIncorrectnessQuestions());
+		questions.add(ebs.getInconsistencyQuestions());
+
+		// Using LinkedHashMap to keep the insertion order later.
+		Map<String, Requirement> requirementMap = new LinkedHashMap<String, Requirement>();
+		for (String[] row : contents) {
+			int index = 0;
+			String reqId = row[index++];
+			String reqText = row[index++];
+			int questionId = Integer.parseInt(row[index++]);
+			String genFind = row[index++];
+			String specFind = row[index++];
+			int answer = Question.getAnswerIntValue(row[index++]);
+			int revAnswer = Question.getAnswerIntValue(row[index++]);
+			String revComments = row[index++];
+
+			Requirement requirement;
+			if (!requirementMap.containsKey(reqId)) {
+				requirement = new Requirement(reqId, reqText);
+				requirementMap.put(reqId, requirement);
+			} else {
+				requirement = requirementMap.get(reqId);
+			}
+
+			Question question = getQuestion(questionId, questions);
+			
+			Finding finding = new Finding(questionId, reqId, genFind, specFind, answer);
+			finding.setReviewedAnswerType(revAnswer);
+			finding.setReviewerComments(revComments);
+			requirement.addFinding(finding);
+			question.addFinding(finding);
+		}
+
+		// TODO handle numeric occurrences!
+		return new OutputFormatter(new RequirementList(new ArrayList<Requirement>(requirementMap.values())), questions, null,  Utils.getParentDirectory(fileName));
 	}
 }

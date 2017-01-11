@@ -27,9 +27,18 @@ public class RequirementList {
 	public RequirementList() {
 		mRequirements = new ArrayList<Requirement>();
 	}
+
+	public RequirementList(List<Requirement> requirements) {
+		this();
+
+		if (requirements != null) {
+		    mRequirements = requirements;
+		}
+	}
 	
 	public RequirementList(String preprocFileName) {
-		mRequirements = new ArrayList<Requirement>();
+		this();
+
 		obtainRequirements(preprocFileName);
 	}
 

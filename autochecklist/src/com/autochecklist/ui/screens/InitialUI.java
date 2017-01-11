@@ -2,8 +2,12 @@ package com.autochecklist.ui.screens;
 
 import java.io.File;
 
+import com.autochecklist.modules.output.OutputFormatter;
 import com.autochecklist.ui.BaseUI;
+import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.ui.widgets.ChoiceDialog;
+import com.autochecklist.ui.widgets.TimeConsumingTaskDialog;
+import com.autochecklist.utils.CSVBuilder;
 import com.autochecklist.utils.Utils;
 
 import javafx.event.ActionEvent;
@@ -27,12 +31,14 @@ import javafx.stage.Stage;
 public class InitialUI extends BaseUI {
 
 	private final static int STATE_SRS = 0;
-	private final static int STATE_PREPROC = 1;
+	private final static int STATE_PREPROCESSED = 1;
+	private final static int STATE_ANALYZED = 2;
 	
 	private int mState = STATE_SRS;
 
 	private MenuItem mMenuSwitchPreproc;
 	private MenuItem mMenuSwitchSRS;
+	private MenuItem mMenuSwitchAnalyzed;
 
 	private Button mNextButton;
 
@@ -59,6 +65,8 @@ public class InitialUI extends BaseUI {
 		mMenuSwitchPreproc.setOnAction(this);
 		mMenuSwitchSRS = new MenuItem("Switch to a SRS document file");
 		mMenuSwitchSRS.setOnAction(this);
+		mMenuSwitchAnalyzed = new MenuItem("Switch to an analyzed file");
+		mMenuSwitchAnalyzed.setOnAction(this);
 		
 		mStage.setScene(createScene(STATE_SRS));
 	}
@@ -71,8 +79,13 @@ public class InitialUI extends BaseUI {
 		Menu menu = new Menu("Actions");
 		if (state == STATE_SRS) {
 		   menu.getItems().add(mMenuSwitchPreproc);
-		} else {
+		   menu.getItems().add(mMenuSwitchAnalyzed);
+		} else if (state == STATE_PREPROCESSED) {
 			menu.getItems().add(mMenuSwitchSRS);
+			menu.getItems().add(mMenuSwitchAnalyzed);
+		} else if (state == STATE_ANALYZED) {
+			menu.getItems().add(mMenuSwitchSRS);
+			menu.getItems().add(mMenuSwitchPreproc);
 		}
 		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(mMenuExit);
@@ -86,19 +99,19 @@ public class InitialUI extends BaseUI {
 		
 		final FileChooser fileChooser = new FileChooser();
 		Label label = new Label();
-		if (state == STATE_PREPROC) {
+		if (state == STATE_PREPROCESSED) {
 			fileChooser.setTitle("Open a preprocessed file...");
 		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
 		    label.setText("Please choose a preprocessed file:");
 		    mEmptyFileDialog = new ChoiceDialog("No preprocessed file chosen!",
-		    		"Would you like to switch to a SRS file?",
+		    		"Would you like to switch to an analyzed file?",
 					new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {
-							mStage.setScene(createScene(STATE_SRS));
+							mStage.setScene(createScene(STATE_ANALYZED));
 						}
 					}, null, mStage);
-		} else {
+		} else if (state == STATE_SRS) {
 		    fileChooser.setTitle("Open a SRS document file...");
 		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PDF Files", "*.pdf"));
 		    label.setText("Please choose a SRS document file:");
@@ -107,7 +120,19 @@ public class InitialUI extends BaseUI {
 					new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {
-							mStage.setScene(createScene(STATE_PREPROC));
+							mStage.setScene(createScene(STATE_PREPROCESSED));
+						}
+					}, null, mStage);
+		} else if (state == STATE_ANALYZED) {
+			fileChooser.setTitle("Open an analyzed file...");
+		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV Files", "*.csv"));
+		    label.setText("Please choose an analyzed file:");
+		    mEmptyFileDialog = new ChoiceDialog("No analyzed file chosen!",
+		    		"Would you like to switch to a SRS document file?",
+					new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							mStage.setScene(createScene(STATE_SRS));
 						}
 					}, null, mStage);
 		}
@@ -156,22 +181,66 @@ public class InitialUI extends BaseUI {
 	@Override
 	public void handle(ActionEvent event) {
 		if (event.getSource() == mMenuSwitchPreproc) {
-			mStage.setScene(createScene(STATE_PREPROC));
+			mStage.setScene(createScene(STATE_PREPROCESSED));
 		} else if (event.getSource() == mMenuSwitchSRS) {
 			mStage.setScene(createScene(STATE_SRS));
+		} else if (event.getSource() == mMenuSwitchAnalyzed) {
+			mStage.setScene(createScene(STATE_ANALYZED));
 		} else if (event.getSource() == mNextButton) {
 			if (Utils.isTextEmpty(mFileName)) {
 				mEmptyFileDialog.show();
 			} else {
 				if (mState == STATE_SRS) {
 					new PreprocUI(mFileName).show();
-				} else {
+					mStage.close();
+				} else if (mState == STATE_PREPROCESSED) {
 					new AnalysisUI(mFileName).show();
+					mStage.close();
+				} else if (mState == STATE_ANALYZED) {
+					loadAnalyzedFile(mFileName);
 				}
-				mStage.close();
 			}
 		} else {
 		    super.handle(event);
 		}
+	}
+
+	private void loadAnalyzedFile(final String fileName) {
+		new TimeConsumingTaskDialog("Loading file...", new TimeConsumingTaskDialog.ITimeConsumingTask() {
+
+			private OutputFormatter mOutputFormatter;
+
+			@Override
+			public void doBefore() {
+				// NOP
+			}
+			
+			@Override
+			public void doInBackground() {
+				mOutputFormatter = OutputFormatter.createFromFile(CSVBuilder.loadFile(fileName), fileName);
+				if (mOutputFormatter != null) {
+					mOutputFormatter.runConsistencyCheck();
+				}
+			}
+
+			@Override
+			public void onSuccess() {
+				try {
+				    new ResultsUI(mOutputFormatter).show();
+				    mStage.close();
+				} catch (Exception e) {
+					new AlertDialog("Error!", "Unable to show analyzed file's contents!", mStage).show();
+				}
+			}
+			
+			@Override
+			public void onFailure(boolean cancelled) {
+				if (cancelled) {
+				    new AlertDialog("Stopped!", "Load file operation has been cancelled!", mStage).show();
+				} else {
+					new AlertDialog("Error!", "Load file operation has failed!", mStage).show();
+				}
+			}
+		}, mStage).show();
 	}
 }
