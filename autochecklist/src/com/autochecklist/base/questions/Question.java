@@ -130,7 +130,7 @@ public class Question {
 		return findings;
 	}
 
-	private List<Finding> getAllFindings() {
+	public List<Finding> getAllFindings() {
 		List<Finding> all = new ArrayList<Finding>();
 		all.addAll(getNoFindings());
 		all.addAll(getPossibleNoFindings());

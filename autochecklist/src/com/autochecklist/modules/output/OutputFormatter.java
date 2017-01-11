@@ -333,8 +333,7 @@ public class OutputFormatter extends Module {
 
 	public String generateNumericOccurrencesContent(boolean forUI) {
 		if (mNumericOcc == null) {
-			Utils.printError("No numeric occurrences reference on output formatter!");
-			throw new RuntimeException("Not able to generate numeric occurrences content!");
+			mNumericOcc = createNumberAndUnitOccurrences();
 		}
 
 		if (mNumericOcc.isEmpty()) {
@@ -355,6 +354,27 @@ public class OutputFormatter extends Module {
 		}
 
 		return HtmlBuilder.generateContent("Numeric Occurrences View",  outBuilder.toString(), forUI);
+	}
+
+	// Too inefficient method. Should be called only as a safeguard, and not in the main thread (UI cases). 
+	private NumberAndUnitOccurrences createNumberAndUnitOccurrences() {
+		NumberAndUnitOccurrences numericOcc = new NumberAndUnitOccurrences();
+		// Search for questions dealing with numeric occurrences.
+		for (QuestionCategory cat : mQuestions) {
+			if (cat.getCategoryName() == "incorrectness") {
+				for (Question question : cat.getAllQuestions()) {
+					if (question.getAction().getType() == QuestionAction.ACTION_TYPE_CHECK_NUMBER_AND_UNIT) {
+						for (Finding finding : question.getAllFindings()) {
+							if (!Utils.isTextEmpty(finding.getSpecificPart())) {
+							    numericOcc.put(finding.getSpecificPart(), finding.getRequirementId());
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return numericOcc;
 	}
 
 	private String generateNumericOccurrencesViewFile() {
@@ -434,8 +454,8 @@ public class OutputFormatter extends Module {
 
 			// Questions dealing with numeric occurrences.
 			if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_CHECK_NUMBER_AND_UNIT)
-				&& !Utils.isTextEmpty(specFind)) {
-				numOccurrences.put(specFind, reqId);
+			    && !Utils.isTextEmpty(specFind)) {
+			    numOccurrences.put(specFind, reqId);
 			}
 		}
 
