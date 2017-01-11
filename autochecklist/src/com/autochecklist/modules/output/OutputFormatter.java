@@ -35,7 +35,7 @@ public class OutputFormatter extends Module {
 	}
 
 	private String setOutputDirectory(String dir) {
-		return dir + "AnalysisOutput" + File.separatorChar;
+		return dir + "AnalysisOutput" + Utils.getDateAndTimeApdStr() + File.separatorChar;
 	}
 
 	public Requirement getRequirement(String reqId) {
@@ -73,6 +73,7 @@ public class OutputFormatter extends Module {
 		generateQuestionsViewFile();
 		generateRequirementsViewFile();
 		generateNumericOccurrencesViewFile();
+		generateAnalysisFile();
 	}
 
 	private File createOutputDirectory() {
@@ -168,16 +169,16 @@ public class OutputFormatter extends Module {
 		return HtmlBuilder.generateContent("Checklist View", outBuilder.toString(), forUI);
 	}
 
-	private String generateQuestionsViewFile() {
-		return new HtmlBuilder(mOutputDir + "checklist_view.html").build(generateQuestionsViewContent(false));
+	private void generateQuestionsViewFile() {
+		new HtmlBuilder(mOutputDir + "checklist_view.html").build(generateQuestionsViewContent(false));
 	}
 
 	public String generateRequirementsViewContent(boolean forUI) {
 		return generateDefaultRequirementsViewContent(forUI);
 	}
 	
-	private String generateRequirementsViewFile() {
-		return generateDefaultRequirementsView();
+	private void generateRequirementsViewFile() {
+		generateDefaultRequirementsView();
 	}
 
 	private String generateDefaultRequirementsViewContent(boolean forUI) {
@@ -377,8 +378,12 @@ public class OutputFormatter extends Module {
 		return numericOcc;
 	}
 
-	private String generateNumericOccurrencesViewFile() {
-		return new HtmlBuilder(mOutputDir + "numeric_occurrences_view.html").build(generateNumericOccurrencesContent(false));
+	private void generateNumericOccurrencesViewFile() {
+		new HtmlBuilder(mOutputDir + "numeric_occurrences_view.html").build(generateNumericOccurrencesContent(false));
+	}
+
+	private void generateAnalysisFile() {
+		saveToFile(mOutputDir + "analysis.csv");
 	}
 
 	public void runConsistencyCheck() {
