@@ -90,16 +90,16 @@ public class Incorrectness extends AnalysisModule {
 		for (Pair<String, String> matched : mMatchedExpressionsForReq) {
 			if ("NUMBER_AND_UNIT".equals(matched.first)) {
 				// Found a numeric value.
-				String findingDescription = "Please check: ";
+				String findingDescription = "Please check:";
 				if ("UNIT".equals(typeToCheck)) {
-					findingDescription = "Please check the unit: ";
+					findingDescription = "Please check the unit:";
 				} else if ("MAGNITUDE".equals(typeToCheck)) {
-					findingDescription = "Please check the magnitude: ";
+					findingDescription = "Please check the magnitude:";
 				}
 
 				// Generate a warning.
 				Finding finding = new Finding(question.getId(), requirement.getId(),
-						findingDescription + matched.second, Question.ANSWER_WARNING);
+						findingDescription, matched.second, Question.ANSWER_WARNING);
 				requirement.addFinding(finding);
 				question.addFinding(finding);
 
