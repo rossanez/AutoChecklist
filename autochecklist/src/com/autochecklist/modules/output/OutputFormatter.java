@@ -10,6 +10,7 @@ import com.autochecklist.base.ErrorBasedChecklist;
 import com.autochecklist.base.Finding;
 import com.autochecklist.base.NumberAndUnitOccurrences;
 import com.autochecklist.base.questions.Question;
+import com.autochecklist.base.questions.QuestionAction;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.base.requirements.RequirementList;
@@ -403,6 +404,7 @@ public class OutputFormatter extends Module {
 
 		// Using LinkedHashMap to keep the insertion order later.
 		Map<String, Requirement> requirementMap = new LinkedHashMap<String, Requirement>();
+		NumberAndUnitOccurrences numOccurrences = new NumberAndUnitOccurrences();
 		for (String[] row : contents) {
 			int index = 0;
 			String reqId = row[index++];
@@ -429,9 +431,14 @@ public class OutputFormatter extends Module {
 			finding.setReviewerComments(revComments);
 			requirement.addFinding(finding);
 			question.addFinding(finding);
+
+			// Questions dealing with numeric occurrences.
+			if ((question.getAction().getType() == QuestionAction.ACTION_TYPE_CHECK_NUMBER_AND_UNIT)
+				&& !Utils.isTextEmpty(specFind)) {
+				numOccurrences.put(specFind, reqId);
+			}
 		}
 
-		// TODO handle numeric occurrences!
-		return new OutputFormatter(new RequirementList(new ArrayList<Requirement>(requirementMap.values())), questions, null,  Utils.getParentDirectory(fileName));
+		return new OutputFormatter(new RequirementList(new ArrayList<Requirement>(requirementMap.values())), questions, numOccurrences, Utils.getParentDirectory(fileName));
 	}
 }
