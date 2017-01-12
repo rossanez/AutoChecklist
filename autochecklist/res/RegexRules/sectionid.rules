@@ -1,11 +1,12 @@
-$SECTION_ID_FORMAT = "/[0-9]+([\.][0-9]+)?/"
+$SECTION_ID_FORMAT = "/([0-9iI]+[\.\-]?)+/"
+$POST_SECTION_ID_FORMAT = "/([A-Z][a-zA-Z\'\-\_]*)/"
 {
    ruleType: "tokens",
-   pattern: ( $SECTION_ID_FORMAT ),
+   pattern: ( $SECTION_ID_FORMAT $POST_SECTION_ID_FORMAT []{0,8} ),
    result: "SECTION_ID"
 }
 {
    ruleType: "tokens",
-   pattern: ( /appendix/ ),
+   pattern: ( /appendix/ /[a-zA-Z]/ ),
    result: "APPENDIX_ID"
 }

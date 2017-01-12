@@ -3,8 +3,8 @@ package com.autochecklist.utils.nlp;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,9 +13,6 @@ import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 
 /* package */ class DocumentSectionsExtractor {
-
-	// The max. number of words allowed in a section title.
-	private static final int SECTION_TITLE_MAX_LENGTH = 10;
 
 	private String mPlainText;
     private IRequirementsInfoOutBuildable mOutputBuilder;
@@ -32,7 +29,7 @@ import com.autochecklist.utils.Utils;
 	public void extract() {
 		Utils.println("Extracting the document sections...");
 		
-        List<String> sectionIds = new ArrayList<String>(); // To maintain the document order.
+        List<String> sectionIds = new LinkedList<String>(); // To maintain the document order.
 		Map<String, DocumentSection> sections = new HashMap<String, DocumentSection>();
 
 		BufferedReader bufReader = new BufferedReader(new StringReader(mPlainText));
@@ -46,16 +43,20 @@ import com.autochecklist.utils.Utils;
 					}
 
 					// Then start evaluating if we are dealing with a section title.
-					String[] titleCandidate = line.split(" ");
-					if ((titleCandidate == null)
-							|| (titleCandidate.length < 2)
-							|| (titleCandidate.length > SECTION_TITLE_MAX_LENGTH)) continue;
-					List<Pair<String, String>> matched = mSectionIdExtractor.extract(titleCandidate[0]);
-					if ((matched == null) || matched.isEmpty()) continue;
-					if (Character.isDigit(titleCandidate[1].charAt(0))) continue;
+					List<Pair<String, String>> matches = mSectionIdExtractor.extract(line);
+					if ((matches == null) || matches.isEmpty()) continue;
+					Pair<String, String> titleCandidateMatch = null;
+					for (Pair<String, String> match : matches) {
+						if (line.equals(match.second)) {
+							titleCandidateMatch = match;
+							break;
+						}
+					}
+					if (titleCandidateMatch == null) continue;
 
+					String[] titleCandidate = titleCandidateMatch.second.split(" ");
 					String sectionId = titleCandidate[0];
-					if ("APPENDIX_ID".equals(matched.get(0).first)) {
+					if ("APPENDIX_ID".equals(titleCandidateMatch.first)) {
 						sectionId += " " + titleCandidate[1];
 					}
 
