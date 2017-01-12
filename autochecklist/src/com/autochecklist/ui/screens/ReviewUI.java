@@ -302,7 +302,6 @@ public class ReviewUI extends BaseUI {
                     }
                 };
 
-
                 return cell;
             }
         });
@@ -329,7 +328,9 @@ public class ReviewUI extends BaseUI {
 						setText(empty ? null : item);
 						setStyle("-fx-background-color:" + getBackgroundColor(item));
 						setAlignment(Pos.CENTER);
-						setTooltip(new Tooltip("'None' -> keeps automatic answer"));
+						if ("None".equals(item)) {
+						    setTooltip(new Tooltip("'None' -> keeps automated answer"));
+						}
 					}
 				};
 
