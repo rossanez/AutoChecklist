@@ -47,7 +47,7 @@ import edu.stanford.nlp.util.CoreMap;
 				String pos = token.get(PartOfSpeechAnnotation.class);
 
 				// Is it a requirement candidate?
-				if ("MD".equals(pos) && "shall".equals(word)) {
+				if ("MD".equals(pos) && isARequirementModal(word)) {
 					if (foundARequirement = hasRequirementStructure(sentence.toString())) {
 		            	if (processingARequirement) {
 		            		appendSentenceToCurrentRequirement(sentence);
@@ -80,6 +80,18 @@ import edu.stanford.nlp.util.CoreMap;
 		}
     }
 
+	private boolean isARequirementModal(String word) {
+		if (Utils.isTextEmpty(word)) return false;
+
+		word = word.toLowerCase();
+		if ("shall".equals(word)
+			|| "should".equals(word)
+			|| "will".equals(word)
+			|| "must".equals(word)) return true;
+
+		return false;
+	}
+
 	/**
 	 * Checks if the sentence has the structure of a requirement.
 	 * Requirements consist of a noun phrase, followed by a verbal phrase, which starts with the "shall" modal:
@@ -101,11 +113,10 @@ import edu.stanford.nlp.util.CoreMap;
             TregexMatcher verbalPhraseMatcher = TregexPattern.compile("VP <<, MD=md").matcher(verbalPhraseTree);
 
             while (verbalPhraseMatcher.find()) {
-
-            	// Consistency check - it should be "shall"!
+            	// Consistency check.
             	List<Word> words = verbalPhraseMatcher.getNode("md").yieldWords();
-            	if ((words.size() != 1) || !"shall".equals(words.get(0).toString())) {
-            		break;
+            	if ((words.size() != 1) || !isARequirementModal(words.get(0).toString())) {
+            		continue;
             	}
 
             	// Found a requirement; Adding it to the output builder.
@@ -117,10 +128,10 @@ import edu.stanford.nlp.util.CoreMap;
 	}
 
 	private boolean isARequirementId(String str) {
-		if (Utils.isTextEmpty(str)) {
-			Utils.printError("Empty text when evaluating a requirement!");
-			return false;
-		}
+		if (Utils.isTextEmpty(str)) return false;
+		str = str.trim();
+		String[] splitStr = str.split(" ");
+		if (splitStr.length != 1) return false;
 
 		List<Pair<String, String>> matched = mReqIdExtractor.extract(str);
 		if ((matched != null) && (!matched.isEmpty())) {
@@ -149,10 +160,8 @@ import edu.stanford.nlp.util.CoreMap;
 	private boolean createNewRequirement(String previousSentence, CoreMap sentence) {
 		String newReq = sentence.toString().replaceAll("\n", " ");
 		Pair<String, String> reqIdAndReqText = retrieveRequirementId(previousSentence.replaceAll("\n", " "), newReq);
-		if (reqIdAndReqText == null) {
-			Utils.printError("No requirement ID found!");
-			return false;
-		}
+		if (reqIdAndReqText == null) return false;
+
 		mOutputBuilder.createNewRequirement(reqIdAndReqText.first);
 		Utils.println("New req. ID: " + reqIdAndReqText.first);
         mOutputBuilder.addRequirementText(reqIdAndReqText.second);

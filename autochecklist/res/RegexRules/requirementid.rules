@@ -1,4 +1,4 @@
-$REQUIREMENT_ID_FORMAT = "/(R(e(q(u(i(r(e(m(e(n(t)?)?)?)?)?)?)?)?)?)?[\.\:\-]?)?([0-9]+[\.\-]?)+[\:\;\-]?/"
+$REQUIREMENT_ID_FORMAT = "/([a-zA-Z]?[\.\:\-]?)?([0-9]+[\.\-]?)+[\:\;\-]?/"
 {
    ruleType: "tokens",
    pattern: ( $REQUIREMENT_ID_FORMAT ),
