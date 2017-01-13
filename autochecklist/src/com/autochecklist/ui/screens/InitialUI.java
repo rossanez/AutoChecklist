@@ -101,7 +101,7 @@ public class InitialUI extends BaseUI {
 		Label label = new Label();
 		if (state == STATE_PREPROCESSED) {
 			fileChooser.setTitle("Open a preprocessed file...");
-		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
+		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML files", "*.xml"));
 		    label.setText("Please choose a preprocessed file:");
 		    mEmptyFileDialog = new ChoiceDialog("No preprocessed file chosen!",
 		    		"Would you like to switch to an analyzed file?",
@@ -113,7 +113,8 @@ public class InitialUI extends BaseUI {
 					}, null, mStage);
 		} else if (state == STATE_SRS) {
 		    fileChooser.setTitle("Open a SRS document file...");
-		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PDF Files", "*.pdf"));
+		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PDF files", "*.pdf"),
+		    		                                 new ExtensionFilter("Plain-text files", "*.txt"));
 		    label.setText("Please choose a SRS document file:");
 		    mEmptyFileDialog = new ChoiceDialog("No SRS file chosen!",
 		    		"Would you like to switch to a preprocessed file?",
@@ -125,7 +126,7 @@ public class InitialUI extends BaseUI {
 					}, null, mStage);
 		} else if (state == STATE_ANALYZED) {
 			fileChooser.setTitle("Open an analyzed file...");
-		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV Files", "*.csv"));
+		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV files", "*.csv"));
 		    label.setText("Please choose an analyzed file:");
 		    mEmptyFileDialog = new ChoiceDialog("No analyzed file chosen!",
 		    		"Would you like to switch to a SRS document file?",

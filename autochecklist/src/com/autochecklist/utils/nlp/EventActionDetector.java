@@ -29,6 +29,7 @@ import edu.stanford.nlp.ling.Word;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.trees.Tree;
+import edu.stanford.nlp.trees.TreeGraphNode;
 import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
 import edu.stanford.nlp.util.CoreMap;
@@ -259,8 +260,9 @@ import edu.stanford.nlp.util.CoreMap;
 
 	private Set<String> handleAdjectiveEventCandidates(List<CoreLabel> adjectiveEventCandidates, Tree parseTree) {
 		Set<String> ret = new HashSet<String>();
+		TreeGraphNode rootNode = new TreeGraphNode(parseTree);
 		for (CoreLabel token : adjectiveEventCandidates) {
-			for (Tree subTree : parseTree) {
+			for (TreeGraphNode subTree : rootNode.children()) {
 				if (token.get(PartOfSpeechAnnotation.class).equals(subTree.label().value())
 					&& (token.get(TextAnnotation.class).equals(subTree.firstChild().value()))) {
 					ret.add(formatEventText(Sentence.listToString(subTree.parent().yield())));
