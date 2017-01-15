@@ -9,6 +9,13 @@ import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.apache.tika.sax.ToXMLContentHandler;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.select.NodeVisitor;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -23,12 +30,31 @@ import com.autochecklist.utils.Utils;
 public class PlainTextConverter {
 
 	public static String convertFile(String fileName) {
+		if (Utils.isTextEmpty(fileName)) {
+			Utils.printError("Invalid file name!");
+			return null;
+		}
+
+		if (fileName.endsWith(".txt") || fileName.endsWith(".TXT")) {
+			return convertFileToPlainText(fileName);
+		}
+
+		String xhtml = parseToXHTML(fileName);
+		if (Utils.isTextEmpty(xhtml)) {
+			Utils.printError("Error when generating XHTML content!");
+			return null;
+		}
+
+		return getPlainTextFromXHTML(xhtml);
+	}
+
+	public static String convertFileToPlainText(String fileName) {
 		ContentHandler handler = new CustomBodyContentHandler();
 
 		AutoDetectParser parser = new AutoDetectParser();
 		Metadata metadata = new Metadata();
 	    try (InputStream stream = new FileInputStream(new File(fileName))) {
-	    	Utils.println("Converting document to plain text...");
+	    	Utils.println("Handling plain text document...");
 			parser.parse(stream, handler, metadata);
 			Utils.print("done!");
 			return handler.toString();
@@ -36,6 +62,53 @@ public class PlainTextConverter {
 			Utils.printError("Unable to convert to plain text!");
 			throw new RuntimeException("Error when converting document to plain text! - " + e.getMessage());
 		}
+	}
+
+	public static String parseToXHTML(String fileName) {
+		ContentHandler handler = new ToXMLContentHandler();
+
+		AutoDetectParser parser = new AutoDetectParser();
+		Metadata metadata = new Metadata();
+		try (InputStream stream = new FileInputStream(new File(fileName))) {
+			Utils.println("Converting document to XHTML...");
+			parser.parse(stream, handler, metadata);
+			Utils.print("done!");
+			return handler.toString();
+		} catch (IOException | SAXException | TikaException e) {
+			Utils.printError("Unable to convert to XHTML!");
+			throw new RuntimeException("Error when converting document to XHTML! - " + e.getMessage());
+		}
+	}
+
+	private static String getPlainTextFromXHTML(String xhtml) {
+		final StringBuilder sb = new StringBuilder();
+
+		Document doc = Jsoup.parse(xhtml);
+		Element body = doc.body();
+		body.traverse(new NodeVisitor() {
+
+			@Override
+			public void head(Node node, int depth) {
+				if (node instanceof TextNode) {
+					String itemStr = ((TextNode) node).text();
+					if (itemStr != null) itemStr = itemStr.trim();
+					if (Utils.isTextEmpty(itemStr)) return;
+					sb.append(itemStr);
+					if (!(itemStr.endsWith("\n")
+						 || itemStr.endsWith("\r\n")
+						 || itemStr.endsWith("\n\r"))) {
+						sb.append('\n');
+					}
+				}
+			}
+
+			@Override
+			public void tail(Node node, int depth) {
+				// NOP
+			}
+		});
+
+		return sb.toString();
 	}
 }
 
