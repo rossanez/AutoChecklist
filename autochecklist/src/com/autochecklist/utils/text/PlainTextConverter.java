@@ -81,6 +81,7 @@ public class PlainTextConverter {
 	}
 
 	private static String getPlainTextFromXHTML(String xhtml) {
+		Utils.println("Converting XHTML to plain-text...");
 		final StringBuilder sb = new StringBuilder();
 
 		Document doc = Jsoup.parse(xhtml);
@@ -89,13 +90,17 @@ public class PlainTextConverter {
 
 			@Override
 			public void head(Node node, int depth) {
-				if (node instanceof TextNode) {
+				if ("div".equals(node.nodeName())) {
+					if ("page".equals(node.attr("class"))) {
+						// This is the beginning of a new page.
+					}
+				} else if (node instanceof TextNode) {
 					String itemStr = ((TextNode) node).text();
 					if (itemStr != null) itemStr = itemStr.trim();
 					if (Utils.isTextEmpty(itemStr)) return;
+					if (itemStr.split(" ").length < 2) sb.append('\n');
 					sb.append(itemStr);
 					if (!(itemStr.endsWith("\n")
-						 || itemStr.endsWith("\r\n")
 						 || itemStr.endsWith("\n\r"))) {
 						sb.append('\n');
 					}
@@ -108,6 +113,7 @@ public class PlainTextConverter {
 			}
 		});
 
+		Utils.print("done!");
 		return sb.toString();
 	}
 }

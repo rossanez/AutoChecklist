@@ -26,7 +26,7 @@ public class NLPTools {
 	private NLPTools() {
 		Properties props = new Properties();
 		props.put("annotators", "tokenize, ssplit, pos, lemma");
-		props.put("ssplit.newlineIsSentenceBreak", "two_consecutive");
+		props.put("ssplit.newlineIsSentenceBreak", "two");
 
 		mPipeline = new StanfordCoreNLP(props);
 
