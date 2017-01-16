@@ -96,10 +96,15 @@ public class PlainTextConverter {
 					}
 				} else if (node instanceof TextNode) {
 					String itemStr = ((TextNode) node).text();
-					if (itemStr != null) itemStr = itemStr.trim();
+					if (!Utils.isTextEmpty(itemStr)) itemStr = itemStr.trim();
 					if (Utils.isTextEmpty(itemStr)) return;
-					if (itemStr.split(" ").length < 2) sb.append('\n');
-					sb.append(itemStr);
+					if ((itemStr.split(" ").length < 4) && !itemStr.endsWith(".")) {
+						sb.append('\n').append('\n');
+						sb.append(itemStr);
+						sb.append('\n').append('\n');
+					} else {
+					    sb.append(itemStr);
+					}
 					if (!(itemStr.endsWith("\n")
 						 || itemStr.endsWith("\n\r"))) {
 						sb.append('\n');

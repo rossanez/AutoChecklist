@@ -49,10 +49,11 @@ import edu.stanford.nlp.util.CoreMap;
 				// Is it a requirement candidate?
 				if ("MD".equals(pos) && isARequirementModal(word)) {
 					if (foundARequirement = hasRequirementStructure(sentence.toString())) {
+						boolean newReq = createNewRequirement(previousSentence, sentence);
 		            	if (processingARequirement) {
 		            		appendSentenceToCurrentRequirement(sentence);
 		            	} else {
-		            		processingARequirement = createNewRequirement(previousSentence, sentence);
+		            		processingARequirement = newReq;
 		            	}
 
 		                break;
