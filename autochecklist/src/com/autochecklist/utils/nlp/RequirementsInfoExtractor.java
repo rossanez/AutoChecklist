@@ -50,7 +50,7 @@ import edu.stanford.nlp.util.CoreMap;
 				if ("MD".equals(pos) && isARequirementModal(word)) {
 					if (foundARequirement = hasRequirementStructure(sentence.toString())) {
 						boolean newReq = createNewRequirement(previousSentence, sentence);
-		            	if (processingARequirement) {
+		            	if (processingARequirement && !newReq) {
 		            		appendSentenceToCurrentRequirement(sentence);
 		            	} else {
 		            		processingARequirement = newReq;
