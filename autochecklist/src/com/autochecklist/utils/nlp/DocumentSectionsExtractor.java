@@ -47,7 +47,7 @@ import com.autochecklist.utils.Utils;
 					if ((matches == null) || matches.isEmpty()) continue;
 					Pair<String, String> titleCandidateMatch = null;
 					for (Pair<String, String> match : matches) {
-						if (line.equals(match.second)) {
+						if (line.equals(match.second) || "APPENDIX_ID".equals(match.first)) {
 							titleCandidateMatch = match;
 							break;
 						}

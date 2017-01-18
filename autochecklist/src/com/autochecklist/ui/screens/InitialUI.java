@@ -114,6 +114,8 @@ public class InitialUI extends BaseUI {
 		} else if (state == STATE_SRS) {
 		    fileChooser.setTitle("Open a SRS document file...");
 		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PDF files", "*.pdf"),
+		    		                                 new ExtensionFilter("DOC files", "*.doc","*.docx"),
+		    		                                 new ExtensionFilter("RTF files", "*.rtf"),
 		    		                                 new ExtensionFilter("Plain-text files", "*.txt"));
 		    label.setText("Please choose a SRS document file:");
 		    mEmptyFileDialog = new ChoiceDialog("No SRS file chosen!",
