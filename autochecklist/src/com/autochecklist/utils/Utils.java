@@ -278,4 +278,30 @@ public class Utils {
 		DateFormat df = new SimpleDateFormat("_yyyyMMdd_hhmmss");
 		return df.format(new Date());
 	}
+
+	public static boolean containsUnbalancedBrackets(String str) {
+		if (isTextEmpty(str)) return false;
+
+		int count = 0;
+		for (char c : str.toCharArray()) {
+			if (isOpeningBracket(c)) count++;
+			if (isClosingBracket(c)) count--;
+
+			if (count < 0) return true;
+		}
+
+		return false;
+	}
+
+	private static boolean isOpeningBracket(char c) {
+		if (c == '{' || c == '[' || c == '(') return true;
+
+		return false;
+	}
+
+	private static boolean isClosingBracket(char c) {
+		if (c == '}' || c == ']' || c == ')') return true;
+
+		return false;
+	}
 }

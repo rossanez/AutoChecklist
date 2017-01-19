@@ -88,6 +88,8 @@ public class PlainTextConverter {
 		Element body = doc.body();
 		body.traverse(new NodeVisitor() {
 
+			private String mPreviousText = null;
+
 			@Override
 			public void head(Node node, int depth) {
 				if ("div".equals(node.nodeName())) {
@@ -98,17 +100,19 @@ public class PlainTextConverter {
 					String itemStr = ((TextNode) node).text();
 					if (!Utils.isTextEmpty(itemStr)) itemStr = itemStr.trim();
 					if (Utils.isTextEmpty(itemStr)) return;
-					if ((itemStr.split(" ").length < 4) && !itemStr.endsWith(".")) {
-						sb.append('\n').append('\n');
-						sb.append(itemStr);
-						sb.append('\n').append('\n');
-					} else {
-					    sb.append(itemStr);
+
+					if (!Utils.isTextEmpty(mPreviousText)) {
+						if ((node.parent() != null) && isFontModifierNode(node.parent().nodeName())) {
+							sb.append(' ').append(itemStr);
+							mPreviousText += ' ' + itemStr;
+							return;
+						} else if (shouldAddExtraLineBreak(itemStr, mPreviousText)) {
+							sb.append('\n');
+						}
 					}
-					if (!(itemStr.endsWith("\n")
-						 || itemStr.endsWith("\n\r"))) {
-						sb.append('\n');
-					}
+
+					sb.append('\n').append(itemStr);
+					mPreviousText = itemStr;
 				}
 			}
 
@@ -120,6 +124,34 @@ public class PlainTextConverter {
 
 		Utils.print("done!");
 		return sb.toString();
+	}
+
+	private static boolean isFontModifierNode(String nodeName) {
+		if ("b".equals(nodeName) || "i".equals(nodeName) || "u".equals(nodeName)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private static boolean shouldAddExtraLineBreak(String current, String previous) {
+		if (Utils.isTextEmpty(current) || Utils.isTextEmpty(previous)) return false;
+
+		String[] previousArray = previous.split(" ");
+		String previousLast = previousArray[previousArray.length - 1];
+		char previousLastChar = previousLast.charAt(previousLast.length() - 1);
+		String[] currentArray = current.split(" ");
+		String currentFirst = currentArray[0];
+		char currentFirstChar = currentFirst.charAt(0);
+
+		if ((previousLastChar == ',')
+			|| (previousLastChar == ':')
+			|| (previousLastChar == ';')) return false;
+
+		if (Utils.containsUnbalancedBrackets(current)) return false;
+		if (Character.isUpperCase(currentFirstChar)) return true;
+
+		return false;
 	}
 }
 
