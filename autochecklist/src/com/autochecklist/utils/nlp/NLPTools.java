@@ -1,10 +1,13 @@
 package com.autochecklist.utils.nlp;
 
+import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 
 import com.autochecklist.utils.Utils;
 
+import edu.mit.jwi.Dictionary;
+import edu.mit.jwi.IDictionary;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
@@ -17,7 +20,9 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 public class NLPTools {
 
 	private static NLPTools mPipelineInstance;
-	
+
+	private IDictionary mWordNetDictionary;
+
 	private StanfordCoreNLP mPipeline;
 	private LexicalizedParser mParser;
 	private EventActionDetector mEventActionDetector;
@@ -85,5 +90,14 @@ public class NLPTools {
 		mPipeline.annotate(document);
 
 		return document;
+	}
+
+	public IDictionary getWordNetDictionary() throws IOException {
+	    if (mWordNetDictionary == null) {
+	       mWordNetDictionary = new Dictionary(Utils.getResourceAsURL("WordNet/dict/")); 
+	       mWordNetDictionary.open();
+	    }
+	
+	    return mWordNetDictionary;
 	}
 }

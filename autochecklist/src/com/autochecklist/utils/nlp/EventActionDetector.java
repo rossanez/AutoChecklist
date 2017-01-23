@@ -9,7 +9,6 @@ import java.util.Set;
 
 import com.autochecklist.utils.Utils;
 
-import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
 import edu.mit.jwi.item.IIndexWord;
 import edu.mit.jwi.item.ISynset;
@@ -44,8 +43,6 @@ import edu.stanford.nlp.util.CoreMap;
 	private Set<String> mWeakActionVerbs;
 	private Set<String> mWeakStativeVerbs;
 	private Set<String> mAdjectiveEvents;
-
-	private static IDictionary sDictionary; // Keeping it as static to avoid loading more than once.
 
 	public EventActionDetector(LexicalizedParser parser) {
 		mParser = parser;
@@ -220,7 +217,7 @@ import edu.stanford.nlp.util.CoreMap;
 
 	private boolean isEventOnWordNet(String word) {
 		try {
-			IDictionary dict = dicitionaryFactory();
+			IDictionary dict = NLPTools.getInstance().getWordNetDictionary();
 			IIndexWord idw = dict.getIndexWord(word, POS.NOUN);
 			if (idw != null) {
 				IWordID wordID = idw.getWordIDs().get(0);
@@ -248,15 +245,6 @@ import edu.stanford.nlp.util.CoreMap;
 		
 		return false;
 	}
-
-	private static IDictionary dicitionaryFactory() throws IOException {
-        if (sDictionary == null) {
-           sDictionary = new Dictionary(Utils.getResourceAsURL("WordNet/dict/")); 
-           sDictionary.open();
-        }
-
-        return sDictionary;
-    }
 
 	private Set<String> handleAdjectiveEventCandidates(List<CoreLabel> adjectiveEventCandidates, Tree parseTree) {
 		Set<String> ret = new HashSet<String>();
