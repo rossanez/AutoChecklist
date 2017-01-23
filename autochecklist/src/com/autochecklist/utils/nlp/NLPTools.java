@@ -8,6 +8,7 @@ import com.autochecklist.utils.Utils;
 
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
+import edu.mit.jwi.item.POS;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
@@ -99,5 +100,21 @@ public class NLPTools {
 	    }
 	
 	    return mWordNetDictionary;
+	}
+
+	public boolean isOnWordNet(String word) {
+		POS[] partsOfSpeech = {POS.NOUN, POS.VERB, POS.ADJECTIVE, POS.ADVERB};
+        try {
+			IDictionary dict = getWordNetDictionary();
+			for (POS pos : partsOfSpeech) {
+				if (dict.getIndexWord(word, pos) != null) {
+					return true;
+				}
+			}
+		} catch (IOException e) {
+			Utils.printError(e.getMessage());
+		}
+
+        return false;
 	}
 }

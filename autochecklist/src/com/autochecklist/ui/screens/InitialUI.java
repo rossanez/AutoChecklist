@@ -116,7 +116,7 @@ public class InitialUI extends BaseUI {
 		    fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PDF files", "*.pdf"),
 		    		                                 new ExtensionFilter("DOC files", "*.doc","*.docx"),
 		    		                                 new ExtensionFilter("RTF files", "*.rtf"),
-		    		                                 new ExtensionFilter("Plain-text files", "*.txt"));
+		    		                                 new ExtensionFilter("Preformatted text files", "*.txt"));
 		    label.setText("Please choose a SRS document file:");
 		    mEmptyFileDialog = new ChoiceDialog("No SRS file chosen!",
 		    		"Would you like to switch to a preprocessed file?",
