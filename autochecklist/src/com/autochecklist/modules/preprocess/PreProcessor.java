@@ -6,7 +6,7 @@ import java.security.InvalidParameterException;
 import com.autochecklist.modules.Module;
 import com.autochecklist.utils.Utils;
 import com.autochecklist.utils.nlp.NLPTools;
-import com.autochecklist.utils.nlp.IRequirementsInfoOutBuildable;
+import com.autochecklist.utils.nlp.interfaces.IRequirementsInfoOutBuildable;
 import com.autochecklist.utils.text.PlainTextConverter;
 
 public class PreProcessor extends Module {

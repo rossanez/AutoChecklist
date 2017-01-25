@@ -1,4 +1,4 @@
-package com.autochecklist.utils.nlp;
+package com.autochecklist.utils.nlp.interfaces;
 
 import java.util.List;
 

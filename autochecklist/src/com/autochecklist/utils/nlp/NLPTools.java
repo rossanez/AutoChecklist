@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.autochecklist.utils.Utils;
+import com.autochecklist.utils.nlp.interfaces.IEventActionDetectable;
+import com.autochecklist.utils.nlp.interfaces.IExpressionExtractable;
+import com.autochecklist.utils.nlp.interfaces.IMissingNumericValuesIndicativeDetectable;
+import com.autochecklist.utils.nlp.interfaces.IRequirementsInfoOutBuildable;
 
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
@@ -63,10 +67,6 @@ public class NLPTools {
 		return new ExpressionExtractor(extractorRulesMainResorce, composingResources);
 	}
 
-	public LexicalizedParser getParser() {
-		return mParser;
-	}
-
 	public IEventActionDetectable getEventActionDetector() {
 		return new EventActionDetector(getParser());
 	}
@@ -75,14 +75,18 @@ public class NLPTools {
 		return new MissingNumericValueIndicativesDetector();
 	}
 
-	public Annotation annotate(String text) {
+	/* package */ Annotation annotate(String text) {
 		Annotation document = new Annotation(text);
 		mPipeline.annotate(document);
 
 		return document;
 	}
 
-	public IDictionary getWordNetDictionary() throws IOException {
+	/* package */ LexicalizedParser getParser() {
+		return mParser;
+	}
+
+	/* package */ IDictionary getWordNetDictionary() throws IOException {
 	    if (mWordNetDictionary == null) {
 	       mWordNetDictionary = new Dictionary(Utils.getResourceAsURL("WordNet/dict/")); 
 	       mWordNetDictionary.open();
@@ -91,7 +95,7 @@ public class NLPTools {
 	    return mWordNetDictionary;
 	}
 
-	public boolean isOnWordNet(String word) {
+	/* package */ boolean isOnWordNet(String word) {
 		POS[] partsOfSpeech = {POS.NOUN, POS.VERB, POS.ADJECTIVE, POS.ADVERB};
         try {
 			IDictionary dict = getWordNetDictionary();

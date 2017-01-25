@@ -5,7 +5,7 @@ import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.base.requirements.RequirementList;
-import com.autochecklist.utils.nlp.IExpressionExtractable;
+import com.autochecklist.utils.nlp.interfaces.IExpressionExtractable;
 
 /**
  * This class represents a generic analysis module.

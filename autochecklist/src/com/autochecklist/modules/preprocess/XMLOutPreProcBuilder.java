@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.IRequirementsInfoOutBuildable;
+import com.autochecklist.utils.nlp.interfaces.IRequirementsInfoOutBuildable;
 
 public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
 

@@ -12,9 +12,9 @@ import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.IEventActionDetectable;
-import com.autochecklist.utils.nlp.IMissingNumericValuesIndicativeDetectable;
 import com.autochecklist.utils.nlp.NLPTools;
+import com.autochecklist.utils.nlp.interfaces.IEventActionDetectable;
+import com.autochecklist.utils.nlp.interfaces.IMissingNumericValuesIndicativeDetectable;
 
 public class Incompleteness extends AnalysisModule {
 

@@ -14,8 +14,8 @@ import com.autochecklist.base.requirements.RequirementList;
 import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.IExpressionExtractable;
 import com.autochecklist.utils.nlp.NLPTools;
+import com.autochecklist.utils.nlp.interfaces.IExpressionExtractable;
 
 public class Traceability extends AnalysisModule {
 

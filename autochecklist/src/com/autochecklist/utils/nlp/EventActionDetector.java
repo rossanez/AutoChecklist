@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.autochecklist.utils.Utils;
+import com.autochecklist.utils.nlp.interfaces.IEventActionDetectable;
 
 import edu.mit.jwi.IDictionary;
 import edu.mit.jwi.item.IIndexWord;
