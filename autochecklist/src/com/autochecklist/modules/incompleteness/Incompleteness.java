@@ -12,15 +12,21 @@ import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
+import com.autochecklist.utils.nlp.IEventActionDetectable;
+import com.autochecklist.utils.nlp.IMissingNumericValuesIndicativeDetectable;
 import com.autochecklist.utils.nlp.NLPTools;
 
 public class Incompleteness extends AnalysisModule {
 
+	private IEventActionDetectable mEventActionsDetector;
+	private IMissingNumericValuesIndicativeDetectable mMissingNumericValuesDetector;
 	private List<Pair<String, String>> mMatchedExpressionsForReq;
 	
 	public Incompleteness(QuestionCategory questions) {
 		super(questions);
-		
+
+		mEventActionsDetector = NLPTools.getInstance().getEventActionDetector();
+		mMissingNumericValuesDetector = NLPTools.getInstance().getMissingNumericValueIndicativesDetector();
 		mExpressionExtractor = NLPTools.createExpressionExtractor("RegexRules/incompleteness.rules");
 		mMatchedExpressionsForReq = new ArrayList<Pair<String, String>>();
 	}
@@ -48,7 +54,7 @@ public class Incompleteness extends AnalysisModule {
 	}
 
 	private void handleMissingNumericValues(Requirement requirement, Question question) {
-		Set<String> missingNumericValueIndicators = NLPTools.getInstance().getMissingNumericValueIndicators(requirement.getText());
+		Set<String> missingNumericValueIndicators = mMissingNumericValuesDetector.detect(requirement.getText());
 		if (!missingNumericValueIndicators.isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (String indicator : missingNumericValueIndicators) {
@@ -71,7 +77,7 @@ public class Incompleteness extends AnalysisModule {
 	}
 
 	private void handleActionsAndEvents(Requirement requirement, Question question) {
-		Set<String> detectedEvents = NLPTools.getInstance().checkIfHasActionsAndGetEvents(requirement.getText());
+		Set<String> detectedEvents = mEventActionsDetector.checkIfHasActionsAndGetEvents(requirement.getText());
 		if (!detectedEvents.isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			for (String event : detectedEvents) {

@@ -13,7 +13,7 @@ import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.util.CoreMap;
 
-/* package */ class MissingNumericValueIndicativesDetector {
+/* package */ class MissingNumericValueIndicativesDetector implements IMissingNumericValuesIndicativeDetectable {
 
 	private Set<String> mIndicatives;
 	
@@ -136,6 +136,7 @@ import edu.stanford.nlp.util.CoreMap;
 		mIndicatives.add("take out");
 	}
 
+	@Override
 	public Set<String> detect(String text) {
 		Set<String> indicativesFound = new HashSet<String>();
 		Annotation annotatedText = NLPTools.getInstance().annotate(text);

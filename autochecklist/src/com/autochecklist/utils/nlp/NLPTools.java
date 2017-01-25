@@ -2,7 +2,6 @@ package com.autochecklist.utils.nlp;
 
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Set;
 
 import com.autochecklist.utils.Utils;
 
@@ -26,8 +25,6 @@ public class NLPTools {
 
 	private StanfordCoreNLP mPipeline;
 	private LexicalizedParser mParser;
-	private EventActionDetector mEventActionDetector;
-	private MissingNumericValueIndicativesDetector mMissingNumericValueDetector;
 	
 	private NLPTools() {
 		Properties props = new Properties();
@@ -39,9 +36,6 @@ public class NLPTools {
 		// Keeping the parser separated from the pipeline so that parsing
 		// does not gets influenced by the PoS tagging results.
 		mParser = LexicalizedParser.loadModel("edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz");
-
-		mEventActionDetector = new EventActionDetector(mParser);
-		mMissingNumericValueDetector = new MissingNumericValueIndicativesDetector();
 	}
 
 	public static NLPTools getInstance() {
@@ -73,17 +67,12 @@ public class NLPTools {
 		return mParser;
 	}
 
-	
-	public Set<String> getActions(String text) {
-		return mEventActionDetector.getActionsInText(text);
+	public IEventActionDetectable getEventActionDetector() {
+		return new EventActionDetector(getParser());
 	}
 
-	public Set<String> checkIfHasActionsAndGetEvents(String text) {
-		return mEventActionDetector.checkIfHasActionsAndGetEvents(text);
-	}
-
-	public Set<String> getMissingNumericValueIndicators(String text) {
-		return mMissingNumericValueDetector.detect(text);
+	public IMissingNumericValuesIndicativeDetectable getMissingNumericValueIndicativesDetector() {
+		return new MissingNumericValueIndicativesDetector();
 	}
 
 	public Annotation annotate(String text) {

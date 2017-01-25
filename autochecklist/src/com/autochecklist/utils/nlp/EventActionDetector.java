@@ -33,7 +33,7 @@ import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
 import edu.stanford.nlp.util.CoreMap;
 
-/* package */ class EventActionDetector {
+/* package */ class EventActionDetector implements IEventActionDetectable {
 
 	// Maximum number of characters to represent an event in the final output.
 	private static final int EVENT_TEXT_MAX_SIZE = 35;
@@ -91,7 +91,8 @@ import edu.stanford.nlp.util.CoreMap;
 		mAdjectiveEvents.add("unprompted");
 	}
 
-	public Set<String> getActionsInText(String text) {
+	@Override
+	public Set<String> getActions(String text) {
 		Set<String> actions = new HashSet<String>();
 		Annotation document = NLPTools.getInstance().annotate(text);
 
@@ -104,7 +105,8 @@ import edu.stanford.nlp.util.CoreMap;
 
 		return actions;
 	}
-	
+
+	@Override
 	public Set<String> checkIfHasActionsAndGetEvents(String text) {
 		Set<String> eventsFound = new HashSet<String>();
 		Annotation document = NLPTools.getInstance().annotate(text);

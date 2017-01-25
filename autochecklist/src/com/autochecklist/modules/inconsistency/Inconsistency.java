@@ -14,6 +14,7 @@ import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
+import com.autochecklist.utils.nlp.IEventActionDetectable;
 import com.autochecklist.utils.nlp.IExpressionExtractable;
 import com.autochecklist.utils.nlp.NLPTools;
 
@@ -21,6 +22,8 @@ public class Inconsistency extends AnalysisModule {
 
 	private IExpressionExtractable mExpressionExtractor;
 	private IExpressionExtractable mFunctionsExtractor;
+	private IEventActionDetectable mEventActionsDetector;
+
 	private Set<String> mActionReferences;
 	private Set<String> mFunctionReferences;
 	private Set<String> mWatchDogReferences;
@@ -31,6 +34,8 @@ public class Inconsistency extends AnalysisModule {
 
 		mExpressionExtractor = NLPTools.createExpressionExtractor("RegexRules/inconsistency.rules",  "RegexRules/numbers.compose", "RegexRules/prefixes.compose", "RegexRules/time_frequency.compose");
 		mFunctionsExtractor = NLPTools.createExpressionExtractor("RegexRules/functions.rules");
+		mEventActionsDetector = NLPTools.getInstance().getEventActionDetector();
+
 		mActionReferences = new HashSet<String>();
 		mFunctionReferences = new HashSet<String>();
 		mWatchDogReferences = new HashSet<String>();
@@ -160,7 +165,7 @@ public class Inconsistency extends AnalysisModule {
 		mActionReferences.clear();
 		mFunctionReferences.clear();
 
-		mActionReferences = NLPTools.getInstance().getActions(requirement.getText());
+		mActionReferences = mEventActionsDetector.getActions(requirement.getText());
 		findFunctions(requirement.getText());
 	}
 
