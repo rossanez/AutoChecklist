@@ -48,7 +48,7 @@ import edu.stanford.nlp.util.CoreMap;
 				String pos = token.get(PartOfSpeechAnnotation.class);
 
 				// Is it a requirement candidate?
-				if ("MD".equals(pos) && isARequirementModal(word)) {
+				if ("MD".equals(pos)) {
 					if (foundARequirement = hasRequirementStructure(sentence.toString())) {
 						boolean newReq = createNewRequirement(previousSentence, sentence);
 		            	if (processingARequirement && !newReq) {
@@ -82,18 +82,6 @@ import edu.stanford.nlp.util.CoreMap;
 		}
     }
 
-	private boolean isARequirementModal(String word) {
-		if (Utils.isTextEmpty(word)) return false;
-
-		word = word.toLowerCase();
-		if ("shall".equals(word)
-			|| "should".equals(word)
-			|| "will".equals(word)
-			|| "must".equals(word)) return true;
-
-		return false;
-	}
-
 	/**
 	 * Checks if the sentence has the structure of a requirement.
 	 * Requirements consist of a noun phrase, followed by a verbal phrase, which starts with the "shall" modal:
@@ -117,7 +105,7 @@ import edu.stanford.nlp.util.CoreMap;
             while (verbalPhraseMatcher.find()) {
             	// Consistency check.
             	List<Word> words = verbalPhraseMatcher.getNode("md").yieldWords();
-            	if ((words.size() != 1) || !isARequirementModal(words.get(0).toString())) {
+            	if (words.size() != 1) {
             		continue;
             	}
 

@@ -40,3 +40,8 @@ $NUMBER_AND_UNIT_CAT = "/($INCLUDE_NUMBERS)(($INCLUDE_PREFIXES)?($INCLUDE_TIME_F
    pattern: ( /watchdog/ ),
    result: "WATCHDOG"
 }
+{
+   ruleType: "tokens",
+   pattern: ( /(audit|safety|safe-state|safestate|safe state)/ ),
+   result: "WATCHDOG_VARIANTS"
+}
