@@ -1,14 +1,15 @@
 package com.autochecklist.utils.text;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.sax.BodyContentHandler;
 import org.apache.tika.sax.ToXMLContentHandler;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -50,19 +51,21 @@ public class PlainTextConverter {
 	}
 
 	public static String handlePlainTextFile(String fileName) {
-		ContentHandler handler = new BodyContentHandler();
+		Utils.println("Handling plain text document...");
 
-		AutoDetectParser parser = new AutoDetectParser();
-		Metadata metadata = new Metadata();
-	    try (InputStream stream = new FileInputStream(new File(fileName))) {
-	    	Utils.println("Handling plain text document...");
-			parser.parse(stream, handler, metadata);
-			Utils.print("done!");
-			return handler.toString();
-		} catch (IOException | SAXException | TikaException e) {
+		StringBuilder sb = new StringBuilder();
+		try (InputStream stream = new FileInputStream(fileName)) {
+			BufferedReader bufReader = new BufferedReader(new InputStreamReader(stream));
+			String line = null;
+			while ((line = bufReader.readLine()) != null) {
+				sb.append('\n').append(line);
+			}
+		} catch (IOException e) {
 			Utils.printError("Unable to handle with plain text document!");
-			throw new RuntimeException("Error when handling plain text document! - " + e.getMessage());
 		}
+
+		Utils.print("done!");
+		return sb.toString();
 	}
 
 	public static String parseToXHTML(String fileName) {
@@ -99,8 +102,10 @@ public class PlainTextConverter {
 					}
 				} else if (node instanceof TextNode) {
 					String itemStr = ((TextNode) node).text();
-					if (!Utils.isTextEmpty(itemStr)) itemStr = itemStr.trim();
-					if (Utils.isTextEmpty(itemStr)) return;
+					if (!Utils.isTextEmpty(itemStr))
+						itemStr = itemStr.trim();
+					if (Utils.isTextEmpty(itemStr))
+						return;
 
 					if (!Utils.isTextEmpty(mPreviousText)) {
 						if ((node.parent() != null) && isFontModifierNode(node.parent().nodeName())) {
@@ -136,7 +141,8 @@ public class PlainTextConverter {
 	}
 
 	private static boolean shouldAddExtraLineBreak(String current, String previous) {
-		if (Utils.isTextEmpty(current) || Utils.isTextEmpty(previous)) return false;
+		if (Utils.isTextEmpty(current) || Utils.isTextEmpty(previous))
+			return false;
 
 		String[] previousArray = previous.split(" ");
 		String previousLast = previousArray[previousArray.length - 1];
@@ -145,13 +151,14 @@ public class PlainTextConverter {
 		String currentFirst = currentArray[0];
 		char currentFirstChar = currentFirst.charAt(0);
 
-		if ((previousLastChar == ',')
-			|| (previousLastChar == ':')
-			|| (previousLastChar == ';')
-			|| (previousLastChar == '-')) return false;
+		if ((previousLastChar == ',') || (previousLastChar == ':') || (previousLastChar == ';')
+				|| (previousLastChar == '-'))
+			return false;
 
-		if (Utils.containsUnbalancedBrackets(current)) return false;
-		if (Character.isUpperCase(currentFirstChar)) return true;
+		if (Utils.containsUnbalancedBrackets(current))
+			return false;
+		if (Character.isUpperCase(currentFirstChar))
+			return true;
 
 		return false;
 	}
