@@ -37,13 +37,17 @@ public class PreProcessor extends Module {
     }
 
     private String getOutputFileName() {
-		return Utils.getParentDirectory(mDocumentFileName) + "preproc.xml";
+		return Utils.getParentDirectory(mDocumentFileName) + Utils.getFileNameWithoutExtension(mDocumentFileName) + "_preproc.xml";
 	}
 
     private File buildPreProcessedFile(String text) {
     	if (text == null) {
     		Utils.printError("No plain text content!");
     		throw new InvalidParameterException("Invalid plain text passed in!");
+    	}
+
+    	if (!mDocumentFileName.toLowerCase().endsWith(".txt")) {
+    		Utils.createTextFile(Utils.getParentDirectory(mDocumentFileName) + Utils.getFileNameWithoutExtension(mDocumentFileName) + "_text.txt", text);
     	}
     	
     	IRequirementsInfoOutBuildable outputBuilder = new XMLOutPreProcBuilder();

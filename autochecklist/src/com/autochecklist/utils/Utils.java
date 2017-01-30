@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import com.autochecklist.ui.PrintingService;
@@ -62,6 +63,29 @@ public class Utils {
 	public static String getParentDirectory(String fileName) {
 	    int index = fileName.lastIndexOf(File.separatorChar);
 	    return fileName.substring(0, index + 1);
+	}
+
+	public static String getFileNameWithoutExtension(String fileName) {
+		int firstIndex = fileName.lastIndexOf(File.separatorChar);
+		int lastIndex = fileName.lastIndexOf('.');
+
+		return fileName.substring((firstIndex < 0) ? 0 : firstIndex + 1,
+				                  (lastIndex < 0) ? fileName.length() : lastIndex);
+	}
+
+	public static File createTextFile(String fileName, String text) {
+		File resultFile = new File(fileName);
+        if (resultFile.exists() & !resultFile.isDirectory()) {
+        	resultFile.delete();
+        }
+
+        try {
+		    FileUtils.writeStringToFile(new File(fileName), text);
+	    } catch (IOException e) {
+		    Utils.printError("Unable to save text file!");
+	    }
+
+        return resultFile;
 	}
 
 	public static File createDirectory(String strDir) {

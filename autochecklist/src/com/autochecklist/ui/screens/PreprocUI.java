@@ -1,14 +1,12 @@
 package com.autochecklist.ui.screens;
 
 import java.io.File;
-import java.io.IOException;
 
 import com.autochecklist.modules.Orchestrator;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.ui.widgets.ChoiceDialog;
 import com.autochecklist.utils.Utils;
-import com.google.common.io.Files;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -25,8 +23,6 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 
 public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 
@@ -36,7 +32,6 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 	private File mPreprocessedFile;
 
 	private MenuItem mMenuOpenPreprocDir;
-	private MenuItem mMenuSavePreproc;
 	private MenuItem mMenuRestartPreproc;
 
 	private Button mNextButton;
@@ -63,9 +58,6 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		mMenuOpenPreprocDir = new MenuItem("Open preprocessed file's folder");
 		mMenuOpenPreprocDir.setOnAction(this);
 		mMenuOpenPreprocDir.setDisable(true);
-		mMenuSavePreproc = new MenuItem("Save preprocessed file as...");
-		mMenuSavePreproc.setOnAction(this);
-		mMenuSavePreproc.setDisable(true);
 		mMenuRestartPreproc = new MenuItem("Restart preprocessing");
 		mMenuRestartPreproc.setOnAction(this);
 		mMenuRestartPreproc.setDisable(true);
@@ -78,7 +70,6 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		MenuBar menuBar = new MenuBar();
 		Menu menu = new Menu("Actions");
 		menu.getItems().add(mMenuOpenPreprocDir);
-		menu.getItems().add(mMenuSavePreproc);
 		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(mMenuRestart);
 		menu.getItems().add(mMenuRestartPreproc);
@@ -136,7 +127,6 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 	protected void beforeWork() {
 		mMenuRestart.setDisable(true);
 		mMenuRestartPreproc.setDisable(true);
-		mMenuSavePreproc.setDisable(true);
 		mMenuOpenPreprocDir.setDisable(true);
 		mProgressBar.setProgress(-1); // Indeterminate.
 	}
@@ -150,16 +140,13 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 	protected void workSucceeded() {
 		mMenuRestart.setDisable(false);
 		mMenuRestartPreproc.setDisable(false);
-		mMenuSavePreproc.setDisable(false);
 		mMenuOpenPreprocDir.setDisable(false);
 		mNextButton.setDisable(false);
 		mProgressBar.setProgress(1);
 
 		new AlertDialog("Success: The preprocessing has finished!",
 		        "Please review the generated preprocessed file."
-				+ "\n(Actions -> Open preprocessed file's folder)"
-		        + "\nYou may also save it for a future analysis."
-		        + "\n(Actions -> Save preprocessed file as)", mStage).show();
+				+ "\n(Actions -> Open preprocessed file's folder)", mStage).show();
 	}
 
 	@Override
@@ -182,32 +169,10 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 			mStage.close();
 		} else if (event.getSource() == mMenuOpenPreprocDir) {
 			Utils.openDirectoryWithPlaformExplorerFromUI(mPreprocessedFile.getPath());
-		} else if (event.getSource() == mMenuSavePreproc) {
-			savePreprocFileAs();
 		} else if (event.getSource() == mMenuRestartPreproc) {
 			restart();
 		} else {
 		    super.handle(event);
-		}
-	}
-
-	private void savePreprocFileAs() {
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Save a pre-processed file...");
-		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML Files", "*.xml"));
-		File file = fileChooser.showSaveDialog(mStage);
-		if (file == null) return; // User may have cancelled the dialog.
-
-		if(!file.getPath().endsWith(".xml")) {
-			  file = new File(file.getPath() + ".xml");
-		}
-
-		try {
-			Files.move(mPreprocessedFile, file);
-			mPreprocessedFile = file;
-			Utils.println("Saved the preprocessed file as: " + mPreprocessedFile.getPath());
-		} catch (IOException e) {
-			Utils.printError("FAILURE: File has not been saved!");
 		}
 	}
 
