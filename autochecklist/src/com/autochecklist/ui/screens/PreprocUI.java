@@ -145,8 +145,9 @@ public class PreprocUI extends BaseUI implements EventHandler<ActionEvent> {
 		mProgressBar.setProgress(1);
 
 		new AlertDialog("Success: The preprocessing has finished!",
-		        "Please review the generated preprocessed file."
-				+ "\n(Actions -> Open preprocessed file's folder)", mStage).show();
+		        "You may proceed to the analysis."
+				+ "\nYou can also review the generated preprocessed file:"
+				+ "\nActions -> Open preprocessed file's folder", mStage).show();
 	}
 
 	@Override
