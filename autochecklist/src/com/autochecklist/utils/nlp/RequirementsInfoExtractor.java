@@ -124,9 +124,11 @@ import edu.stanford.nlp.util.CoreMap;
 		if (splitStr.length != 1) return false;
 
 		List<Pair<String, String>> matched = mReqIdExtractor.extract(str);
-		if ((matched != null) && (!matched.isEmpty())) {
-			// No need to check the contents, as there is only one possible: REQUIREMENT_ID.
-			return true;
+		if (matched != null) {
+			for (Pair<String, String> match : matched) {
+				// To make sure the requirement ID is the first token, as there may be "[", "{", or others.
+				if (str.startsWith(match.second)) return true;
+			}
 		}
 
 		return false;
