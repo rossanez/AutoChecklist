@@ -81,6 +81,7 @@ public class Utils {
 
         try {
 		    FileUtils.writeStringToFile(new File(fileName), text);
+		    Utils.println("Saved text file as: " + fileName);
 	    } catch (IOException e) {
 		    Utils.printError("Unable to save text file!");
 	    }
