@@ -4,16 +4,16 @@ import java.util.List;
 
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.interfaces.IRequirementsInfoOutBuildable;
+import com.autochecklist.utils.XMLPreProcBuilder;
 
 /* package */ class RequirementsTraceabilityMatrixSectionExtractor {
 
 	private StringBuilder mSectionContents;
 	private ExpressionExtractor mRTMIndicationExtractor;
-	private IRequirementsInfoOutBuildable mOutputBuilder;
+	private XMLPreProcBuilder mOutputBuilder;
 	private boolean mIsAcquiringSectionLines = false;
 
-	public RequirementsTraceabilityMatrixSectionExtractor(IRequirementsInfoOutBuildable outputBuilder) {
+	public RequirementsTraceabilityMatrixSectionExtractor(XMLPreProcBuilder outputBuilder) {
 		mOutputBuilder = outputBuilder;
 		mRTMIndicationExtractor = new ExpressionExtractor("RegexRules/rtmsection.rules");
 		clearContents();

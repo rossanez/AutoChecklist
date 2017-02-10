@@ -6,7 +6,7 @@ import java.util.Comparator;
 import com.autochecklist.base.Finding;
 import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.requirements.Requirement;
-import com.autochecklist.modules.output.OutputFormatter;
+import com.autochecklist.modules.OutputFormatter;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.ui.widgets.TimeConsumingTaskDialog;

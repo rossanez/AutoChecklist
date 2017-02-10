@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
 import com.autochecklist.utils.Utils;
 
 /**
- * This class encapsulates the text handling methods.
+ * This class encapsulates the plain-text conversion handling methods.
  * 
  * @author Anderson Rossanez
  */

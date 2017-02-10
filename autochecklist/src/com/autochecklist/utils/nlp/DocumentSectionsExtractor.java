@@ -11,16 +11,16 @@ import java.util.Map;
 import com.autochecklist.base.documentsections.DocumentSection;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.interfaces.IRequirementsInfoOutBuildable;
+import com.autochecklist.utils.XMLPreProcBuilder;
 
 /* package */ class DocumentSectionsExtractor {
 
 	private String mPlainText;
-    private IRequirementsInfoOutBuildable mOutputBuilder;
+    private XMLPreProcBuilder mOutputBuilder;
 	private ExpressionExtractor mSectionIdExtractor;
 	private RequirementsTraceabilityMatrixSectionExtractor mRTMSectionExtractor;
 
-	public DocumentSectionsExtractor(String text, IRequirementsInfoOutBuildable outputBuilder) {
+	public DocumentSectionsExtractor(String text, XMLPreProcBuilder outputBuilder) {
 		mPlainText = text;
 		mOutputBuilder = outputBuilder;
 		mSectionIdExtractor = new ExpressionExtractor("RegexRules/sectionid.rules");

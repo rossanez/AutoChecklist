@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.interfaces.IRequirementsInfoOutBuildable;
+import com.autochecklist.utils.XMLPreProcBuilder;
 
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
@@ -21,10 +21,10 @@ import edu.stanford.nlp.util.CoreMap;
 /* package */ class RequirementsInfoExtractor {
 
 	private String mPlainText;
-	private IRequirementsInfoOutBuildable mOutputBuilder;
+	private XMLPreProcBuilder mOutputBuilder;
 	private ExpressionExtractor mReqIdExtractor;
 	
-	public RequirementsInfoExtractor(String text, IRequirementsInfoOutBuildable outputBuilder) {
+	public RequirementsInfoExtractor(String text, XMLPreProcBuilder outputBuilder) {
 		this.mPlainText = text;
 		this.mOutputBuilder = outputBuilder;
 		this.mReqIdExtractor = new ExpressionExtractor("RegexRules/requirementid.rules");

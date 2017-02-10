@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.autochecklist.utils.Utils;
+import com.autochecklist.utils.XMLPreProcBuilder;
 import com.autochecklist.utils.nlp.interfaces.IEventActionDetectable;
 import com.autochecklist.utils.nlp.interfaces.IExpressionExtractable;
 import com.autochecklist.utils.nlp.interfaces.IMissingNumericValuesIndicativeDetectable;
-import com.autochecklist.utils.nlp.interfaces.IRequirementsInfoOutBuildable;
 
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
@@ -52,7 +52,7 @@ public class NLPTools {
 		return mPipelineInstance;
 	}
 
-	public static IRequirementsInfoOutBuildable extractPreprocInfoAndWrite(String text, IRequirementsInfoOutBuildable outputBuilder) {
+	public static XMLPreProcBuilder extractPreprocInfoAndWrite(String text, XMLPreProcBuilder outputBuilder) {
 		new DocumentSectionsExtractor(text, outputBuilder).extract();
         new RequirementsInfoExtractor(text, outputBuilder).extract();
 

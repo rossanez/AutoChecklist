@@ -1,4 +1,4 @@
-package com.autochecklist.modules.output;
+package com.autochecklist.modules;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,15 +6,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.autochecklist.base.ErrorBasedChecklist;
 import com.autochecklist.base.Finding;
 import com.autochecklist.base.NumberAndUnitOccurrences;
+import com.autochecklist.base.checklists.ErrorBasedChecklist;
 import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.questions.QuestionAction;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.base.requirements.RequirementList;
-import com.autochecklist.modules.Module;
 import com.autochecklist.utils.CSVBuilder;
 import com.autochecklist.utils.HtmlBuilder;
 import com.autochecklist.utils.Utils;

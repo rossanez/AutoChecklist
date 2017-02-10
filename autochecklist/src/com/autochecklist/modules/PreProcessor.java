@@ -1,12 +1,11 @@
-package com.autochecklist.modules.preprocess;
+package com.autochecklist.modules;
 
 import java.io.File;
 import java.security.InvalidParameterException;
 
-import com.autochecklist.modules.Module;
 import com.autochecklist.utils.Utils;
+import com.autochecklist.utils.XMLPreProcBuilder;
 import com.autochecklist.utils.nlp.NLPTools;
-import com.autochecklist.utils.nlp.interfaces.IRequirementsInfoOutBuildable;
 import com.autochecklist.utils.text.PlainTextConverter;
 
 public class PreProcessor extends Module {
@@ -50,7 +49,7 @@ public class PreProcessor extends Module {
     		Utils.createTextFile(Utils.getParentDirectory(mDocumentFileName) + Utils.getFileNameWithoutExtension(mDocumentFileName) + "_text.txt", text);
     	}
     	
-    	IRequirementsInfoOutBuildable outputBuilder = new XMLOutPreProcBuilder();
+    	XMLPreProcBuilder outputBuilder = new XMLPreProcBuilder();
 
     	NLPTools.extractPreprocInfoAndWrite(text, outputBuilder);
 

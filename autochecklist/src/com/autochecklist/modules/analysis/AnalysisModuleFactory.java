@@ -1,23 +1,19 @@
-package com.autochecklist.modules;
+package com.autochecklist.modules.analysis;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import com.autochecklist.base.ErrorBasedChecklist;
 import com.autochecklist.base.NumberAndUnitOccurrences;
+import com.autochecklist.base.checklists.ErrorBasedChecklist;
 import com.autochecklist.base.documentsections.DocumentSectionList;
 import com.autochecklist.base.documentsections.RequirementsTraceabilityMatrix;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.RequirementList;
-import com.autochecklist.modules.incompleteness.Incompleteness;
-import com.autochecklist.modules.inconsistency.Inconsistency;
-import com.autochecklist.modules.incorrectness.Incorrectness;
-import com.autochecklist.modules.output.OutputFormatter;
-import com.autochecklist.modules.preprocess.PreProcessor;
-import com.autochecklist.modules.traceability.Traceability;
+import com.autochecklist.modules.OutputFormatter;
+import com.autochecklist.modules.PreProcessor;
 
-public class ModuleFactory {
+public class AnalysisModuleFactory {
 
 	public static PreProcessor createPreProcessor(String srsFileName) {
 		return new PreProcessor(srsFileName);

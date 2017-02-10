@@ -1,4 +1,4 @@
-package com.autochecklist.modules.inconsistency;
+package com.autochecklist.modules.analysis;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +11,6 @@ import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.questions.QuestionAction;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
-import com.autochecklist.modules.AnalysisModule;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 import com.autochecklist.utils.nlp.NLPTools;

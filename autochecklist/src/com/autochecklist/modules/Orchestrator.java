@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-import com.autochecklist.base.ErrorBasedChecklist;
 import com.autochecklist.base.NumberAndUnitOccurrences;
+import com.autochecklist.base.checklists.ErrorBasedChecklist;
 import com.autochecklist.base.documentsections.DocumentSectionList;
 import com.autochecklist.base.documentsections.RequirementsTraceabilityMatrix;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.RequirementList;
-import com.autochecklist.modules.incorrectness.Incorrectness;
-import com.autochecklist.modules.output.OutputFormatter;
-import com.autochecklist.modules.preprocess.PreProcessor;
+import com.autochecklist.modules.analysis.AnalysisModule;
+import com.autochecklist.modules.analysis.AnalysisModuleFactory;
+import com.autochecklist.modules.analysis.Incorrectness;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
 
@@ -103,7 +103,7 @@ public class Orchestrator {
         	throw new RuntimeException("Need a SRS file for preprocessing!");
         }
 
-		PreProcessor preproc = ModuleFactory.createPreProcessor(mSRSFileName);
+		PreProcessor preproc = AnalysisModuleFactory.createPreProcessor(mSRSFileName);
 		preproc.start();
 		return preproc.getPreprocessedFile();
 	}
@@ -123,7 +123,7 @@ public class Orchestrator {
 	}
 
 	private Queue<AnalysisModule> getAllAnalysisModules() {
-		return ModuleFactory.createAllAnalysisModules(new ErrorBasedChecklist(), mDocumentSections, mRTMSection);
+		return AnalysisModuleFactory.createAllAnalysisModules(new ErrorBasedChecklist(), mDocumentSections, mRTMSection);
 	}
 
 	private OutputFormatter getOutputFormatter(Pair<RequirementList, List<QuestionCategory>> output) {

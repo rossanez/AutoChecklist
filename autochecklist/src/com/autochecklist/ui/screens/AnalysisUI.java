@@ -1,7 +1,7 @@
 package com.autochecklist.ui.screens;
 
 import com.autochecklist.modules.Orchestrator;
-import com.autochecklist.modules.output.OutputFormatter;
+import com.autochecklist.modules.OutputFormatter;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.ui.widgets.ChoiceDialog;

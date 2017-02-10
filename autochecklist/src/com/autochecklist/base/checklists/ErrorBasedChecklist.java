@@ -1,4 +1,4 @@
-package com.autochecklist.base;
+package com.autochecklist.base.checklists;
 
 import com.autochecklist.base.questions.QuestionCategory;
 

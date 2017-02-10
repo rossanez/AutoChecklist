@@ -1,4 +1,4 @@
-package com.autochecklist.modules.preprocess;
+package com.autochecklist.utils;
 
 import java.io.File;
 
@@ -16,10 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.nlp.interfaces.IRequirementsInfoOutBuildable;
-
-public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
+public class XMLPreProcBuilder {
 
 	private DocumentBuilder mDocBuilder;
 	private Document mDoc;
@@ -29,7 +26,7 @@ public class XMLOutPreProcBuilder implements IRequirementsInfoOutBuildable {
 	private Element mRTMElement;
 	private Element mCurrentRequirement;
 	
-	public XMLOutPreProcBuilder() {
+	public XMLPreProcBuilder() {
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 
 		try {

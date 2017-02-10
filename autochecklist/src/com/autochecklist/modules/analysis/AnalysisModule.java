@@ -1,10 +1,11 @@
-package com.autochecklist.modules;
+package com.autochecklist.modules.analysis;
 
 import com.autochecklist.base.Finding;
 import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.base.requirements.RequirementList;
+import com.autochecklist.modules.Module;
 import com.autochecklist.utils.nlp.interfaces.IExpressionExtractable;
 
 /**
