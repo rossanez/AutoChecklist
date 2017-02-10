@@ -103,7 +103,7 @@ public class Orchestrator {
         	throw new RuntimeException("Need a SRS file for preprocessing!");
         }
 
-		PreProcessor preproc = AnalysisModuleFactory.createPreProcessor(mSRSFileName);
+		PreProcessor preproc = new PreProcessor(mSRSFileName);
 		preproc.start();
 		return preproc.getPreprocessedFile();
 	}
@@ -123,7 +123,7 @@ public class Orchestrator {
 	}
 
 	private Queue<AnalysisModule> getAllAnalysisModules() {
-		return AnalysisModuleFactory.createAllAnalysisModules(new ErrorBasedChecklist(), mDocumentSections, mRTMSection);
+		return AnalysisModuleFactory.createErrorBasedAnalysisModules(new ErrorBasedChecklist(), mDocumentSections, mRTMSection);
 	}
 
 	private OutputFormatter getOutputFormatter(Pair<RequirementList, List<QuestionCategory>> output) {
