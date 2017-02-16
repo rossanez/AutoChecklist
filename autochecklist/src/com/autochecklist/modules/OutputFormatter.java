@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.autochecklist.base.Finding;
 import com.autochecklist.base.NumberAndUnitOccurrences;
-import com.autochecklist.base.checklists.ErrorBasedChecklist;
 import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.questions.QuestionAction;
 import com.autochecklist.base.questions.QuestionCategory;
@@ -17,6 +16,7 @@ import com.autochecklist.base.requirements.RequirementList;
 import com.autochecklist.utils.CSVBuilder;
 import com.autochecklist.utils.HtmlBuilder;
 import com.autochecklist.utils.Utils;
+import com.autochecklist.utils.checklists.ErrorBasedChecklist;
 
 public class OutputFormatter extends Module {
 

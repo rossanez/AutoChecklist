@@ -1,4 +1,4 @@
-package com.autochecklist.base.checklists;
+package com.autochecklist.utils.checklists;
 
 import java.io.IOException;
 

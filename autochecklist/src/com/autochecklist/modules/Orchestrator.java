@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Queue;
 
 import com.autochecklist.base.NumberAndUnitOccurrences;
-import com.autochecklist.base.checklists.ErrorBasedChecklist;
 import com.autochecklist.base.documentsections.DocumentSectionList;
 import com.autochecklist.base.documentsections.RequirementsTraceabilityMatrix;
 import com.autochecklist.base.questions.QuestionCategory;
@@ -16,6 +15,7 @@ import com.autochecklist.modules.analysis.AnalysisModuleFactory;
 import com.autochecklist.modules.analysis.Incorrectness;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
+import com.autochecklist.utils.checklists.ErrorBasedChecklist;
 
 /**
  * This class should guide the execution flows of the tool.

@@ -3,9 +3,9 @@ package com.autochecklist.modules.analysis;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.autochecklist.base.checklists.ErrorBasedChecklist;
 import com.autochecklist.base.documentsections.DocumentSectionList;
 import com.autochecklist.base.documentsections.RequirementsTraceabilityMatrix;
+import com.autochecklist.utils.checklists.ErrorBasedChecklist;
 
 public class AnalysisModuleFactory {
 
