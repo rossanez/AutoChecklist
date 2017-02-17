@@ -165,6 +165,7 @@ public class ResultsUI extends BaseUI {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void workSucceeded() {
 		mMenuRestart.setDisable(false);
