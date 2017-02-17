@@ -7,8 +7,8 @@ import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.ui.widgets.ChoiceDialog;
 import com.autochecklist.ui.widgets.TimeConsumingTaskDialog;
-import com.autochecklist.utils.CSVBuilder;
 import com.autochecklist.utils.Utils;
+import com.autochecklist.utils.filebuilder.CSVBuilder;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

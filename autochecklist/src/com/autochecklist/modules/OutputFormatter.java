@@ -13,10 +13,10 @@ import com.autochecklist.base.questions.QuestionAction;
 import com.autochecklist.base.questions.QuestionCategory;
 import com.autochecklist.base.requirements.Requirement;
 import com.autochecklist.base.requirements.RequirementList;
-import com.autochecklist.utils.CSVBuilder;
-import com.autochecklist.utils.HtmlBuilder;
 import com.autochecklist.utils.Utils;
 import com.autochecklist.utils.checklists.ErrorBasedChecklist;
+import com.autochecklist.utils.filebuilder.CSVBuilder;
+import com.autochecklist.utils.filebuilder.HtmlBuilder;
 
 public class OutputFormatter extends Module {
 

@@ -1,4 +1,4 @@
-package com.autochecklist.utils;
+package com.autochecklist.utils.filebuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +7,8 @@ import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
+
+import com.autochecklist.utils.Utils;
 
 public class HtmlBuilder {
 

@@ -8,9 +8,9 @@ import org.apache.commons.io.FileUtils;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.ui.widgets.SearchDialog;
-import com.autochecklist.utils.HtmlBuilder;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
+import com.autochecklist.utils.filebuilder.HtmlBuilder;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;

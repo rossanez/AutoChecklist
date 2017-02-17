@@ -11,7 +11,7 @@ import java.util.Map;
 import com.autochecklist.base.documentsections.DocumentSection;
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.XMLPreProcBuilder;
+import com.autochecklist.utils.filebuilder.XMLPreProcBuilder;
 
 /* package */ class DocumentSectionsExtractor {
 

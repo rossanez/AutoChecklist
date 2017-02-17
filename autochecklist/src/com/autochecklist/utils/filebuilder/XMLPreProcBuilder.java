@@ -1,4 +1,4 @@
-package com.autochecklist.utils;
+package com.autochecklist.utils.filebuilder;
 
 import java.io.File;
 
@@ -15,6 +15,8 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import com.autochecklist.utils.Utils;
 
 public class XMLPreProcBuilder {
 

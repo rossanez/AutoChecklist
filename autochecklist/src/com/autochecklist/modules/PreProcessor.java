@@ -4,7 +4,7 @@ import java.io.File;
 import java.security.InvalidParameterException;
 
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.XMLPreProcBuilder;
+import com.autochecklist.utils.filebuilder.XMLPreProcBuilder;
 import com.autochecklist.utils.nlp.NLPTools;
 import com.autochecklist.utils.text.PlainTextConverter;
 

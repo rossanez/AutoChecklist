@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.XMLPreProcBuilder;
+import com.autochecklist.utils.filebuilder.XMLPreProcBuilder;
 import com.autochecklist.utils.nlp.interfaces.IEventActionDetectable;
 import com.autochecklist.utils.nlp.interfaces.IExpressionExtractable;
 import com.autochecklist.utils.nlp.interfaces.IMissingNumericValuesIndicativeDetectable;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.autochecklist.utils.Pair;
 import com.autochecklist.utils.Utils;
-import com.autochecklist.utils.XMLPreProcBuilder;
+import com.autochecklist.utils.filebuilder.XMLPreProcBuilder;
 
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
