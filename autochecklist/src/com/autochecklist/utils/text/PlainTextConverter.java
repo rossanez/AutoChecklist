@@ -50,7 +50,7 @@ public class PlainTextConverter {
 		return getPlainTextFromXHTML(xhtml);
 	}
 
-	public static String handlePlainTextFile(String fileName) {
+	private static String handlePlainTextFile(String fileName) {
 		Utils.println("Handling plain text document...");
 
 		StringBuilder sb = new StringBuilder();
@@ -68,7 +68,7 @@ public class PlainTextConverter {
 		return sb.toString();
 	}
 
-	public static String parseToXHTML(String fileName) {
+	private static String parseToXHTML(String fileName) {
 		ContentHandler handler = new ToXMLContentHandler();
 
 		AutoDetectParser parser = new AutoDetectParser();
