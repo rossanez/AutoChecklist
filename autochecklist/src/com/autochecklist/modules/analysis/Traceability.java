@@ -224,6 +224,12 @@ public class Traceability extends AnalysisModule {
 				int lastIndex = reqIdFound.indexOf(" ");
 				if (lastIndex < 0) lastIndex = reqIdFound.length();
 				reqIdFound = reqIdFound.substring(0, lastIndex);
+				if (!Utils.isTextEmpty(reqIdFound)
+					&& (reqIdFound.endsWith(".")
+					   || reqIdFound.endsWith(",")
+					   || reqIdFound.endsWith(";"))) {
+					reqIdFound = reqIdFound.substring(0, reqIdFound.length() -1);
+				}
 
 				if (Utils.isTextEmpty(reqIdFound)) continue;
 
