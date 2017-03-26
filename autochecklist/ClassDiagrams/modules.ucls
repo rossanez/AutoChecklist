@@ -38,8 +38,8 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="com.autochecklist.modules.OutputFormatter" project="AutoChecklist" 
-    file="/AutoChecklist/src/com/autochecklist/modules/OutputFormatter.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="5" language="java" name="com.autochecklist.modules.OutputGenerator" project="AutoChecklist" 
+    file="/AutoChecklist/src/com/autochecklist/modules/OutputGenerator.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="491" y="118"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="false" 
       sort-features="false" accessors="true" visibility="false">      
@@ -56,24 +56,24 @@
       <operations public="true" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <generalization id="7">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="6"/>  
-  </generalization>  
-  <dependency id="8">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="4"/>  
-  </dependency>  
-  <dependency id="9">    
+  <dependency id="7">    
     <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="5"/>  
   </dependency>  
-  <dependency id="10">    
+  <generalization id="8">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="6"/>  
+  </generalization>  
+  <dependency id="9">    
     <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="3"/>  
   </dependency>  
+  <dependency id="10">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
   <generalization id="11">    
-    <end type="SOURCE" refId="3"/>    
+    <end type="SOURCE" refId="4"/>    
     <end type="TARGET" refId="6"/>  
   </generalization>  
   <generalization id="12">    

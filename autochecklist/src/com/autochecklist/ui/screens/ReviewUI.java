@@ -6,7 +6,7 @@ import java.util.Comparator;
 import com.autochecklist.base.Finding;
 import com.autochecklist.base.questions.Question;
 import com.autochecklist.base.requirements.Requirement;
-import com.autochecklist.modules.OutputFormatter;
+import com.autochecklist.modules.OutputGenerator;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.ui.widgets.TimeConsumingTaskDialog;
@@ -44,7 +44,7 @@ import javafx.util.Callback;
 
 public class ReviewUI extends BaseUI {
 
-	private OutputFormatter mOutputFormatter;
+	private OutputGenerator mOutputGenerator;
 
 	private MenuBar mMenuBar;
 	private MenuItem mMenuClose;
@@ -54,15 +54,15 @@ public class ReviewUI extends BaseUI {
 	private Node mFinalContents;
 	private ProgressIndicator mProgressIndicator;
 
-	public ReviewUI(OutputFormatter outputFormatter) {
+	public ReviewUI(OutputGenerator outputGenerator) {
 		super();
-		mOutputFormatter = outputFormatter;
+		mOutputGenerator = outputGenerator;
 		setDoWorkUponShowing(true);
 	}
 
 	@Override
 	protected void initUI() {
-		if (mOutputFormatter == null) {
+		if (mOutputGenerator == null) {
 			Utils.printError("No findings available to review!");
 			throw new RuntimeException("Unable to review findings!");
 		}
@@ -164,7 +164,7 @@ public class ReviewUI extends BaseUI {
 			
 			@Override
 			public void doInBackground() {
-				mOutputFormatter.saveToFile(fileName);
+				mOutputGenerator.saveToFile(fileName);
 			}
 
 			@Override
@@ -229,7 +229,7 @@ public class ReviewUI extends BaseUI {
                         setText(empty ? null : item);
                         setAlignment(Pos.CENTER);
                         if (!empty) {
-                            Requirement req = mOutputFormatter.getRequirement(item);
+                            Requirement req = mOutputGenerator.getRequirement(item);
 						    if (req != null) {
 						        setTooltip(new Tooltip(req.getId() + ": " + req.getText()));
 						    }
@@ -259,7 +259,7 @@ public class ReviewUI extends BaseUI {
 						setText(empty ? null : item.toString());
 						setAlignment(Pos.CENTER);
 						if (!empty) {
-						    Question question = mOutputFormatter.getQuestion(item);
+						    Question question = mOutputGenerator.getQuestion(item);
 						    if (question != null) {
 							    setTooltip(new Tooltip(question.getId() + ": " + question.getText()));
 						    }
@@ -372,7 +372,7 @@ public class ReviewUI extends BaseUI {
 		table.getColumns().add(manual);
 
 		ObservableList<Finding> allFindings = FXCollections.observableArrayList();
-		for (Requirement requirement : mOutputFormatter.getRequirements()) {
+		for (Requirement requirement : mOutputGenerator.getRequirements()) {
 			allFindings.addAll(getFindings(requirement));
 		}
 		table.setItems(allFindings);

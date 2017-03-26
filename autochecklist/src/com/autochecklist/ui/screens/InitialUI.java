@@ -2,7 +2,7 @@ package com.autochecklist.ui.screens;
 
 import java.io.File;
 
-import com.autochecklist.modules.OutputFormatter;
+import com.autochecklist.modules.OutputGenerator;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.ui.widgets.ChoiceDialog;
@@ -211,7 +211,7 @@ public class InitialUI extends BaseUI {
 	private void loadAnalyzedFile(final String fileName) {
 		new TimeConsumingTaskDialog("Loading file...", new TimeConsumingTaskDialog.ITimeConsumingTask() {
 
-			private OutputFormatter mOutputFormatter;
+			private OutputGenerator mOutputGenerator;
 
 			@Override
 			public void doBefore() {
@@ -220,16 +220,16 @@ public class InitialUI extends BaseUI {
 			
 			@Override
 			public void doInBackground() {
-				mOutputFormatter = OutputFormatter.createFromFile(CSVBuilder.loadFile(fileName), fileName);
-				if (mOutputFormatter != null) {
-					mOutputFormatter.runConsistencyCheck();
+				mOutputGenerator = OutputGenerator.createFromFile(CSVBuilder.loadFile(fileName), fileName);
+				if (mOutputGenerator != null) {
+					mOutputGenerator.runConsistencyCheck();
 				}
 			}
 
 			@Override
 			public void onSuccess() {
 				try {
-				    new ResultsUI(mOutputFormatter).show();
+				    new ResultsUI(mOutputGenerator).show();
 				    mStage.close();
 				} catch (Exception e) {
 					new AlertDialog("Error!", "Unable to show analyzed file's contents!", mStage).show();

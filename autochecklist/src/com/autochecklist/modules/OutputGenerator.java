@@ -18,7 +18,7 @@ import com.autochecklist.utils.checklists.ErrorBasedChecklist;
 import com.autochecklist.utils.filebuilder.CSVBuilder;
 import com.autochecklist.utils.filebuilder.HtmlBuilder;
 
-public class OutputFormatter extends Module {
+public class OutputGenerator extends Module {
 
 	private RequirementList mRequirements;
 	private List<QuestionCategory> mQuestions;
@@ -26,7 +26,7 @@ public class OutputFormatter extends Module {
 
 	private String mOutputDir;
 	
-	public OutputFormatter(RequirementList analyzedRequirements, List<QuestionCategory> answeredQuestions, NumberAndUnitOccurrences numericOcc, String workingDir) {
+	public OutputGenerator(RequirementList analyzedRequirements, List<QuestionCategory> answeredQuestions, NumberAndUnitOccurrences numericOcc, String workingDir) {
 		mRequirements = analyzedRequirements;
 		mQuestions = answeredQuestions;
         mNumericOcc = numericOcc;
@@ -418,7 +418,7 @@ public class OutputFormatter extends Module {
 		CSVBuilder.saveFile(fileName, arrayList);
 	}
 
-	public static OutputFormatter createFromFile(String[][] contents, String fileName) {
+	public static OutputGenerator createFromFile(String[][] contents, String fileName) {
 		ErrorBasedChecklist ebs = new ErrorBasedChecklist();
 		List<QuestionCategory> questions = new ArrayList<QuestionCategory>();
 		questions.add(ebs.getTraceabilityQuestions());
@@ -463,6 +463,6 @@ public class OutputFormatter extends Module {
 			}
 		}
 
-		return new OutputFormatter(new RequirementList(new ArrayList<Requirement>(requirementMap.values())), questions, numOccurrences, Utils.getParentDirectory(fileName));
+		return new OutputGenerator(new RequirementList(new ArrayList<Requirement>(requirementMap.values())), questions, numOccurrences, Utils.getParentDirectory(fileName));
 	}
 }

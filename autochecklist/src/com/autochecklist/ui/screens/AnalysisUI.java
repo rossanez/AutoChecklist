@@ -1,7 +1,7 @@
 package com.autochecklist.ui.screens;
 
 import com.autochecklist.modules.Orchestrator;
-import com.autochecklist.modules.OutputFormatter;
+import com.autochecklist.modules.OutputGenerator;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.ui.widgets.ChoiceDialog;
@@ -34,7 +34,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	private ProgressBar mProgressBar;
 
 	// This should be the analysis output.
-	private OutputFormatter mOutputFormatter;
+	private OutputGenerator mOutputGenerator;
 	
 	public AnalysisUI(String preprocFileName) {
 		super();
@@ -126,7 +126,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 
 	@Override
 	protected void doWork() {
-		mOutputFormatter = new Orchestrator(mPreprocFileName, true).analyzeOnly();
+		mOutputGenerator = new Orchestrator(mPreprocFileName, true).analyzeOnly();
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class AnalysisUI extends BaseUI implements EventHandler<ActionEvent> {
 	@Override
 	public void handle(ActionEvent event) {
 		if (event.getSource() == mNextButton) {
-			new ResultsUI(mOutputFormatter).show();
+			new ResultsUI(mOutputGenerator).show();
 			mStage.close();
 		} else if (event.getSource() == mMenuRestartAnalysis) {
 			restart();

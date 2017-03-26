@@ -76,17 +76,17 @@ public class Orchestrator {
 	}
 
 	/**
-	 * Performs the analysis of a previously pre-processed SRS and starts the OutputFormatter.
+	 * Performs the analysis of a previously pre-processed SRS and starts the OutputGenerator.
 	 */
 	public void analyze() {
 		analyzeOnly().start();
 	}
 
 	/**
-	 * Performs the analysis of a previously pre-processed SRS and returns the OutputFormatter.
-	 * @return The OutputFormatter.
+	 * Performs the analysis of a previously pre-processed SRS and returns the OutputGenerator.
+	 * @return The OutputGenerator.
 	 */
-	public OutputFormatter analyzeOnly() {
+	public OutputGenerator analyzeOnly() {
 		if (mPreProcFileName == null) {
 			Utils.printError("No preprocessed file for analysis!");
         	throw new RuntimeException("Need a preprocessed file for analysis!");
@@ -94,7 +94,7 @@ public class Orchestrator {
 
 		Pair<RequirementList, List<QuestionCategory>> out =
 				new Pair<RequirementList, List<QuestionCategory>>(mRequirements, doAnalyze());
-		return getOutputFormatter(out);
+		return getOutputGenerator(out);
 	}
 
 	private File preProcess() {
@@ -126,7 +126,7 @@ public class Orchestrator {
 		return AnalysisModuleFactory.createErrorBasedAnalysisModules(new ErrorBasedChecklist(), mDocumentSections, mRTMSection);
 	}
 
-	private OutputFormatter getOutputFormatter(Pair<RequirementList, List<QuestionCategory>> output) {
-		return new OutputFormatter(output.first, output.second, mNumericOcc, Utils.getParentDirectory(mPreProcFileName));
+	private OutputGenerator getOutputGenerator(Pair<RequirementList, List<QuestionCategory>> output) {
+		return new OutputGenerator(output.first, output.second, mNumericOcc, Utils.getParentDirectory(mPreProcFileName));
 	}
 }

@@ -3,7 +3,7 @@ package com.autochecklist.ui.screens;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.autochecklist.modules.OutputFormatter;
+import com.autochecklist.modules.OutputGenerator;
 import com.autochecklist.ui.BaseUI;
 import com.autochecklist.ui.widgets.AlertDialog;
 import com.autochecklist.utils.Pair;
@@ -25,7 +25,7 @@ import javafx.scene.layout.VBox;
 
 public class ResultsUI extends BaseUI {
 
-	private OutputFormatter mOutputFormatter;
+	private OutputGenerator mOutputGenerator;
 
 	private ReportsUI mResultsViewer;
 	private ReviewUI mFindingsReview;
@@ -41,16 +41,16 @@ public class ResultsUI extends BaseUI {
 
 	private Button mGenerateButton;
 
-	public ResultsUI(OutputFormatter formatter) {
+	public ResultsUI(OutputGenerator outputGenerator) {
 		super();
-		mOutputFormatter = formatter;
+		mOutputGenerator = outputGenerator;
 	}
 	
 	@Override
 	protected void initUI() {
-		if (mOutputFormatter == null) {
-			Utils.printError("No output formatter found!");
-			throw new RuntimeException("Need an OutputFormatter object!");
+		if (mOutputGenerator == null) {
+			Utils.printError("No output generator found!");
+			throw new RuntimeException("Need an OutputGenerator object!");
 		}
 
 		mStage.setTitle("Auto Checklist - Results");
@@ -131,7 +131,7 @@ public class ResultsUI extends BaseUI {
 
 	@Override
 	protected void doWork() {
-		mOutputFormatter.runConsistencyCheck();
+		mOutputGenerator.runConsistencyCheck();
 		mViewerContents = new ArrayList<Pair<String, ReportsUI.IReportGenerator>>();
 		if (mCheckView.isSelected()) {
 			mViewerContents.add(new Pair<String, ReportsUI.IReportGenerator>("Checklist View",
@@ -139,7 +139,7 @@ public class ResultsUI extends BaseUI {
 				
 				@Override
 				public String generateContent() {
-					return mOutputFormatter.generateQuestionsViewContent(true);
+					return mOutputGenerator.generateQuestionsViewContent(true);
 				}
 			}));
 		}
@@ -149,7 +149,7 @@ public class ResultsUI extends BaseUI {
 
 				@Override
 				public String generateContent() {
-					return mOutputFormatter.generateRequirementsViewContent(true);
+					return mOutputGenerator.generateRequirementsViewContent(true);
 				}
 			}));
 		}
@@ -159,7 +159,7 @@ public class ResultsUI extends BaseUI {
 
 				@Override
 				public String generateContent() {
-					return mOutputFormatter.generateNumericOccurrencesContent(true);
+					return mOutputGenerator.generateNumericOccurrencesContent(true);
 				}
 			}));
 		}
@@ -236,7 +236,7 @@ public class ResultsUI extends BaseUI {
 	}
 
 	private void performReview() {
-		mFindingsReview = new ReviewUI(mOutputFormatter);
+		mFindingsReview = new ReviewUI(mOutputGenerator);
 		mFindingsReview.show();
 	}
 }
